@@ -1,0 +1,109 @@
+import React from 'react';
+import type { QuizResult } from '../types/quiz';
+
+interface ResultsProps {
+  result: QuizResult;
+  onRetake: () => void;
+}
+
+export const Results: React.FC<ResultsProps> = ({ result, onRetake }) => {
+  const getScoreColor = (percentage: number) => {
+    if (percentage >= 80) return 'from-green-500 to-emerald-600';
+    if (percentage >= 60) return 'from-yellow-500 to-amber-600';
+    return 'from-red-500 to-rose-600';
+  };
+
+  const getScoreMessage = (percentage: number) => {
+    if (percentage >= 90) return 'Отлично! Вы отлично знаете материал!';
+    if (percentage >= 80) return 'Хорошо! Вы хорошо усвоили материал!';
+    if (percentage >= 70) return 'Удовлетворительно! Подтяните слабые места!';
+    if (percentage >= 60) return 'Неплохо! Повторите материал еще раз!';
+    return 'Нужно больше заниматься. Повторите материал!';
+  };
+
+  const minutes = Math.floor(result.timeSpent / 60);
+  const seconds = result.timeSpent % 60;
+
+  return (
+    <div className="w-full max-w-2xl space-y-8">
+      <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-2">Тест завершён!</h1>
+        <p className="text-gray-600 mb-8">Вот ваши результаты</p>
+
+        <div className="relative w-48 h-48 mx-auto mb-8">
+          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+            <circle
+              cx="100"
+              cy="100"
+              r="90"
+              fill="none"
+              stroke="#e5e7eb"
+              strokeWidth="12"
+            />
+            <circle
+              cx="100"
+              cy="100"
+              r="90"
+              fill="none"
+              stroke={result.percentage >= 80 ? 'url(#greenGradient)' : result.percentage >= 60 ? 'url(#yellowGradient)' : 'url(#redGradient)'}
+              strokeWidth="12"
+              strokeDasharray={`${(result.percentage / 100) * (2 * Math.PI * 90)} ${2 * Math.PI * 90}`}
+              strokeLinecap="round"
+              style={{ transition: 'stroke-dasharray 0.5s ease' }}
+            />
+            <defs>
+              <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="100%" stopColor="#059669" />
+              </linearGradient>
+              <linearGradient id="yellowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#eab308" />
+                <stop offset="100%" stopColor="#b45309" />
+              </linearGradient>
+              <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="100%" stopColor="#991b1b" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <div className={`text-5xl font-bold bg-gradient-to-r ${getScoreColor(result.percentage)} bg-clip-text text-transparent`}>
+              {result.percentage}%
+            </div>
+            <div className="text-sm text-gray-500 mt-1">
+              {result.correctAnswers}/{result.totalQuestions}
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xl text-gray-700 font-semibold mb-2">
+          {getScoreMessage(result.percentage)}
+        </p>
+
+        <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-200">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-indigo-600">{result.correctAnswers}</div>
+            <div className="text-sm text-gray-600 mt-1">Правильных</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-red-600">{result.totalQuestions - result.correctAnswers}</div>
+            <div className="text-sm text-gray-600 mt-1">Неправильных</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-gray-600">
+              {minutes}:{seconds.toString().padStart(2, '0')}
+            </div>
+            <div className="text-sm text-gray-600 mt-1">Время</div>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={onRetake}
+        className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg"
+      >
+        Пройти тест снова
+      </button>
+    </div>
+  );
+};
