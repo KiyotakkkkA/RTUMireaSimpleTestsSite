@@ -4,6 +4,20 @@ export interface QuizSession {
   userAnswers: Record<number, number[] | string[]>;
   startTime: number;
   endTime?: number;
+  settings?: QuizSettings;
+}
+
+export interface QuizSettings {
+  passThreshold: number;
+  hintsEnabled: boolean;
+  checkAfterAnswer: boolean;
+  showIncorrectAtEnd: boolean;
+}
+
+export interface IncorrectReviewItem {
+  questionNumber: number;
+  questionText: string;
+  correctAnswersText: string[];
 }
 
 export interface QuizResult {
@@ -11,6 +25,10 @@ export interface QuizResult {
   correctAnswers: number;
   percentage: number;
   timeSpent: number;
+  passThreshold?: number;
+  passed?: boolean;
+  settings?: QuizSettings;
+  incorrectReview?: IncorrectReviewItem[];
   answers: {
     questionId: number;
     userAnswer: number[] | string[];

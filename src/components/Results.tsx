@@ -24,6 +24,9 @@ export const Results: React.FC<ResultsProps> = ({ result, onRetake }) => {
   const minutes = Math.floor(result.timeSpent / 60);
   const seconds = result.timeSpent % 60;
 
+  const passed = result.passed;
+  const passThreshold = result.passThreshold;
+
   return (
     <div className="w-full max-w-2xl space-y-8">
       <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
@@ -80,6 +83,22 @@ export const Results: React.FC<ResultsProps> = ({ result, onRetake }) => {
           {getScoreMessage(result.percentage)}
         </p>
 
+        {typeof passed === 'boolean' && typeof passThreshold === 'number' ? (
+          <div className="mt-4 inline-flex items-center justify-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+            <span
+              className={
+                `px-3 py-1 rounded-lg font-semibold ` +
+                (passed ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800')
+              }
+            >
+              {passed ? 'Пройдено' : 'Не пройдено'}
+            </span>
+            <span className="text-sm text-gray-700">
+              Порог: <span className="font-semibold">{passThreshold}</span> из {result.totalQuestions}
+            </span>
+          </div>
+        ) : null}
+
         <div className="grid grid-cols-3 gap-4 mt-8 pt-8 border-t border-gray-200">
           <div className="text-center">
             <div className="text-3xl font-bold text-indigo-600">{result.correctAnswers}</div>
@@ -96,6 +115,32 @@ export const Results: React.FC<ResultsProps> = ({ result, onRetake }) => {
             <div className="text-sm text-gray-600 mt-1">Время</div>
           </div>
         </div>
+
+        {result.incorrectReview && result.incorrectReview.length > 0 ? (
+          <div className="mt-8 pt-8 border-t border-gray-200 text-left">
+            <h2 className="text-xl font-bold text-gray-800">Неправильные ответы</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Вопросы, в которых была ошибка, и правильные ответы
+            </p>
+
+            <div className="mt-4 space-y-4">
+              {result.incorrectReview.map((item) => (
+                <div key={item.questionNumber} className="rounded-xl border border-gray-200 bg-white p-4">
+                  <div className="text-sm font-semibold text-gray-500">Вопрос {item.questionNumber}</div>
+                  <div className="mt-1 font-semibold text-gray-800">{item.questionText}</div>
+                  <div className="mt-2 text-sm text-gray-700">
+                    <div className="font-semibold text-emerald-800">Правильные ответы:</div>
+                    <ul className="mt-1 list-disc pl-5">
+                      {item.correctAnswersText.map((t, idx) => (
+                        <li key={idx}>{t}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <button

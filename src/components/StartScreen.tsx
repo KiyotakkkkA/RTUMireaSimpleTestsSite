@@ -24,14 +24,6 @@ export const StartScreen: React.FC<StartScreenProps> = ({
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">{quizTitle}</h2>
           <div className="flex items-center justify-center gap-2 text-gray-700">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
-              <path
-                fillRule="evenodd"
-                d="M4 5a2 2 0 012-2 1 1 0 000 2H6a6 6 0 016 6v3a2 2 0 11-4 0v-3a2 2 0 00-4 0v5a2 2 0 104 0 1 1 0 000 2 4 4 0 01-4-4v-7a1 1 0 000-2 1 1 0 00-1 1v7a4 4 0 004 4 6 6 0 006-6 4 4 0 00-4-4H8a1 1 0 100 2h.5a2 2 0 012 2v3a1 1 0 11-2 0v-3a2 2 0 00-2-2H6a1 1 0 000 2h2v5a4 4 0 01-4-4v-7z"
-                clipRule="evenodd"
-              />
-            </svg>
             <span className="text-lg font-semibold">{totalQuestions} вопросов</span>
           </div>
         </div>
