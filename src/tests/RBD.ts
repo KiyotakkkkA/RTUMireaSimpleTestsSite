@@ -273,7 +273,7 @@ export const sqlQuizQuestions: QuizQuestion[] = [
       "Физически удаляет данные",
       "Реализуется через LEFT JOIN + IS NULL"
     ],
-    correctAnswers: [1, 3]
+    correctAnswers: [0, 1, 3]
   },
   {
     id: 20,
@@ -285,7 +285,7 @@ export const sqlQuizQuestions: QuizQuestion[] = [
       "UNION удаляет дубликаты",
       "UNION ALL сортирует автоматически"
     ],
-    correctAnswers: [0, 1, 2]
+    correctAnswers: [1, 2]
   },
   {
     id: 21,
