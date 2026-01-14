@@ -4,12 +4,14 @@ interface StartScreenProps {
   quizTitle: string;
   totalQuestions: number;
   onStart: () => void;
+  onOpenExpress: () => void;
 }
 
 export const StartScreen: React.FC<StartScreenProps> = ({
   quizTitle,
   totalQuestions,
   onStart,
+  onOpenExpress,
 }) => {
   return (
     <div className="w-full max-w-2xl space-y-8">
@@ -57,6 +59,13 @@ export const StartScreen: React.FC<StartScreenProps> = ({
           className="w-full py-4 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white font-bold text-lg rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
         >
           Начать тест
+        </button>
+
+        <button
+          onClick={onOpenExpress}
+          className="w-full py-3.5 bg-white text-indigo-700 font-bold rounded-xl border border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm"
+        >
+          Сгенерировать экспресс-тест
         </button>
       </div>
     </div>

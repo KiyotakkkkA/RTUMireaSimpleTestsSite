@@ -9,11 +9,13 @@ import { StorageService } from '../services/storage';
 import { SettingsPanel } from './SettingsPanel';
 import type { QuizSettings } from '../types/quiz';
 import { QuestionNavigator } from './QuestionNavigator';
+import { ExpressTestModal, type ExpressTestConfig } from './ExpressTestModal';
 
 export const QuizContainer: React.FC = () => {
   const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [checkGlow, setCheckGlow] = useState<'none' | 'correct' | 'wrong'>('none');
+  const [expressOpen, setExpressOpen] = useState(false);
 
   const selectedTest = useMemo(
     () => (selectedTestId ? TESTS.find((t) => t.id === selectedTestId) ?? null : null),
@@ -40,6 +42,8 @@ export const QuizContainer: React.FC = () => {
     currentQuestion,
     updateSettings,
     settings,
+    questions,
+    timeLeftSeconds,
   } = useQuiz(selectedTestId, selectedTest?.quiz.questions ?? []);
 
   const effectiveSettings: QuizSettings | null = settings;
@@ -90,6 +94,10 @@ export const QuizContainer: React.FC = () => {
               setSettingsOpen(false);
               startQuiz();
             }}
+            onOpenExpress={() => {
+              setSettingsOpen(false);
+              setExpressOpen(true);
+            }}
           />
         </div>
 
@@ -102,13 +110,51 @@ export const QuizContainer: React.FC = () => {
             onChange={(partial) => updateSettings(partial)}
           />
         ) : null}
+
+        <ExpressTestModal
+          open={expressOpen}
+          totalQuestions={selectedTest.quiz.questions.length}
+          onClose={() => setExpressOpen(false)}
+          onStart={(config: ExpressTestConfig) => {
+            const total = selectedTest.quiz.questions.length;
+            const count = Math.min(Math.max(1, config.questionCount), Math.max(1, total));
+            const passThreshold = Math.min(Math.max(1, config.passThreshold), count);
+
+            const ids = selectedTest.quiz.questions.map((q) => q.id);
+            for (let i = ids.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [ids[i], ids[j]] = [ids[j], ids[i]];
+            }
+            const questionIds = ids.slice(0, count);
+
+            const expressSettings: QuizSettings = {
+              passThreshold,
+              hintsEnabled: false,
+              checkAfterAnswer: false,
+              showIncorrectAtEnd: true,
+            };
+
+            const timeLimitSeconds = config.timeLimitEnabled
+              ? Math.max(60, Math.round(config.timeLimitMinutes * 60))
+              : undefined;
+
+            setExpressOpen(false);
+            setSettingsOpen(false);
+            startQuiz({
+              mode: 'express',
+              questionIds,
+              settings: expressSettings,
+              timeLimitSeconds,
+            });
+          }}
+        />
       </div>
     );
   }
 
   if (currentQuestion) {
-    const totalQuestions = selectedTest.quiz.questions.length;
-    const answeredFlags = selectedTest.quiz.questions.map((q) => {
+    const totalQuestions = questions.length;
+    const answeredFlags = questions.map((q) => {
       const a = session.userAnswers[q.id];
       return Boolean(a && a.length > 0);
     });
@@ -165,6 +211,7 @@ export const QuizContainer: React.FC = () => {
                   onFinish={finishQuiz}
                   settings={effectiveSettings}
                   onCheckGlowChange={setCheckGlow}
+                  timeLeftSeconds={timeLeftSeconds}
                 />
               </div>
             </div>

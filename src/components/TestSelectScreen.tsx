@@ -39,6 +39,19 @@ export const TestSelectScreen: React.FC<TestSelectScreenProps> = ({ tests, onSel
             </button>
           ))}
         </div>
+
+        <div className="relative overflow-hidden rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white shadow-lg">
+          <div className="absolute -top-12 -right-10 h-40 w-40 rounded-full bg-white/15 blur-2xl" />
+          <div className="absolute -bottom-16 -left-12 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+          <div className="relative p-5 md:p-6">
+            <div className="mt-3 text-xl md:text-2xl font-extrabold">
+              Удачи группам ИНБО-30-23 и ИНБО-31-23 на завтрашнем экзамене!
+            </div>
+            <div className="mt-1 text-white/90">
+              По предмету <span className="font-semibold">«Разработка баз данных»</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ interface QuestionProps {
   onFinish: () => void;
   settings: QuizSettings | null;
   onCheckGlowChange?: (state: 'none' | 'correct' | 'wrong') => void;
+  timeLeftSeconds?: number | null;
 }
 
 const BulbIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -47,6 +48,7 @@ export const Question: React.FC<QuestionProps> = ({
   onFinish,
   settings,
   onCheckGlowChange,
+  timeLeftSeconds,
 }) => {
   const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
   const isAnswered = userAnswer && userAnswer.length > 0;
@@ -67,6 +69,26 @@ export const Question: React.FC<QuestionProps> = ({
 
   const showHintButton = Boolean(settings?.hintsEnabled) && !isChecked;
   const isCheckAfterAnswer = Boolean(settings?.checkAfterAnswer);
+
+  const timePill = useMemo(() => {
+    if (typeof timeLeftSeconds !== 'number') return null;
+    const t = Math.max(0, Math.floor(timeLeftSeconds));
+    const m = Math.floor(t / 60);
+    const s = t % 60;
+    const urgent = t <= 60;
+    return (
+      <span
+        className={
+          `inline-flex items-center justify-center rounded-lg border px-2.5 py-1 text-xs font-semibold ` +
+          (urgent
+            ? 'border-rose-200 bg-rose-50 text-rose-800'
+            : 'border-indigo-200 bg-indigo-50 text-indigo-800')
+        }
+      >
+        Осталось {m}:{s.toString().padStart(2, '0')}
+      </span>
+    );
+  }, [timeLeftSeconds]);
 
   const handleNext = () => {
     if (!isAnswered) return;
@@ -95,7 +117,10 @@ export const Question: React.FC<QuestionProps> = ({
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-gray-600">
           <span>Вопрос {currentQuestionIndex + 1} из {totalQuestions}</span>
-          <span>{Math.round(((currentQuestionIndex + 1) / totalQuestions) * 100)}%</span>
+          <span className="inline-flex items-center gap-3">
+            {timePill}
+            <span>{Math.round(((currentQuestionIndex + 1) / totalQuestions) * 100)}%</span>
+          </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div

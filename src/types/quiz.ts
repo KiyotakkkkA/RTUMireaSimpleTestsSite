@@ -5,6 +5,9 @@ export interface QuizSession {
   startTime: number;
   endTime?: number;
   settings?: QuizSettings;
+  mode?: 'normal' | 'express';
+  questionIds?: number[];
+  timeLimitSeconds?: number;
 }
 
 export interface QuizSettings {
