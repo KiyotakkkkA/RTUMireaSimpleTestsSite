@@ -18,17 +18,45 @@ export const Matching: React.FC<MatchingProps> = ({
   checkedState = 'none',
   disabled = false,
 }) => {
-  const handleMatchChange = (term: string, meaningIndex: number) => {
-    if (disabled) return;
-    const matchString = `${term}${meaningIndex}`;
-    const newAnswer = userAnswer.filter((pair) => !pair.startsWith(term));
-    newAnswer.push(matchString);
-    onAnswerChange(newAnswer);
+  const usedMeaningByTerm = React.useMemo(() => {
+    const map = new Map<string, number>();
+    userAnswer.forEach((pair) => {
+      const termKey = pair.substring(0, 1);
+      const meaningIndex = Number(pair.substring(1));
+      if (!Number.isNaN(meaningIndex) && termKey) {
+        map.set(termKey, meaningIndex);
+      }
+    });
+    return map;
+  }, [userAnswer]);
+
+  const getSelectedTermForMeaning = (meaningIndex: number): string => {
+    const match = userAnswer.find((pair) => Number(pair.substring(1)) === meaningIndex);
+    return match ? match.substring(0, 1) : '';
   };
 
-  const getSelectedMeaning = (term: string): number | null => {
-    const match = userAnswer.find((pair) => pair.startsWith(term));
-    return match ? parseInt(match.substring(1)) : null;
+  const handleMatchChange = (meaningIndex: number, nextTerm: string) => {
+    if (disabled) return;
+
+    const next = userAnswer
+      // remove any existing assignment for this meaning
+      .filter((pair) => Number(pair.substring(1)) !== meaningIndex)
+      // remove any previous assignment for this term (unless clearing)
+      .filter((pair) => (nextTerm ? pair.substring(0, 1) !== nextTerm : true));
+
+    // If user picked the placeholder (empty), just clear the row without nuking other answers.
+    if (nextTerm) {
+      next.push(`${nextTerm}${meaningIndex}`);
+    }
+
+    // Keep deterministic ordering to avoid UI flicker.
+    next.sort((a, b) => {
+      const ai = Number(a.substring(1));
+      const bi = Number(b.substring(1));
+      return ai - bi;
+    });
+
+    onAnswerChange(next);
   };
 
   const correctByMeaningIndex: Record<number, string> = React.useMemo(() => {
@@ -61,11 +89,8 @@ export const Matching: React.FC<MatchingProps> = ({
           <h4 className="font-semibold text-gray-700">Определения</h4>
           <div className="space-y-3">
             {Object.entries(question.meanings).map(([index, meaning]) => {
-              const selectedTerm = Object.keys(question.terms).find(
-                (term) => getSelectedMeaning(term) === parseInt(index)
-              );
-
               const idx = parseInt(index);
+              const selectedTerm = getSelectedTermForMeaning(idx);
               const correctTerm = correctByMeaningIndex[idx];
               const isRowCorrect = selectedTerm && correctTerm ? selectedTerm === correctTerm : false;
               const showWrong = checkedState === 'wrong' && Boolean(selectedTerm) && !isRowCorrect;
@@ -86,8 +111,8 @@ export const Matching: React.FC<MatchingProps> = ({
                 >
                   <p className="text-sm text-green-700 mb-2">{meaning}</p>
                   <select
-                    value={selectedTerm || ''}
-                    onChange={(e) => handleMatchChange(e.target.value, parseInt(index))}
+                    value={selectedTerm}
+                    onChange={(e) => handleMatchChange(idx, e.target.value)}
                     disabled={disabled}
                     className={
                       `w-full px-3 py-2 rounded bg-white text-sm focus:outline-none ` +
@@ -103,7 +128,11 @@ export const Matching: React.FC<MatchingProps> = ({
                   >
                     <option value="">Выберите термин...</option>
                     {Object.keys(question.terms).map((term) => (
-                      <option key={term} value={term}>
+                      <option
+                        key={term}
+                        value={term}
+                        disabled={usedMeaningByTerm.has(term) && usedMeaningByTerm.get(term) !== idx}
+                      >
                         {term}
                       </option>
                     ))}
