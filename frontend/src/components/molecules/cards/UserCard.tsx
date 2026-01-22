@@ -17,7 +17,7 @@ export type UserCardProps = {
   isRankHigher?: boolean;
   canDelete: boolean;
   isDeleting?: boolean;
-  onDelete: (userId: number) => Promise<void>;
+  onRequestDelete: (user: User) => void;
   onSaveRoles: (userId: number, roles: string[]) => Promise<void>;
   onSavePermissions: (userId: number, perms: string[]) => Promise<void>;
   canAssignPermissions: boolean;
@@ -34,7 +34,7 @@ export const UserCard = ({
   isRankHigher,
   canDelete,
   isDeleting,
-  onDelete,
+  onRequestDelete,
   onSaveRoles,
   onSavePermissions,
   canAssignPermissions,
@@ -86,8 +86,7 @@ export const UserCard = ({
                     className="py-1 px-3 text-sm whitespace-nowrap"
                     disabled={isDeleting}
                     onClick={async () => {
-                      if (!window.confirm('Удалить пользователя?')) return;
-                      await onDelete(user.id);
+                      onRequestDelete(user);
                     }}
                   >
                     <span className="inline-flex items-center gap-2">
@@ -104,8 +103,13 @@ export const UserCard = ({
         )}
       </div>
 
-      {isOpen && (
-        <div className="mt-5 border-t border-slate-100 pt-5">
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-out ${
+          isOpen ? 'max-h-[1400px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+        aria-hidden={!isOpen}
+      >
+        <div className={`mt-5 border-t border-slate-100 pt-5 transition-transform duration-300 ${isOpen ? 'translate-y-0' : '-translate-y-2'}`}>
           <UserRolesForm
             user={user}
             roles={roles}
@@ -119,7 +123,7 @@ export const UserCard = ({
             canAssignPermissions={canAssignPermissions}
           />
         </div>
-      )}
+      </div>
     </div>
   );
 };

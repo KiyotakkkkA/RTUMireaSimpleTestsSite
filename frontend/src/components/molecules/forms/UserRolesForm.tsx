@@ -66,7 +66,7 @@ export const UserRolesForm = ({
 
   return (
     <div className="flex flex-col gap-5">
-        <div>
+        <div className='px-2'>
             <div className="text-xs uppercase text-slate-400">Роли</div>
             <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {roleOptions.map((role) => {
@@ -117,7 +117,7 @@ export const UserRolesForm = ({
 
         {
             authStore.hasPermission('assign permissions') && (
-                <div>
+                <div className='p-2'>
                     <div className="text-xs uppercase text-slate-400">Права</div>
                     <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {permOptions.map((perm) => {

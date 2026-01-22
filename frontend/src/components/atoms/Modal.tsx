@@ -17,7 +17,7 @@ const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: 
 
     return createPortal(
         <div
-            className={`fixed inset-0 z-40 flex items-center justify-center px-4 ${open ? "pointer-events-auto" : "pointer-events-none"}`}
+            className={`fixed inset-0 z-40 flex items-center justify-center px-4 py-6 sm:py-8 overflow-y-auto ${open ? "pointer-events-auto" : "pointer-events-none"}`}
             aria-hidden={!open}
         >
             <div
@@ -29,7 +29,7 @@ const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: 
             <div
                 role="dialog"
                 aria-modal="true"
-                className={`relative w-full max-w-lg rounded-lg bg-white shadow-2xl transition-all duration-300 ${
+                className={`relative w-full max-w-lg max-h-[calc(100dvh-3rem)] rounded-lg bg-white shadow-2xl transition-all duration-300 flex flex-col ${
                     open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
                 }`}
             >
@@ -46,7 +46,7 @@ const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: 
                         </button>
                     </div>
                 </div>
-                <div className="py-2 px-4">{children}</div>
+                <div className="py-2 px-4 min-h-0 overflow-y-auto">{children}</div>
             </div>
         </div>,
         document.body

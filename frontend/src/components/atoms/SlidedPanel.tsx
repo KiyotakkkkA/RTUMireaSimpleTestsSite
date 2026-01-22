@@ -27,7 +27,7 @@ const SlidedPanel = ({ open, onClose, title, children, outsideClickClosing = fal
                 onClick={outsideClickClosing ? onClose : undefined}
             />
             <aside
-                className={`absolute right-0 top-0 h-full min-w-72 bg-white shadow-2xl transition-transform duration-300 ${
+                className={`absolute right-0 top-0 h-[100dvh] min-w-72 bg-white shadow-2xl transition-transform duration-300 flex flex-col ${
                     open ? "translate-x-0" : "translate-x-full"
                 }`}
             >
@@ -44,7 +44,7 @@ const SlidedPanel = ({ open, onClose, title, children, outsideClickClosing = fal
                         <Icon icon="mdi:close" className="h-7 w-7" />
                     </button>
                 </div>
-                <div className="px-4 py-4">{children}</div>
+                <div className="px-4 py-4 flex-1 min-h-0 overflow-y-auto">{children}</div>
             </aside>
         </div>,
         document.body

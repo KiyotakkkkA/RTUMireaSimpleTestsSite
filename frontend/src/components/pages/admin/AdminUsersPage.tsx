@@ -11,6 +11,7 @@ import { useToasts } from '../../../hooks/useToasts';
 
 export const AdminUsersPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<null | { id: number; name: string; email: string }>(null);
   const { toast } = useToasts();
   const {
     users,
@@ -72,6 +73,16 @@ export const AdminUsersPage = () => {
     } catch (error: any) {
       toast.danger(error?.response?.data?.message || 'Не удалось удалить пользователя');
     }
+  };
+
+  const handleRequestDelete = (user: { id: number; name: string; email: string }) => {
+    setDeleteTarget(user);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    await handleDeleteUser(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   const handleCreateUser = async (payload: {
@@ -164,7 +175,7 @@ export const AdminUsersPage = () => {
             isRankHigher={actorRank > targetRank}
             canDelete={canDelete}
             isDeleting={Boolean(deletingIds[user.id])}
-            onDelete={handleDeleteUser}
+            onRequestDelete={handleRequestDelete}
             onSaveRoles={handleSaveRoles}
             onSavePermissions={handleSavePermissions}
             canAssignPermissions={canAssignPermissions}
@@ -172,6 +183,30 @@ export const AdminUsersPage = () => {
           );
         })}
       </div>
+      <Modal
+        open={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        title={<h3 className="text-lg font-semibold text-slate-800">Подтвердите удаление</h3>}
+        outsideClickClosing
+      >
+        <div className="space-y-4 mb-2">
+          <p className="text-sm text-slate-600">
+            Удалить пользователя{' '}
+            <span className="font-semibold text-slate-800">{deleteTarget?.name}</span> ({deleteTarget?.email})?
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button secondary className='flex-1 p-2' onClick={() => setDeleteTarget(null)}>
+              Отмена
+            </Button>
+            <Button danger className='p-2' onClick={handleConfirmDelete} disabled={deleteTarget ? Boolean(deletingIds[deleteTarget.id]) : false}>
+              <span className="inline-flex items-center gap-2">
+                {deleteTarget && deletingIds[deleteTarget.id] && <Spinner className="h-4 w-4" />}
+                Удалить
+              </span>
+            </Button>
+          </div>
+        </div>
+      </Modal>
       <Modal
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
