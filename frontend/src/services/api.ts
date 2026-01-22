@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AuthStorage } from './authStorage';
 
-const baseURL = (process.env.APP_HOSTNAME && process.env.APP_PORT) ? `http://${process.env.APP_HOSTNAME}:${process.env.APP_PORT}/api` : 'http://localhost:8000/api';
+const baseURL = process.env.REACT_APP_BACKEND_API_HOST || 'http://localhost:8080/api';
 
 export const api = axios.create({
   baseURL,

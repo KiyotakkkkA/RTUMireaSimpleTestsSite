@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { observer } from "mobx-react-lite";
 
-import { Button, InputSmall } from "../../atoms";
+import type React from "react";
+import { Button, InputSmall, Spinner } from "../../atoms";
+import { useToasts } from "../../../hooks/useToasts";
 import { authStore } from "../../../stores/authStore";
 
 const registerSchema = z.object({
@@ -16,16 +18,46 @@ const registerSchema = z.object({
     path: ['confirmPassword'],
 });
 
-export const RegisterForm = observer(() => {
+export type RegisterFormPayload = {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+};
+
+type RegisterFormProps = {
+    onSubmit?: (payload: RegisterFormPayload) => Promise<boolean | void>;
+    onSuccess?: () => void;
+    submitLabel?: string;
+    title?: string;
+    subtitle?: string;
+    className?: string;
+    extraContent?: React.ReactNode;
+    isLoading?: boolean;
+};
+
+export const RegisterForm = observer(({
+    onSubmit,
+    onSuccess,
+    submitLabel = 'Регистрация',
+    title,
+    subtitle,
+    className,
+    extraContent,
+    isLoading,
+}: RegisterFormProps) => {
     const navigate = useNavigate();
+    const { toast } = useToasts();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string }>({});
     const [formError, setFormError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event?: React.FormEvent) => {
+        event?.preventDefault();
         setFormError(null);
 
         const parsed = registerSchema.safeParse({ name, email, password, confirmPassword });
@@ -40,20 +72,48 @@ export const RegisterForm = observer(() => {
         }
 
         setErrors({});
+        const payload = { name, email, password, confirmPassword };
+
+        if (onSubmit) {
+            try {
+                setIsSubmitting(true);
+                const result = await onSubmit(payload);
+                if (result === false) {
+                    setFormError('Не удалось зарегистрироваться');
+                    toast.danger('Не удалось выполнить действие');
+                    return;
+                }
+                onSuccess?.();
+            } catch (error: any) {
+                setFormError(error?.message ?? 'Не удалось зарегистрироваться');
+                toast.danger(error?.message ?? 'Не удалось выполнить действие');
+            } finally {
+                setIsSubmitting(false);
+            }
+            return;
+        }
+
         const ok = await authStore.register(name, email, password, confirmPassword);
         if (ok) {
+            toast.success('Регистрация успешна');
             navigate('/', { replace: true });
             return;
         }
-        setFormError(authStore.error ?? 'Не удалось зарегистрироваться');
+        const message = authStore.error ?? 'Не удалось зарегистрироваться';
+        setFormError(message);
+        toast.danger(message);
     };
 
+    const busy = typeof isLoading === 'boolean' ? isLoading : (onSubmit ? isSubmitting : authStore.isLoading);
+
     return (
-        <form className="w-full max-w-md bg-white p-6 shadow-lg rounded-lg">
-            <div className="mb-6">
-                <h2 className="text-xl font-semibold text-slate-800">Создать аккаунт</h2>
-                <p className="text-sm text-slate-500">Зарегистрируйтесь за пару минут.</p>
-            </div>
+        <form className={className ?? "w-full max-w-md bg-white p-6 shadow-lg rounded-lg"} onSubmit={handleSubmit}>
+            { (title || subtitle) &&
+                <div className="mb-6">
+                    <h2 className="text-xl font-semibold text-slate-800">{title}</h2>
+                    <p className="text-sm text-slate-500">{subtitle}</p>
+                </div>
+            }
             <div className="flex flex-col gap-4">
                 <div>
                     {errors.name && (
@@ -116,14 +176,18 @@ export const RegisterForm = observer(() => {
                     />
                 </div>
             </div>
+            {extraContent}
             {formError && (
                 <div className="mt-4 rounded-md bg-rose-50 px-3 py-2 text-xs text-rose-700">
                     {formError}
                 </div>
             )}
             <div className="mt-6 flex items-center justify-between">
-                <Button primary className="flex-1 px-5 py-2 text-sm font-medium" onClick={() => {handleSubmit()}} disabled={authStore.isLoading}>
-                    Регистрация
+                <Button primary className="flex-1 px-5 py-2 text-sm font-medium" type="submit" disabled={busy}>
+                    <span className="inline-flex items-center justify-center gap-2">
+                        {busy && <Spinner className="h-4 w-4" />}
+                        {submitLabel}
+                    </span>
                 </Button>
             </div>
         </form>

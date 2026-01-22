@@ -6,3 +6,5 @@ export { Modal } from './Modal';
 export { SwitchRow } from './SwitchRow';
 export { InputSlider } from './InputSlider';
 export { InputCheckbox } from './InputCheckbox';
+export { Spinner } from './Spinner';
+export { Toast } from './Toast';

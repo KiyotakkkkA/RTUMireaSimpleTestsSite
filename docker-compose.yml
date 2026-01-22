@@ -1,0 +1,73 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: testix-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-testix}
+      MYSQL_USER: ${DB_USERNAME:-testix}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-testix}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-testix}
+    ports:
+      - "${DB_PORT_FROM:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: testix-backend
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE:-testix}
+      DB_USERNAME: ${DB_USERNAME:-testix}
+      DB_PASSWORD: ${DB_PASSWORD:-testix}
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:alpine
+    container_name: testix-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT_FROM:-8080}:${NGINX_PORT_TO:-80}"
+    volumes:
+      - ./backend:/var/www/backend
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+      args:
+        NODE_VERSION: ${NODE_VERSION:-23.1-alpine}
+    container_name: testix-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT_FROM:-3000}:3000"
+    environment:
+      REACT_APP_BACKEND_API_HOST: "${REACT_APP_BACKEND_API_HOST}"
+      REACT_APP_OLLAMA_BASE_URL: "${REACT_APP_OLLAMA_BASE_URL}"
+      REACT_APP_OLLAMA_MODEL: "${REACT_APP_OLLAMA_MODEL}"
+      REACT_APP_OLLAMA_TOKEN: "${REACT_APP_OLLAMA_TOKEN}"
+      REACT_APP_FULL_ANSWER_CORRECT_FROM_PERCENT: "${REACT_APP_FULL_ANSWER_CORRECT_FROM_PERCENT}"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+      WDS_SOCKET_PORT: "3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  mysql-data:

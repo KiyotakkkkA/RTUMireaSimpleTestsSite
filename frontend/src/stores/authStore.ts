@@ -33,6 +33,14 @@ export class AuthStore {
     AuthStorage.clear();
   }
 
+  hasRole(role: string): boolean {
+    return this.user?.roles.includes(role) ?? false;
+  }
+
+  hasPermission(permission: string): boolean {
+    return this.user?.perms.includes(permission) ?? false;
+  }
+
   async init(): Promise<void> {
     if (!this.token) return;
     try {

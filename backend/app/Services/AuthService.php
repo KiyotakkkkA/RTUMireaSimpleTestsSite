@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 class AuthService
 {
@@ -23,10 +24,14 @@ class AuthService
             'password' => Hash::make($data['password']),
         ]);
 
+        if (Role::where('name', 'user')->exists()) {
+            $user->assignRole('user');
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => $this->formatUser($user),
             'token' => $token,
             'token_type' => 'Bearer',
         ];
@@ -45,15 +50,20 @@ class AuthService
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => $this->formatUser($user),
             'token' => $token,
             'token_type' => 'Bearer',
         ];
     }
 
-    public function getCurrentUser()
+    public function getCurrentUser(): ?array
     {
-        return Auth::user();
+        $user = Auth::user();
+        if (!$user) {
+            return null;
+        }
+
+        return $this->formatUser($user);
     }
 
     public function logout(): bool
@@ -64,5 +74,19 @@ class AuthService
             return true;
         }
         return false;
+    }
+
+    private function formatUser(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'email_verified_at' => $user->email_verified_at,
+            'roles' => $user->getRoleNames()->values()->all(),
+            'perms' => $user->getAllPermissions()->pluck('name')->values()->all(),
+            'created_at' => $user->created_at,
+            'updated_at' => $user->updated_at,
+        ];
     }
 }

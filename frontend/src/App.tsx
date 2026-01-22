@@ -9,6 +9,8 @@ import { TestsListPage } from "./pages/test/TestsListPage";
 import { TestStartPage } from "./pages/test/TestStartPage";
 import { TestPage } from "./pages/test/TestPage";
 import { TestResultsPage } from "./pages/test/TestResultsPage";
+import { AdminLayout } from "./pages/admin/AdminLayout";
+import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
 
 import { StorageService } from "./services/storage";
 import { authStore } from "./stores/authStore";
@@ -37,10 +39,10 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-100 flex flex-col">
+      <div className="min-h-screen overflow-auto bg-slate-100 flex flex-col">
         <TestSessionGuard />
         <Header />
-        <main className="flex flex-1 items-center justify-center p-6">
+        <main className="flex flex-1 w-full p-6">
           <Routes>
             <Route path="/" element={<TestsListPage />} />
             <Route path="/login" element={<LoginPage />} />
@@ -48,6 +50,10 @@ function App() {
             <Route path="/tests/:testId/start" element={<TestStartPage />} />
             <Route path="/tests/:testId/results" element={<TestResultsPage />} />
             <Route path="/tests/:testId" element={<TestPage />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminUsersPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
+            </Route>
           </Routes>
         </main>
       </div>

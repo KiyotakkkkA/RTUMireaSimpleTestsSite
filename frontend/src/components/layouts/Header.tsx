@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 import { Button, SlidedPanel } from "../atoms"
 import { authStore } from "../../stores/authStore";
+import { useToasts } from "../../hooks/useToasts";
 
 
 const RightPart = observer(() => {
+    const { toast } = useToasts();
     if (authStore.isAuthorized) {
         return (
             <div className="hidden items-center gap-4 md:flex">
                 <span className="text-sm text-slate-600">
                     {authStore.user?.name ?? 'Пользователь'}
                 </span>
-                <Button onClick={() => authStore.logout()} secondary className="py-2 px-3">
+                { authStore.hasPermission('view admin panel') && (
+                    <Button to="/admin/users" secondary className="py-2 px-3">Админ-панель</Button>
+                )}
+                <Button danger onClick={async () => {
+                    await authStore.logout();
+                    toast.info('Вы вышли из аккаунта');
+                }} className="py-2 px-3">
                     Выйти
                 </Button>
             </div>
@@ -29,7 +37,7 @@ const RightPart = observer(() => {
     )
 });
 
-const LeftPart = () => {
+const LeftPart = memo(() => {
 
     const navigate = useNavigate();
 
@@ -43,9 +51,52 @@ const LeftPart = () => {
             </div>
         </div>
     )
-}
+})
 
-export const Header = observer(() => {
+const MobileNav = observer(({ onClose }: { onClose: () => void }) => {
+    const { toast } = useToasts();
+    return (
+        <nav className="flex flex-col gap-3">
+            {authStore.isAuthorized ? (
+                <div className="flex flex-col gap-4">
+                    { authStore.hasPermission('view admin panel') && (
+                        <Button secondary to="/admin/users" className="py-2 px-3 text-center" onClick={onClose}>Админ-панель</Button>
+                    )}
+                    <Button
+                        onClick={async () => {
+                            await authStore.logout();
+                            toast.info('Вы вышли из аккаунта');
+                            onClose();
+                        }}
+                        danger
+                        className="py-2 px-3"
+                    >
+                        Выйти
+                    </Button>
+                </div>
+            ) : (
+                <>
+                    <Link
+                        to="/login"
+                        className="rounded-md px-2 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                        onClick={onClose}
+                    >
+                        Войти
+                    </Link>
+                    <Link
+                        to="/register"
+                        className="rounded-md px-2 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
+                        onClick={onClose}
+                    >
+                        Регистрация
+                    </Link>
+                </>
+            )}
+        </nav>
+    );
+});
+
+export const Header = () => {
     const [isOpenSlided, setIsOpenSlided] = useState(false);
 
     return (
@@ -68,38 +119,8 @@ export const Header = observer(() => {
                     Навигация
                 </h2>
             }>
-                <nav className="flex flex-col gap-3">
-                    {authStore.isAuthorized ? (
-                        <Button
-                            onClick={() => {
-                                authStore.logout();
-                                setIsOpenSlided(false);
-                            }}
-                            secondary
-                            className="py-2 px-3"
-                        >
-                            Выйти
-                        </Button>
-                    ) : (
-                        <>
-                            <Link
-                                to="/login"
-                                className="rounded-md px-2 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
-                                onClick={() => setIsOpenSlided(false)}
-                            >
-                                Войти
-                            </Link>
-                            <Link
-                                to="/register"
-                                className="rounded-md px-2 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-indigo-600"
-                                onClick={() => setIsOpenSlided(false)}
-                            >
-                                Регистрация
-                            </Link>
-                        </>
-                    )}
-                </nav>
+                <MobileNav onClose={() => setIsOpenSlided(false)} />
             </SlidedPanel>
         </header>
     )
-})
+}

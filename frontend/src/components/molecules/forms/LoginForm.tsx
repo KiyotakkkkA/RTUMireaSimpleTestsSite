@@ -5,6 +5,7 @@ import { z } from "zod";
 import { observer } from "mobx-react-lite";
 
 import { Button, InputSmall } from "../../atoms";
+import { useToasts } from "../../../hooks/useToasts";
 import { authStore } from "../../../stores/authStore";
 
 const loginSchema = z.object({
@@ -13,6 +14,7 @@ const loginSchema = z.object({
 });
 export const LoginForm = observer(() => {
     const navigate = useNavigate();
+    const { toast } = useToasts();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
@@ -36,10 +38,13 @@ export const LoginForm = observer(() => {
         setErrors({});
         const ok = await authStore.login(email, password);
         if (ok) {
+            toast.success('Вы вошли в систему');
             navigate('/', { replace: true });
             return;
         }
-        setFormError(authStore.error ?? 'Не удалось войти');
+        const message = authStore.error ?? 'Не удалось войти';
+        setFormError(message);
+        toast.danger(message);
     };
 
     return (
