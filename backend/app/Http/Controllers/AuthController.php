@@ -28,19 +28,19 @@ class AuthController extends Controller
             $result = $this->authService->register($validated);
 
             return response([
-                'message' => 'User успешно зарегистрирован',
+                'message' => 'Пользователь успешно зарегистрирован',
                 'user' => $result['user'],
                 'token' => $result['token'],
                 'token_type' => $result['token_type'],
             ], 201);
         } catch (ValidationException $e) {
             return response([
-                'message' => 'Validation failed',
+                'message' => 'Некорректные данные',
                 'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response([
-                'message' => 'Registration failed',
+                'message' => 'Ошибка регистрации: ' . $e->getMessage(),
                 'error' => $e->getMessage(),
             ], 500);
         }
@@ -64,12 +64,12 @@ class AuthController extends Controller
             ], 200);
         } catch (ValidationException $e) {
             return response([
-                'message' => 'Login failed',
+                'message' => 'Неправильный логин или пароль',
                 'errors' => $e->errors(),
             ], 401);
         } catch (\Exception $e) {
             return response([
-                'message' => 'Login error',
+                'message' => 'Ошибка авторизации: ' . $e->getMessage(),
                 'error' => $e->getMessage(),
             ], 500);
         }
