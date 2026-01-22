@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useTest } from '../../hooks/useTest';
-import { TESTS } from '../../tests';
+import { useTest } from '../../../hooks/useTest';
+import { TESTS } from '../../../tests';
 
 export const TestResultsPage = () => {
 

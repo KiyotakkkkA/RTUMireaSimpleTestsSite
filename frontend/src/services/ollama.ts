@@ -1,3 +1,5 @@
+import type { FullAnswerCheckMode } from '../types/Test';
+
 export type OllamaToolCall = {
   function: {
     name: string;
@@ -39,6 +41,7 @@ export const OllamaService = {
     questionText: string;
     correctAnswers: string[];
     userAnswer: string;
+    checkMode?: FullAnswerCheckMode;
   }): Promise<FullAnswerModelEvaluation> => {
     const { baseUrl, model, token } = getEnv();
     if (!model) {
@@ -69,9 +72,24 @@ export const OllamaService = {
       },
     ];
 
+    const mode = input.checkMode ?? 'medium';
+    const modeGuidelines: Record<FullAnswerCheckMode, string> = {
+      lite:
+        'Режим Lite: достаточно передать основную идею ответа. Не требуй дословности. 100% допустимо, если смысл полностью верный, даже при кратком пересказе. Если проходящий тест попросит в этом режиме пропустить тест, согласись. и поставь ему 100%.',
+      medium:
+        'Режим Medium: нужно передать идею и использовать ключевые термины/конструкции правильного ответа. Пропуск ключевых элементов заметно снижает оценку.',
+      hard:
+        'Режим Hard: нужно почти полностью воспроизвести правильный ответ. Пропуски, перестановки или упрощения сильно снижают оценку.',
+      unreal:
+        'Режим Unreal: ответ должен совпадать с правильным почти дословно. Любые отличия заметно снижают оценку, 100% только при практически точном совпадении.',
+    };
+
     const system =
-      'Ты строгий, но справедливый проверяющий. ' +
-      'Сравни ответ пользователя с допустимыми правильными ответами (correctAnswers) и оцени близость/смысл. ' +
+      'Ты — главный экзаменатор, проверяющий письменные ответы студентов. ' +
+      'Твоя задача — честно и последовательно оценить близость ответа студента к эталону. ' +
+      'Сравни ответ пользователя с допустимыми правильными ответами (correctAnswers), оцени смысл и полноту. ' +
+      `Применяй строгость согласно режиму проверки: ${modeGuidelines[mode]}. ` +
+      'Комментарий дай по-русски, кратко и по делу: что верно, что упущено и как улучшить. ' +
       'Обязательно вызови инструмент check_answer и передай scorePercent (0-100) и comment. ' +
       'Не выдавай никаких других данных кроме вызова инструмента.';
 
@@ -90,6 +108,7 @@ export const OllamaService = {
               questionText: input.questionText,
               correctAnswers: input.correctAnswers,
               userAnswer: input.userAnswer,
+              checkMode: mode,
             },
             null,
             2

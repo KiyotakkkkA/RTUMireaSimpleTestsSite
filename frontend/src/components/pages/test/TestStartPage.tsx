@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
-import { Button, InputSlider, SlidedPanel, SwitchRow } from '../../components/atoms';
-import { ExpressTestModal } from '../../components/molecules/modals';
-import { useTest } from '../../hooks/useTest';
-import { TESTS } from '../../tests';
+import { Button, InputSlider, SlidedPanel, SwitchRow } from '../../atoms';
+import { ExpressTestModal } from '../../molecules/modals';
+import { useTest } from '../../../hooks/useTest';
+import { TESTS } from '../../../tests';
 
 export const TestStartPage: React.FC = () => {
 
@@ -16,6 +16,13 @@ export const TestStartPage: React.FC = () => {
 
     const testId = useParams<{ testId: string }>().testId;
     const test = TESTS.find(t => t.uuid === testId);
+
+    const fullAnswerModes = [
+        { value: 'lite', title: 'Lite', description: 'Достаточно передать суть ответа' },
+        { value: 'medium', title: 'Medium', description: 'Нужны ключевые термины и конструкции' },
+        { value: 'hard', title: 'Hard', description: 'Почти полное воспроизведение ответа' },
+        { value: 'unreal', title: 'Unreal', description: 'Практически дословное совпадение' },
+    ] as const;
 
     const {
         settings,
@@ -148,6 +155,32 @@ export const TestStartPage: React.FC = () => {
                         checked={settings.checkAfterAnswer}
                         onChange={(checked) => updateSettings({ checkAfterAnswer: checked })}
                     />
+
+                    <div className="border-t border-gray-200" />
+
+                    <div className="py-4">
+                        <div className="font-semibold text-gray-800">Режим проверки для полного ответа</div>
+                        <div className="text-sm text-gray-600 mt-1">Определяет строгость оценки AI</div>
+
+                        <div className="mt-3 grid grid-cols-2 gap-3">
+                            {fullAnswerModes.map((mode) => (
+                                <button
+                                    key={mode.value}
+                                    type="button"
+                                    onClick={() => updateSettings({ fullAnswerCheckMode: mode.value })}
+                                    className={
+                                        `rounded-xl border px-4 py-3 text-left transition-colors ` +
+                                        (settings.fullAnswerCheckMode === mode.value
+                                            ? 'border-indigo-200 bg-indigo-50'
+                                            : 'border-gray-200 bg-white hover:bg-gray-50')
+                                    }
+                                >
+                                    <div className="font-semibold text-gray-900">{mode.title}</div>
+                                    <div className="text-sm text-gray-600 mt-1">{mode.description}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
                     <div className="border-t border-gray-200" />
 

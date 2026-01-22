@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button, InputSlider, Modal } from '../../atoms';
 import { useTest } from '../../../hooks/useTest';
-import { Test } from '../../../types/Test';
+import { Test, type FullAnswerCheckMode } from '../../../types/Test';
 
 export interface ExpressTestConfig {
   timeLimitEnabled: boolean;
   timeLimitMinutes: number;
   questionCount: number;
   passThreshold: number;
+  fullAnswerCheckMode: FullAnswerCheckMode;
 }
 
 interface ExpressTestModalProps {
@@ -38,6 +39,7 @@ export const ExpressTestModal = ({
   const [passThreshold, setPassThreshold] = useState(
     Math.min(Math.min(20, total), Math.ceil(Math.min(20, total) * 0.85))
   );
+  const [fullAnswerCheckMode, setFullAnswerCheckMode] = useState<FullAnswerCheckMode>('medium');
 
   const { startTest } = useTest(test.uuid, test.questions);
 
@@ -50,6 +52,7 @@ export const ExpressTestModal = ({
     setPassThreshold(Math.min(qc, Math.ceil(qc * 0.85)));
     setTimeLimitEnabled(false);
     setTimeLimitMinutes(20);
+    setFullAnswerCheckMode('medium');
   }, [open, total]);
 
   useEffect(() => {
@@ -75,6 +78,13 @@ export const ExpressTestModal = ({
     }
     return { questionIds: ids.slice(0, count), passThreshold: passThresholdClamped };
   }
+
+  const fullAnswerModes: { value: FullAnswerCheckMode; title: string; description: string }[] = [
+    { value: 'lite', title: 'Lite', description: 'Достаточно передать суть ответа' },
+    { value: 'medium', title: 'Medium', description: 'Нужны ключевые термины и конструкции' },
+    { value: 'hard', title: 'Hard', description: 'Почти полное воспроизведение ответа' },
+    { value: 'unreal', title: 'Unreal', description: 'Практически дословное совпадение' },
+  ];
 
   return (
     <Modal open={open} onClose={onClose} title={
@@ -180,6 +190,32 @@ export const ExpressTestModal = ({
             onChange={(value) => setPassThreshold(clampInt(value, 1, Math.max(1, questionCount)))}
           />
         </div>
+
+        <div className="border-t border-gray-200" />
+
+        <div>
+          <div className="font-semibold text-gray-800">Режим проверки для полного ответа</div>
+          <div className="text-sm text-gray-600 mt-1">Определяет строгость оценки AI</div>
+
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            {fullAnswerModes.map((mode) => (
+              <button
+                key={mode.value}
+                type="button"
+                onClick={() => setFullAnswerCheckMode(mode.value)}
+                className={
+                  `rounded-xl border px-4 py-3 text-left transition-colors ` +
+                  (fullAnswerCheckMode === mode.value
+                    ? 'border-indigo-200 bg-indigo-50'
+                    : 'border-gray-200 bg-white hover:bg-gray-50')
+                }
+              >
+                <div className="font-semibold text-gray-900">{mode.title}</div>
+                <div className="text-sm text-gray-600 mt-1">{mode.description}</div>
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="pt-4 pb-2 border-t border-gray-200 bg-white flex flex-col sm:flex-row gap-3 justify-end text-xl font-medium tracking-tight">
@@ -203,6 +239,7 @@ export const ExpressTestModal = ({
                 hintsEnabled: false,
                 checkAfterAnswer: false,
                 showIncorrectAtEnd: true,
+                fullAnswerCheckMode,
               }
             })
             navigate(`/tests/${test.uuid}`);

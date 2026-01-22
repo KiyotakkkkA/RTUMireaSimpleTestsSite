@@ -1,13 +1,13 @@
 import { useMemo, useState } from 'react';
 
-import { UserCard } from '../../components/molecules/cards';
-import { authStore } from '../../stores/authStore';
-import { PERMISSION_LABELS } from '../../data/admin';
-import { ROLE_RANKS } from '../../data/admin';
-import { Modal, Button, Spinner } from '../../components/atoms';
-import { RegisterForm } from '../../components/molecules/forms';
-import { useAdministrateUsers } from '../../hooks/admin/useAdministrateUsers';
-import { useToasts } from '../../hooks/useToasts';
+import { UserCard } from '../../molecules/cards';
+import { authStore } from '../../../stores/authStore';
+import { PERMISSION_LABELS } from '../../../data/admin';
+import { ROLE_RANKS } from '../../../data/admin';
+import { Modal, Button, Spinner } from '../../atoms';
+import { RegisterForm } from '../../molecules/forms';
+import { useAdministrateUsers } from '../../../hooks/admin/useAdministrateUsers';
+import { useToasts } from '../../../hooks/useToasts';
 
 export const AdminUsersPage = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

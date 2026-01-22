@@ -36,9 +36,21 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
     [session]
   );
 
+  const getDefaultSettings = useCallback((): TestSettings => {
+    const total = Math.max(1, questions.length);
+    return {
+      passThreshold: Math.min(total, Math.max(1, Math.ceil(total * 0.85))),
+      hintsEnabled: false,
+      checkAfterAnswer: false,
+      showIncorrectAtEnd: false,
+      fullAnswerCheckMode: 'medium',
+    };
+  }, [questions.length]);
+
   const evaluateAndStore = useCallback(
     async (question: TestQuestion, userAnswer: number[] | string[]): Promise<AnswerEvaluation> => {
-      const ev = await evaluateAnswer(question, userAnswer);
+      const activeSettings = session?.settings ?? settingsDraft ?? getDefaultSettings();
+      const ev = await evaluateAnswer(question, userAnswer, activeSettings);
 
       if (question.type === 'full_answer') {
         const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
@@ -52,7 +64,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
 
       return ev;
     },
-    [setAnswerEvaluation]
+    [session?.settings, settingsDraft, getDefaultSettings, setAnswerEvaluation]
   );
 
   useEffect(() => {
@@ -89,23 +101,13 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       .filter((q): q is TestQuestion => Boolean(q));
   }, [questions, session?.questionIds]);
 
-  const getDefaultSettings = useCallback((): TestSettings => {
-    const total = Math.max(1, questions.length);
-    return {
-      passThreshold: Math.min(total, Math.max(1, Math.ceil(total * 0.85))),
-      hintsEnabled: false,
-      checkAfterAnswer: false,
-      showIncorrectAtEnd: false,
-    };
-  }, [questions.length]);
-
   useEffect(() => {
     if (!testId) {
       setSettingsDraft(null);
       return;
     }
     if (session?.testId === testId && session.settings) {
-      setSettingsDraft(session.settings);
+      setSettingsDraft({ ...getDefaultSettings(), ...session.settings });
       return;
     }
     setSettingsDraft(getDefaultSettings());
@@ -121,7 +123,10 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
     setResult(null);
     StorageService.clearResult();
     const now = Date.now();
-    const settings = opts?.settings ?? settingsDraft ?? getDefaultSettings();
+    const settings = {
+      ...getDefaultSettings(),
+      ...(opts?.settings ?? settingsDraft ?? {}),
+    };
     const newSession: TestSession = {
       testId,
       currentQuestionIndex: 0,
@@ -145,7 +150,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
 
   const updateSettings = useCallback((partial: Partial<TestSettings>) => {
     const total = Math.max(1, questions.length);
-    const base = session?.settings ?? settingsDraft ?? getDefaultSettings();
+    const base = { ...getDefaultSettings(), ...(session?.settings ?? settingsDraft ?? {}) };
     const next: TestSettings = { ...base, ...partial };
 
     next.passThreshold = Math.min(total, Math.max(1, Math.round(next.passThreshold)));
@@ -253,7 +258,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       };
     });
 
-    const settings = session.settings ?? getDefaultSettings();
+    const settings = { ...getDefaultSettings(), ...(session.settings ?? {}) };
     const passThreshold = Math.min(
       activeQuestions.length,
       Math.max(1, Math.round(settings.passThreshold))
@@ -378,7 +383,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
     finishTest,
     resetTest,
     updateSettings,
-    settings: session?.settings ?? settingsDraft ?? getDefaultSettings(),
+    settings: { ...getDefaultSettings(), ...(session?.settings ?? settingsDraft ?? {}) },
     questions: activeQuestions,
     currentQuestion: session ? activeQuestions[session.currentQuestionIndex] : null,
     progress: session

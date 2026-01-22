@@ -29,18 +29,23 @@ const normalize = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
 export type QuestionTypeHandler<T extends TestQuestion = TestQuestion> = {
   type: T['type'];
   getLocalSettings?: (global: TestSettings | null) => Partial<TestSettings>;
-  evaluate: (question: T, userAnswer: AnswerValue) => Promise<AnswerEvaluation>;
+  evaluate: (question: T, userAnswer: AnswerValue, settings?: TestSettings | null) => Promise<AnswerEvaluation>;
   component?: React.ComponentType<any>;
 };
 
-const standardEvaluate = async (question: TestQuestion, userAnswer: AnswerValue): Promise<AnswerEvaluation> => {
+const standardEvaluate = async (
+  question: TestQuestion,
+  userAnswer: AnswerValue,
+  _settings?: TestSettings | null
+): Promise<AnswerEvaluation> => {
   const correct = TestService.isAnswerCorrect(question, userAnswer);
   return { correct, scorePercent: correct ? 100 : 0 };
 };
 
 const fullAnswerEvaluate = async (
   question: Extract<TestQuestion, { type: 'full_answer' }>,
-  userAnswer: AnswerValue
+  userAnswer: AnswerValue,
+  settings?: TestSettings | null
 ): Promise<AnswerEvaluation> => {
   const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
   const userText = String(ua[0] ?? '').trim();
@@ -58,6 +63,7 @@ const fullAnswerEvaluate = async (
       questionText: question.question,
       correctAnswers: question.correctAnswers,
       userAnswer: userText,
+      checkMode: settings?.fullAnswerCheckMode ?? 'medium',
     });
 
     const correct = ev.scorePercent >= FULL_ANSWER_CORRECT_FROM_PERCENT;
@@ -116,8 +122,12 @@ export const getEffectiveSettingsForQuestion = (
   return patch ? { ...global, ...patch } : global;
 };
 
-export const evaluateAnswer = async (question: TestQuestion, userAnswer: AnswerValue): Promise<AnswerEvaluation> => {
-  return QUESTION_TYPE_HANDLERS[question.type].evaluate(question as any, userAnswer);
+export const evaluateAnswer = async (
+  question: TestQuestion,
+  userAnswer: AnswerValue,
+  settings?: TestSettings | null
+): Promise<AnswerEvaluation> => {
+  return QUESTION_TYPE_HANDLERS[question.type].evaluate(question as any, userAnswer, settings);
 };
 
 export const resolveQuestionComponent = (question: TestQuestion): React.ComponentType<any> | undefined => {

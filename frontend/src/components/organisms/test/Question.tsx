@@ -177,6 +177,7 @@ export const Question: React.FC<QuestionProps> = ({
               onAnswerChange={onAnswerChange}
               revealCorrect={revealCorrect}
               evaluation={activeEvaluation}
+              fullAnswerCheckMode={settings?.fullAnswerCheckMode}
               checkedState={checkedState}
               disabled={isChecked}
             />

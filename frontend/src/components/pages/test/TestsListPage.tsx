@@ -1,5 +1,5 @@
-import { TESTS } from "../../tests"
-import { TestListElementCard } from "../../components/molecules/cards"
+import { TESTS } from "../../../tests"
+import { TestListElementCard } from "../../molecules/cards"
 
 export const TestsListPage = () => {
     return (

@@ -2,15 +2,15 @@ import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-ro
 import { useEffect } from "react";
 
 import { Header } from "./components/layouts";
-import { LoginPage } from "./pages/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
+import { LoginPage } from "./components/pages/LoginPage";
+import { RegisterPage } from "./components/pages/RegisterPage";
 
-import { TestsListPage } from "./pages/test/TestsListPage";
-import { TestStartPage } from "./pages/test/TestStartPage";
-import { TestPage } from "./pages/test/TestPage";
-import { TestResultsPage } from "./pages/test/TestResultsPage";
-import { AdminLayout } from "./pages/admin/AdminLayout";
-import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
+import { TestsListPage } from "./components/pages/test/TestsListPage";
+import { TestStartPage } from "./components/pages/test/TestStartPage";
+import { TestPage } from "./components/pages/test/TestPage";
+import { TestResultsPage } from "./components/pages/test/TestResultsPage";
+import { AdminLayout } from "./components/pages/admin/AdminLayout";
+import { AdminUsersPage } from "./components/pages/admin/AdminUsersPage";
 
 import { StorageService } from "./services/storage";
 import { authStore } from "./stores/authStore";
@@ -46,11 +46,11 @@ function App() {
             <div className="flex items-start gap-2 sm:items-center">
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/20 text-base">🚀</span>
               <div className="flex flex-col">
-                <span className="font-semibold">Мы переехали на новый VDS-хостинг! Спасибо что пользуетесь нашим сервисом.</span>
+                <span className="font-semibold">Мы обновились! Спасибо что пользуетесь нашим сервисом.</span>
               </div>
             </div>
             <div className="self-start rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-wide sm:self-auto">
-              Поздравляем!
+              ❤️ Спасибо! ❤️
             </div>
           </div>
         </div>

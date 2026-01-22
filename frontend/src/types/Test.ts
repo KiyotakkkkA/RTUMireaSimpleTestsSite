@@ -18,11 +18,14 @@ export interface TestSession {
   timeLimitSeconds?: number;
 }
 
+export type FullAnswerCheckMode = 'lite' | 'medium' | 'hard' | 'unreal';
+
 export interface TestSettings {
   passThreshold: number;
   hintsEnabled: boolean;
   checkAfterAnswer: boolean;
   showIncorrectAtEnd: boolean;
+  fullAnswerCheckMode: FullAnswerCheckMode;
 }
 
 export interface IncorrectReviewItem {

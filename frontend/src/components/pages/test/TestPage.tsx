@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import { useTest } from "../../hooks/useTest";
-import { TESTS } from "../../tests";
-import { QuestionNavigator } from "../../components/molecules/test";
-import { Question } from "../../components/organisms/test";
+import { useTest } from "../../../hooks/useTest";
+import { TESTS } from "../../../tests";
+import { QuestionNavigator } from "../../molecules/test";
+import { Question } from "../../organisms/test";
 
 export const TestPage = () => {
 

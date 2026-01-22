@@ -1,6 +1,6 @@
 import { InputBig } from '../../../atoms';
 
-import type { FullAnswerQuestion } from '../../../../types/Test';
+import type { FullAnswerCheckMode, FullAnswerQuestion } from '../../../../types/Test';
 
 export type FullAnswerEvaluationView = {
   scorePercent: number;
@@ -12,6 +12,7 @@ interface FullAnswerProps {
   userAnswer: string[] | undefined;
   onAnswerChange: (answer: string[]) => void;
   evaluation?: FullAnswerEvaluationView | null;
+  fullAnswerCheckMode?: FullAnswerCheckMode;
   checkedState?: 'none' | 'correct' | 'wrong';
   disabled?: boolean;
 }
@@ -21,10 +22,25 @@ export const FullAnswer = ({
   userAnswer = [],
   onAnswerChange,
   evaluation = null,
+  fullAnswerCheckMode = 'medium',
   checkedState = 'none',
   disabled = false,
 }: FullAnswerProps) => {
   const value = userAnswer[0] ?? '';
+
+  const modeLabels: Record<FullAnswerCheckMode, string> = {
+    lite: 'Lite',
+    medium: 'Medium',
+    hard: 'Hard',
+    unreal: 'Unreal',
+  };
+
+  const modeHints: Record<FullAnswerCheckMode, string> = {
+    lite: 'Достаточно передать суть ответа.',
+    medium: 'Нужны ключевые термины и конструкции.',
+    hard: 'Почти полное воспроизведение ответа.',
+    unreal: 'Практически дословное совпадение.',
+  };
 
   const baseBorder = 'border-gray-300 focus:border-indigo-500';
   const checkedBorder =
@@ -36,7 +52,13 @@ export const FullAnswer = ({
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-600">Введите полный ответ</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-sm text-gray-600">Введите полный ответ</p>
+        <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-800">
+          Режим проверки: {modeLabels[fullAnswerCheckMode]}
+        </span>
+        <span className="text-xs text-gray-500">{modeHints[fullAnswerCheckMode]}</span>
+      </div>
       <InputBig
         value={value}
         onChange={(e) => onAnswerChange([e.target.value])}
