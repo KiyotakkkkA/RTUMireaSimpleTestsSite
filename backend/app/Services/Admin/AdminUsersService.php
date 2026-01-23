@@ -3,8 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class AdminUsersService
@@ -42,7 +42,17 @@ class AdminUsersService
 
     public function listPermissions(): array
     {
-        return Permission::query()->orderBy('name')->pluck('name')->values()->all();
+        return Permission::query()
+            ->select(['name', 'description'])
+            ->orderBy('name')
+            ->get()
+            ->mapWithKeys(fn (Permission $perm) => [
+                $perm->name => [
+                    'name' => $perm->name,
+                    'description' => $perm->description,
+                ],
+            ])
+            ->all();
     }
 
     public function updateRoles(User $actor, User $target, array $roles): array
