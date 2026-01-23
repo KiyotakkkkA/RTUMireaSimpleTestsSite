@@ -63,8 +63,6 @@ services:
         NODE_VERSION: ${NODE_VERSION:-23.1-alpine}
     container_name: testix-frontend
     restart: unless-stopped
-    ports:
-      - "${FRONTEND_PORT_FROM:-3000}:3000"
     environment:
       REACT_APP_BACKEND_API_HOST: "${REACT_APP_BACKEND_API_HOST}"
       REACT_APP_OLLAMA_BASE_URL: "${REACT_APP_OLLAMA_BASE_URL}"
