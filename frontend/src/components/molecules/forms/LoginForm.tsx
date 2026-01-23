@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { observer } from "mobx-react-lite";
 
-import { Button, InputSmall } from "../../atoms";
+import { Button, InputSmall, Spinner } from "../../atoms";
 import { useToasts } from "../../../hooks/useToasts";
 import { authStore } from "../../../stores/authStore";
 
@@ -12,6 +12,7 @@ const loginSchema = z.object({
     email: z.string().email('Введите корректный email'),
     password: z.string().min(8, 'Пароль должен быть минимум 8 символов'),
 });
+
 export const LoginForm = observer(() => {
     const navigate = useNavigate();
     const { toast } = useToasts();
@@ -91,7 +92,8 @@ export const LoginForm = observer(() => {
                 </div>
             )}
             <div className="mt-6 flex items-center justify-between">
-                <Button primary className="flex-1 px-5 py-2 text-sm font-medium" type="submit" disabled={authStore.isLoading}>
+                <Button primary className="flex-1 px-5 py-2 text-sm font-medium flex items-center justify-center" type="submit" disabled={authStore.isLoading}>
+                    { authStore.isLoading && <Spinner className="h-4 w-4 mr-2" /> }
                     Войти
                 </Button>
             </div>

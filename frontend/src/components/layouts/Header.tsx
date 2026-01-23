@@ -10,6 +10,9 @@ import { useToasts } from "../../hooks/useToasts";
 
 const RightPart = observer(() => {
     const { toast } = useToasts();
+    const navigate = useNavigate();
+
+
     if (authStore.isAuthorized) {
         return (
             <div className="hidden items-center gap-4 md:flex">
@@ -22,6 +25,7 @@ const RightPart = observer(() => {
                 <Button danger onClick={async () => {
                     await authStore.logout();
                     toast.info('Вы вышли из аккаунта');
+                    navigate("/");
                 }} className="py-2 px-3">
                     Выйти
                 </Button>
@@ -55,6 +59,8 @@ const LeftPart = memo(() => {
 
 const MobileNav = observer(({ onClose }: { onClose: () => void }) => {
     const { toast } = useToasts();
+    const navigate = useNavigate();
+    
     return (
         <nav className="flex flex-col gap-3">
             {authStore.isAuthorized ? (
@@ -67,6 +73,7 @@ const MobileNav = observer(({ onClose }: { onClose: () => void }) => {
                             await authStore.logout();
                             toast.info('Вы вышли из аккаунта');
                             onClose();
+                            navigate("/");
                         }}
                         danger
                         className="py-2 px-3"

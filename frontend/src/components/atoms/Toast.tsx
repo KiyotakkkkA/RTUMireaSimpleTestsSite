@@ -57,7 +57,7 @@ export const Toast: React.FC<ToastProps> = ({ type, title, message, duration, is
 
   return (
     <div
-      className={`pointer-events-auto relative w-full max-w-sm rounded-xl border bg-white p-4 shadow-lg ring-1 transition-all duration-200 ease-out ${
+      className={`pointer-events-auto relative w-full max-w-sm rounded-lg border bg-white p-4 shadow-lg ring-1 transition-all duration-200 ease-out ${
         isVisible ? 'translate-x-0 opacity-100' : 'translate-x-6 opacity-0'
       } ${styles.ring}`}
       role="status"

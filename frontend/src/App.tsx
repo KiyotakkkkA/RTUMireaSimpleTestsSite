@@ -9,8 +9,10 @@ import { TestsListPage } from "./components/pages/test/TestsListPage";
 import { TestStartPage } from "./components/pages/test/TestStartPage";
 import { TestPage } from "./components/pages/test/TestPage";
 import { TestResultsPage } from "./components/pages/test/TestResultsPage";
+
 import { AdminLayout } from "./components/pages/admin/AdminLayout";
 import { AdminUsersPage } from "./components/pages/admin/AdminUsersPage";
+import { AdminAuditPage } from "./components/pages/admin/AdminAuditPage";
 
 import { StorageService } from "./services/storage";
 import { authStore } from "./stores/authStore";
@@ -66,6 +68,7 @@ function App() {
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminUsersPage />} />
               <Route path="users" element={<AdminUsersPage />} />
+              <Route path="audit" element={<AdminAuditPage />} />
             </Route>
           </Routes>
         </main>

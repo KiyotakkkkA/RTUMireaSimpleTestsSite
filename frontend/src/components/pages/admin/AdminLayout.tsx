@@ -36,6 +36,9 @@ export const AdminLayout = () => {
             <NavLink to="/admin/users" className={navItemClass}>
               Пользователи
             </NavLink>
+            <NavLink to="/admin/audit" className={navItemClass}>
+              Журнал аудита
+            </NavLink>
           </nav>
         </aside>
 
@@ -46,6 +49,9 @@ export const AdminLayout = () => {
                 <div className="text-xs uppercase tracking-wide text-slate-400 mb-4">Навигация</div>
                 <NavLink to="/admin/users" className={navItemClass}>
                   Пользователи
+                </NavLink>
+                <NavLink to="/admin/audit" className={navItemClass}>
+                  Журнал аудита
                 </NavLink>
               </div>
               <Outlet />
