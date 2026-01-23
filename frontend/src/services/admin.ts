@@ -1,30 +1,7 @@
 import { api } from './api';
+
 import type { User } from '../types/User';
-
-export type RoleOption = {
-  name: string;
-  permissions: string[];
-};
-
-export type AdminUsersResponse = {
-  users: User[];
-};
-
-export type AdminRolesResponse = {
-  roles: RoleOption[];
-};
-
-export type AdminPermissionsResponse = {
-  permissions: string[];
-};
-
-export type AdminCreateUserPayload = {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
-  role?: string | null;
-};
+import type { AdminCreateUserPayload, AdminPermissionsResponse, AdminRolesResponse, AdminUsersResponse } from '../types/Admin';
 
 export const AdminService = {
   getUsers: async (): Promise<AdminUsersResponse> => {

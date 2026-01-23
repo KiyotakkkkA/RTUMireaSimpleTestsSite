@@ -1,5 +1,5 @@
 import { TestService } from '../services/storage';
-import { OllamaService, type FullAnswerModelEvaluation } from '../services/ollama';
+import { OllamaService } from '../services/ollama';
 
 import {
   SingleChoice,
@@ -9,6 +9,7 @@ import {
 } from '../components/molecules/test/answering';
 
 import type { TestSettings, TestQuestion } from '../types/Test';
+import type { FullAnswerModelEvaluation } from '../types/AI';
 
 export type AnswerValue = number[] | string[];
 

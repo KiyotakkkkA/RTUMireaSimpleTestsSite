@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { AdminService, type RoleOption } from '../../services/admin';
+import { AdminService } from '../../services/admin';
+
 import type { User } from '../../types/User';
+import type { AdminPermissionsResponse, RoleOption } from '../../types/Admin';
 
 export type AdminCreateUserPayload = {
   name: string;
@@ -17,7 +19,7 @@ const getErrorMessage = (error: any, fallback: string) =>
 export const useAdministrateUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<RoleOption[]>([]);
-  const [permissions, setPermissions] = useState<string[]>([]);
+  const [permissions, setPermissions] = useState<AdminPermissionsResponse['permissions']>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);

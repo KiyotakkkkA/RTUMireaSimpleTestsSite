@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { InputCheckbox, Button, Spinner } from '../../atoms';
-
-import type { User } from '../../../types/User';
-import type { RoleOption } from '../../../services/admin';
 import { ROLE_RANKS } from '../../../data/admin';
 import { authStore } from '../../../stores/authStore';
+
+import type { User } from '../../../types/User';
+import type { AdminPermissionsResponse, RoleOption } from '../../../types/Admin';
 
 export type UserRolesFormProps = {
   user: User;
   roles: RoleOption[];
-  permissions: string[];
-  permissionLabels?: Record<string, string>;
+  permissions: AdminPermissionsResponse['permissions'];
   rolePermissionsMap: Record<string, string[]>;
   maxRoleRank: number;
   isSelf: boolean;
@@ -24,7 +23,6 @@ export const UserRolesForm = ({
   user,
   roles,
   permissions,
-  permissionLabels,
   rolePermissionsMap,
   maxRoleRank,
   isSelf,
@@ -38,7 +36,7 @@ export const UserRolesForm = ({
   const [savingPerms, setSavingPerms] = useState(false);
 
   const roleOptions = useMemo(() => roles.filter((role) => role?.name), [roles]);
-  const permOptions = useMemo(() => permissions.filter(Boolean), [permissions]);
+  const permOptions = useMemo(() => Object.keys(permissions).filter(Boolean), [permissions]);
 
   useEffect(() => {
     setSelectedRoles(user.roles ?? []);
@@ -122,18 +120,24 @@ export const UserRolesForm = ({
                     <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {permOptions.map((perm) => {
                             const disabled = !canAssignPermissions || isSelf;
-                            const label = permissionLabels?.[perm] ?? perm;
+                            const meta = permissions[perm];
+                            const label = meta?.description ?? '[ОШИБКА]';
+                            const sublabel = meta?.name;
 
                             return (
                             <label key={perm} className={`flex items-center justify-between rounded-lg border px-3 py-2 text-sm ${disabled ? 'bg-slate-50 text-slate-400' : 'bg-white'} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}>
-                                <span>{label}</span>
+                                <span className="flex min-w-0 flex-col">
+                                  <span className="truncate">{label}</span>
+                                  {sublabel && (
+                                    <span className="text-xs text-slate-400 truncate">{sublabel}</span>
+                                  )}
+                                </span>
                                 <InputCheckbox
                                     checked={selectedPerms.includes(perm)}
                                     onChange={() => {
                                         if (disabled) return;
                                         togglePerm(perm);
                                     }}
-                                    title={perm}
                                 />
                             </label>
                             );

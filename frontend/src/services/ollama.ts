@@ -1,28 +1,5 @@
+import type { FullAnswerModelEvaluation, OllamaChatResponse } from '../types/AI';
 import type { FullAnswerCheckMode } from '../types/Test';
-
-export type OllamaToolCall = {
-  function: {
-    name: string;
-    arguments: any;
-  };
-};
-
-export type OllamaChatResponse = {
-  model: string;
-  created_at: string;
-  message: {
-    role: 'assistant' | 'tool' | 'user' | 'system';
-    content: string;
-    tool_calls?: OllamaToolCall[];
-  };
-  done: boolean;
-  done_reason?: string;
-};
-
-export type FullAnswerModelEvaluation = {
-  scorePercent: number;
-  comment: string;
-};
 
 const clampPercent = (n: number): number => {
   if (!Number.isFinite(n)) return 0;

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import { UserCard } from '../../molecules/cards';
 import { authStore } from '../../../stores/authStore';
-import { PERMISSION_LABELS } from '../../../data/admin';
 import { ROLE_RANKS } from '../../../data/admin';
 import { Modal, Button, Spinner } from '../../atoms';
 import { RegisterForm } from '../../molecules/forms';
@@ -45,8 +44,6 @@ export const AdminUsersPage = () => {
     });
     return map;
   }, [roles]);
-
-  const permissionLabels = useMemo(() => PERMISSION_LABELS, []);
 
   const handleSaveRoles = async (userId: number, nextRoles: string[]) => {
     try {
@@ -133,8 +130,7 @@ export const AdminUsersPage = () => {
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h1 className="text-2xl font-bold text-slate-800">Пользователи</h1>
         <p className="mt-2 text-sm text-slate-500">
-          Управляйте ролями и правами пользователей. Для точечной настройки прав нужна роль с
-          разрешением «assign permissions».
+          Управляйте ролями и правами пользователей.
         </p>
         {canAddUsers && (
           <div className="mt-4">
@@ -168,7 +164,6 @@ export const AdminUsersPage = () => {
             user={user}
             roles={roles}
             permissions={permissions}
-            permissionLabels={permissionLabels}
             rolePermissionsMap={rolePermissionsMap}
             maxRoleRank={maxRoleRank}
             isSelf={isSelf}

@@ -1,16 +1,15 @@
 import { useState } from 'react';
 
 import { UserRolesForm } from '../forms';
+import { Button, Spinner } from '../../atoms';
 
 import type { User } from '../../../types/User';
-import type { RoleOption } from '../../../services/admin';
-import { Button, Spinner } from '../../atoms';
+import type { AdminPermissionsResponse, RoleOption } from '../../../types/Admin';
 
 export type UserCardProps = {
   user: User;
   roles: RoleOption[];
-  permissions: string[];
-  permissionLabels?: Record<string, string>;
+  permissions: AdminPermissionsResponse['permissions'];
   rolePermissionsMap: Record<string, string[]>;
   maxRoleRank: number;
   isSelf: boolean;
@@ -27,7 +26,6 @@ export const UserCard = ({
   user,
   roles,
   permissions,
-  permissionLabels,
   rolePermissionsMap,
   maxRoleRank,
   isSelf,
@@ -56,14 +54,21 @@ export const UserCard = ({
                 {role}
               </span>
             ))}
-            {(user.perms ?? []).map((perm) => (
-              <span
-                key={perm}
-                className="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700"
-              >
-                {permissionLabels?.[perm] ?? perm}
-              </span>
-            ))}
+            {(user.perms ?? []).map((perm) => {
+              const meta = permissions[perm];
+              const label = meta?.description ?? perm;
+              const description = meta?.description;
+
+              return (
+                <span
+                  key={perm}
+                  title={description ? `${label}: ${description}` : label}
+                  className="rounded-full border border-amber-100 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700"
+                >
+                  {label}
+                </span>
+              );
+            })}
           </div>
         </div>
         { !isSelf ? (
@@ -114,7 +119,6 @@ export const UserCard = ({
             user={user}
             roles={roles}
             permissions={permissions}
-            permissionLabels={permissionLabels}
             rolePermissionsMap={rolePermissionsMap}
             maxRoleRank={maxRoleRank}
             isSelf={isSelf}
