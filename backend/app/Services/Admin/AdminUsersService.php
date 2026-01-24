@@ -4,7 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Models\Permission;
-use App\Services\AuditService;
+use App\Services\Admin\AdminAuditService;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -17,9 +17,9 @@ class AdminUsersService
         'root' => 3,
     ];
 
-    protected AuditService $auditService;
+    protected AdminAuditService $auditService;
 
-    public function __construct(AuditService $auditService)
+    public function __construct(AdminAuditService $auditService)
     {
         $this->auditService = $auditService;
     }

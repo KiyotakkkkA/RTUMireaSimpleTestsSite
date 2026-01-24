@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-import { useTest } from "../../../hooks/useTest";
+import { useTestPassing } from "../../../hooks/useTestPassing";
 import { TESTS } from "../../../tests";
 import { TestService } from "../../../services/test";
 import { StorageService } from "../../../services/storage";
@@ -75,7 +75,7 @@ export const TestPage = () => {
         currentQuestion,
         questions,
         result,
-    } = useTest(testId || '', test?.questions || []);
+    } = useTestPassing(testId || '', test?.questions || []);
 
     useEffect(() => {
         if (!result) return;

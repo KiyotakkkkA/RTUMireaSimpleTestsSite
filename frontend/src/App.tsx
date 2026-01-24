@@ -14,6 +14,7 @@ import { TestEditingPage } from "./components/pages/test/TestEditingPage";
 import { AdminLayout } from "./components/pages/admin/AdminLayout";
 import { AdminUsersPage } from "./components/pages/admin/AdminUsersPage";
 import { AdminAuditPage } from "./components/pages/admin/AdminAuditPage";
+import { AdminStatisticsPage } from "./components/pages/admin/AdminStatisticsPage";
 
 import { E403 } from "./components/pages/errors/E403";
 import { E404 } from "./components/pages/errors/E404";
@@ -89,6 +90,7 @@ function App() {
               <Route index element={<AdminUsersPage />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="audit" element={<AdminAuditPage />} />
+              <Route path="statistics" element={<AdminStatisticsPage />} />
             </Route>
             <Route path="/errors/403" element={<E403 />} />
             <Route path="/errors/404" element={<E404 />} />

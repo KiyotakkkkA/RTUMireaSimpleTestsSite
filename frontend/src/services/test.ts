@@ -9,7 +9,7 @@ import type {
   TestUpdatePayload,
 } from '../types/editing/TestManagement';
 import type { TestListResponse } from '../types/TestList';
-import type { PublicTestResponse, TestQuestion } from '../types/Test';
+import type { PublicTestResponse, TestCompletitionStatisticsPayload, TestQuestion } from '../types/Test';
 
 export const TestService = {
   createBlankTest: async (payload: TestCreationPayload): Promise<TestCreationResult> => {
@@ -73,6 +73,10 @@ export const TestService = {
   },
   getPublicTestById: async (testId: string): Promise<PublicTestResponse> => {
     const response = await api.get(`/tests/${testId}`);
+    return response.data;
+  },
+  saveTestCompletionStatistics: async (payload: TestCompletitionStatisticsPayload): Promise<void> => {
+    const response = await api.post('/statistics/test', payload);
     return response.data;
   },
 };

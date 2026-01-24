@@ -39,6 +39,9 @@ export const AdminLayout = () => {
             <NavLink to="/admin/audit" className={navItemClass}>
               Журнал аудита
             </NavLink>
+            <NavLink to="/admin/statistics" className={navItemClass}>
+              Статистика
+            </NavLink>
           </nav>
         </aside>
 
@@ -52,6 +55,9 @@ export const AdminLayout = () => {
                 </NavLink>
                 <NavLink to="/admin/audit" className={navItemClass}>
                   Журнал аудита
+                </NavLink>
+                <NavLink to="/admin/statistics" className={navItemClass}>
+                  Статистика
                 </NavLink>
               </div>
               <Outlet />

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Admin;
 
 use App\Models\Audit;
 use App\Models\User;
 
-class AuditService
+class AdminAuditService
 {
     public const ACTION_ADMIN_ROLES_CHANGE = 'admin_roles_change';
     public const ACTION_ADMIN_PERMISSIONS_CHANGE = 'admin_permissions_change';

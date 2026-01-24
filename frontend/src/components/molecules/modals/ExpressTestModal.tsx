@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button, InputSlider, Modal } from '../../atoms';
-import { useTest } from '../../../hooks/useTest';
+import { useTestPassing } from '../../../hooks/useTestPassing';
 import { Test, type FullAnswerCheckMode } from '../../../types/Test';
 
 export interface ExpressTestConfig {
@@ -43,7 +43,7 @@ export const ExpressTestModal = ({
   );
   const [fullAnswerCheckMode, setFullAnswerCheckMode] = useState<FullAnswerCheckMode>('medium');
 
-  const { startTest } = useTest(test.uuid, test.questions);
+  const { startTest } = useTestPassing(test.uuid, test.questions);
 
   const navigate = useNavigate();
 

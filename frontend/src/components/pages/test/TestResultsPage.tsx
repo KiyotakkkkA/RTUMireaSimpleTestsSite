@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { useTest } from '../../../hooks/useTest';
+import { useTestPassing } from '../../../hooks/useTestPassing';
 import { TESTS } from '../../../tests';
 
 export const TestResultsPage = () => {
@@ -8,7 +8,7 @@ export const TestResultsPage = () => {
   const testId = useParams<{ testId: string }>().testId;
   const test = TESTS.find(t => t.uuid === testId);
 
-  const { result, resetTest } = useTest(testId || '', test?.questions || []);
+  const { result, resetTest } = useTestPassing(testId || '', test?.questions || []);
 
   const navigate = useNavigate();
 

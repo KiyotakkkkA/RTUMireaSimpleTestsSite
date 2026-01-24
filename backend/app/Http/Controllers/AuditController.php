@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Services\AuditService;
+use App\Services\Admin\AdminAuditService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,13 +15,13 @@ class AuditController extends Controller
     {
         $validated = $request->validate([
             'action_type' => ['nullable', 'string', Rule::in([
-                AuditService::ACTION_ADMIN_ROLES_CHANGE,
-                AuditService::ACTION_ADMIN_PERMISSIONS_CHANGE,
-                AuditService::ACTION_ADMIN_USER_ADD,
-                AuditService::ACTION_ADMIN_USER_REMOVE,
-                AuditService::ACTION_TEST_CREATED,
-                AuditService::ACTION_TEST_UPDATED,
-                AuditService::ACTION_TEST_DELETED,
+                AdminAuditService::ACTION_ADMIN_ROLES_CHANGE,
+                AdminAuditService::ACTION_ADMIN_PERMISSIONS_CHANGE,
+                AdminAuditService::ACTION_ADMIN_USER_ADD,
+                AdminAuditService::ACTION_ADMIN_USER_REMOVE,
+                AdminAuditService::ACTION_TEST_CREATED,
+                AdminAuditService::ACTION_TEST_UPDATED,
+                AdminAuditService::ACTION_TEST_DELETED,
             ])],
             'date_from' => ['nullable', 'date'],
             'date_to' => ['nullable', 'date'],

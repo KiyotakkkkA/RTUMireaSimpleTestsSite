@@ -123,6 +123,14 @@ export type PublicTestResponse = {
   };
 };
 
+export type TestCompletitionStatisticsPayload = {
+  test_id: string;
+  right_answers: number;
+  wrong_answers: number;
+  percentage: number;
+  time_taken?: number;
+};
+
 export const LOCAL_STORAGE_KEYS = {
   TEST_SESSION: 'testix_test_session',
   CURRENT_TEST_ID: 'testix_current_test_id',

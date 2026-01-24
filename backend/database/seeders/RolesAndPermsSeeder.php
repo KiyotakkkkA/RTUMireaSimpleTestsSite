@@ -56,6 +56,10 @@ class RolesAndPermsSeeder extends Seeder
                 'description' => 'просмотр журнала аудита',
             ],
             [
+                'name' => 'view statistics',
+                'description' => 'просмотр статистики',
+            ],
+            [
                 'name' => 'tests master access',
                 'description' => 'доступ к чужим тестам',
             ],

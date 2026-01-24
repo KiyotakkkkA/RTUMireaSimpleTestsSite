@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react';
 
 import { Button, InputSlider, Modal, SlidedPanel, SwitchRow } from '../../atoms';
 import { ExpressTestModal } from '../../molecules/modals';
-import { useTest } from '../../../hooks/useTest';
+import { useTestPassing } from '../../../hooks/useTestPassing';
 import { useTestManage } from '../../../hooks/editing/useTestManage';
 import { TESTS } from '../../../tests';
 import { TestService } from '../../../services/test';
@@ -78,7 +78,7 @@ export const TestStartPage: React.FC = () => {
         updateSettings,
         startTest,
         session,
-    } = useTest(testId || '', test?.questions || []);
+    } = useTestPassing(testId || '', test?.questions || []);
 
     useEffect(() => {
         if (!testId) return;

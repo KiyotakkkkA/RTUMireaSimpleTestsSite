@@ -338,6 +338,16 @@ export const useTestPassing = (testId: string | null, questions: TestQuestion[])
       answers,
     };
 
+    if (finalResult) {
+      TestService.saveTestCompletionStatistics({
+        test_id: session.testId,
+        right_answers: finalResult.correctAnswers,
+        wrong_answers: finalResult.totalQuestions - finalResult.correctAnswers,
+        percentage: finalResult.percentage,
+        time_taken: finalResult.timeSpent,
+      })
+    }
+
     setResult(finalResult);
     StorageService.saveResult(session.testId, finalResult);
     StorageService.clearSession();

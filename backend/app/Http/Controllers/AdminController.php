@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\Admin\AdminUsersService;
+use App\Services\Admin\AdminStatisticsService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
@@ -11,10 +12,12 @@ use Illuminate\Validation\Rule;
 class AdminController extends Controller
 {
     protected AdminUsersService $adminUsersService;
+    protected AdminStatisticsService $adminStatisticsService;
 
-    public function __construct(AdminUsersService $adminUsersService)
+    public function __construct(AdminUsersService $adminUsersService, AdminStatisticsService $adminStatisticsService)
     {
         $this->adminUsersService = $adminUsersService;
+        $this->adminStatisticsService = $adminStatisticsService;
     }
 
     public function index(): Response
@@ -93,5 +96,18 @@ class AdminController extends Controller
         return response([
             'message' => 'Пользователь удален',
         ], 200);
+    }
+
+    public function statistics(Request $request): Response
+    {
+        $validated = $request->validate([
+            'date_from' => ['nullable', 'date'],
+            'date_to' => ['nullable', 'date'],
+            'min_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        $data = $this->adminStatisticsService->getGeneralStatistics($validated);
+
+        return response($data, 200);
     }
 }

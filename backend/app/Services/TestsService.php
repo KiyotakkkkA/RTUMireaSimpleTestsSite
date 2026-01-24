@@ -4,14 +4,15 @@ namespace App\Services;
 
 use App\Repositories\TestsRepository;
 use App\Models\Test\Test;
+use App\Services\Admin\AdminAuditService;
 use Illuminate\Support\Facades\Storage;
 
 class TestsService
 {
     protected TestsRepository $testsRepository;
-    protected AuditService $auditService;
+    protected AdminAuditService $auditService;
 
-    public function __construct(TestsRepository $testsRepository, AuditService $auditService)
+    public function __construct(TestsRepository $testsRepository, AdminAuditService $auditService)
     {
         $this->testsRepository = $testsRepository;
         $this->auditService = $auditService;
