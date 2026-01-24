@@ -7,6 +7,9 @@ import {
     AdminAuditRolesChangeCard,
     AdminAuditUserAddCard,
     AdminAuditUserRemoveCard,
+    AdminAuditTestCreatedCard,
+    AdminAuditTestUpdatedCard,
+    AdminAuditTestDeletedCard,
 } from "../../molecules/cards/admin";
 
 import type { AdminAuditActionType, AdminAuditRecord } from "../../../types/admin/AdminAudit";
@@ -21,6 +24,9 @@ export const AdminAuditPage = () => {
             { value: "admin_permissions_change", label: "Изменение прав" },
             { value: "admin_user_add", label: "Добавление пользователя" },
             { value: "admin_user_remove", label: "Удаление пользователя" },
+            { value: "test_created", label: "Создание теста" },
+            { value: "test_updated", label: "Изменение теста" },
+            { value: "test_deleted", label: "Удаление теста" },
         ],
         []
     );
@@ -35,6 +41,12 @@ export const AdminAuditPage = () => {
                 return <AdminAuditUserAddCard key={record.id} record={record} />;
             case "admin_user_remove":
                 return <AdminAuditUserRemoveCard key={record.id} record={record} />;
+            case "test_created":
+                return <AdminAuditTestCreatedCard key={record.id} record={record} />;
+            case "test_updated":
+                return <AdminAuditTestUpdatedCard key={record.id} record={record} />;
+            case "test_deleted":
+                return <AdminAuditTestDeletedCard key={record.id} record={record} />;
             default:
                 return null;
         }
@@ -75,23 +87,23 @@ export const AdminAuditPage = () => {
                         />
                     </div>
                 </div>
-                <div className="flex flex-col gap-2 sm:flex-row items-center md:justify-between mt-4">
-                    <div className="flex gap-2 items-center">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                         <Button
                             secondary
-                            className="px-4 py-2 text-sm"
+                            className="w-full px-4 py-2 text-sm sm:w-auto"
                             disabled={pagination.page <= 1 || isLoading}
                             onClick={handlePrevPage}
                         >
                             Назад
                         </Button>
-                        <div className="text-sm text-slate-500">
+                        <div className="text-center text-sm text-slate-500 sm:text-left">
                             Страница <span className="font-semibold text-slate-700">{pagination.page}</span> из{' '}
                             <span className="font-semibold text-slate-700">{pagination.last_page}</span>
                         </div>
                         <Button
                             primary
-                            className="px-4 py-2 text-sm"
+                            className="w-full px-4 py-2 text-sm sm:w-auto"
                             disabled={pagination.page >= pagination.last_page || isLoading}
                             onClick={handleNextPage}
                         >
@@ -100,7 +112,7 @@ export const AdminAuditPage = () => {
                     </div>
                     <Button
                         dangerInverted
-                        className="px-4 py-2 text-sm"
+                        className="w-full px-4 py-2 text-sm sm:w-auto"
                         onClick={() => updateFilters({ action_type: '', date_from: '', date_to: '' })}
                     >
                         Сбросить фильтры

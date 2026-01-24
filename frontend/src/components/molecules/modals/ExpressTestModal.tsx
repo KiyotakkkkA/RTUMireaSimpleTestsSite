@@ -18,6 +18,7 @@ interface ExpressTestModalProps {
   open: boolean;
   totalQuestions: number;
   onClose: () => void;
+  source?: 'local' | 'db';
 }
 
 const clampInt = (value: number, min: number, max: number) => {
@@ -30,6 +31,7 @@ export const ExpressTestModal = ({
   open,
   totalQuestions,
   onClose,
+  source = 'local',
 }: ExpressTestModalProps) => {
   const total = Math.max(1, totalQuestions);
 
@@ -232,6 +234,7 @@ export const ExpressTestModal = ({
 
             startTest({
               mode: 'express',
+              source,
               questionIds,
               timeLimitSeconds,
               settings: {

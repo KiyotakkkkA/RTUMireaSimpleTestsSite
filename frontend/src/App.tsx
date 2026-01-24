@@ -9,7 +9,7 @@ import { TestsListPage } from "./components/pages/test/TestsListPage";
 import { TestStartPage } from "./components/pages/test/TestStartPage";
 import { TestPage } from "./components/pages/test/TestPage";
 import { TestResultsPage } from "./components/pages/test/TestResultsPage";
-import { TestCreatingPage } from "./components/pages/test/TestCreatingPage";
+import { TestEditingPage } from "./components/pages/test/TestEditingPage";
 
 import { AdminLayout } from "./components/pages/admin/AdminLayout";
 import { AdminUsersPage } from "./components/pages/admin/AdminUsersPage";
@@ -71,10 +71,10 @@ function App() {
             <Route path="/tests/:testId/results" element={<TestResultsPage />} />
             <Route path="/tests/:testId" element={<TestPage />} />
             <Route
-              path="/workbench/test"
+              path="/workbench/test/:testId"
               element={
-                <RouteGuard requiredPermissions={["create tests"]}>
-                  <TestCreatingPage />
+                <RouteGuard requiredPermissions={["create tests", "edit tests"]}>
+                  <TestEditingPage />
                 </RouteGuard>
               }
             />

@@ -9,8 +9,12 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function __construct(private AuthService $authService)
-    {}
+    protected AuthService $authService;
+    
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
 
     public function register(Request $request): Response
     {

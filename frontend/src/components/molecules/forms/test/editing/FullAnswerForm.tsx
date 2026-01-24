@@ -1,4 +1,6 @@
-import { Button, InputSmall } from '../../../../atoms';
+import { Icon } from '@iconify/react';
+
+import { Button, InputBig } from '../../../../atoms';
 
 export type FullAnswerFormProps = {
     answers: string[];
@@ -19,15 +21,19 @@ export const FullAnswerForm = ({
             <div className="space-y-3">
                 {answers.map((answer, index) => (
                     <div key={index} className="flex items-center gap-2">
-                        <InputSmall
+                        <InputBig
                             value={answer}
                             onChange={(event) => onAnswerChange(index, event.target.value)}
                             placeholder={`Ответ ${index + 1}`}
-                            className="w-full"
+                            className="w-full p-2"
                         />
-                        <Button secondaryNoBorder className="px-2 text-xs" onClick={() => onRemoveAnswer(index)}>
-                            Удалить
-                        </Button>
+                            <Button
+                                dangerNoBackground
+                                className="p-1 text-xs"
+                                onClick={() => onRemoveAnswer(index)}
+                            >
+                                <Icon icon="mdi:delete" className="h-6 w-6" />
+                            </Button>
                     </div>
                 ))}
             </div>

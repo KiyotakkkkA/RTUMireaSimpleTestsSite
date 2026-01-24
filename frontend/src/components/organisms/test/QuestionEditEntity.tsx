@@ -11,10 +11,18 @@ import {
 export type QuestionDraftType = 'single' | 'multiple' | 'matching' | 'full_answer';
 
 export type QuestionDraft = {
-  id: number;
+  id?: number;
   type: QuestionDraftType;
   question: string;
   media: File[];
+  existingFiles: {
+    id: number;
+    name: string;
+    url: string;
+    mime_type?: string | null;
+    size?: number | null;
+  }[];
+  removedFileIds: number[];
   options: string[];
   correctOptions: number[];
   terms: string[];
@@ -110,6 +118,13 @@ export const QuestionEditEntity = ({ index, draft, onChange }: QuestionEditEntit
     update({ answers: nextAnswers });
   };
 
+  const handleRemoveExistingFile = (fileId: number) => {
+    update({
+      existingFiles: draft.existingFiles.filter((file) => file.id !== fileId),
+      removedFileIds: [...draft.removedFileIds, fileId],
+    });
+  };
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -140,8 +155,10 @@ export const QuestionEditEntity = ({ index, draft, onChange }: QuestionEditEntit
         <InputMedia
           label="Медиа"
           helperText="Изображения или видео для вопроса"
-          accept="image/*"
+          accept="image/png,image/jpeg"
           value={draft.media}
+          existingFiles={draft.existingFiles}
+          onRemoveExisting={(file) => handleRemoveExistingFile(file.id)}
           onChange={(files) => update({ media: files })}
         />
 

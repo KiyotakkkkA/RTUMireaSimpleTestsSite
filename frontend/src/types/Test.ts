@@ -1,5 +1,6 @@
 export interface TestSession {
   testId: string;
+  source?: 'local' | 'db';
   currentQuestionIndex: number;
   userAnswers: Record<number, number[] | string[]>;
   answerEvaluations?: Record<
@@ -65,7 +66,16 @@ export interface TestQuestionBase {
   id: number;
   question: string;
   type: 'single' | 'multiple' | 'matching' | 'full_answer';
+  files?: QuestionMediaFile[];
 }
+
+export type QuestionMediaFile = {
+  id: number;
+  name: string;
+  url: string;
+  mime_type?: string | null;
+  size?: number | null;
+};
 
 export interface SingleChoiceQuestion extends TestQuestionBase {
   type: 'single';
@@ -100,8 +110,18 @@ export type TestQuestion =
 export interface Test {
   uuid: string;
   discipline_name: string;
+  is_current_user_creator?: boolean;
   questions: TestQuestion[];
 }
+
+export type PublicTestResponse = {
+  test: {
+    id: string;
+    title: string;
+    is_current_user_creator: boolean;
+    questions: TestQuestion[];
+  };
+};
 
 export const LOCAL_STORAGE_KEYS = {
   TEST_SESSION: 'testix_test_session',

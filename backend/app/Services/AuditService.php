@@ -11,6 +11,9 @@ class AuditService
     public const ACTION_ADMIN_PERMISSIONS_CHANGE = 'admin_permissions_change';
     public const ACTION_ADMIN_USER_ADD = 'admin_user_add';
     public const ACTION_ADMIN_USER_REMOVE = 'admin_user_remove';
+    public const ACTION_TEST_CREATED = 'test_created';
+    public const ACTION_TEST_UPDATED = 'test_updated';
+    public const ACTION_TEST_DELETED = 'test_deleted';
 
     public function auditAdminRolesChange(User $actor, User $target, array $oldRoles, array $newRoles): void
     {
@@ -73,6 +76,46 @@ class AuditService
             ],
             null,
             'Удаление пользователя'
+        );
+    }
+
+    public function auditTestCreated(User $actor, array $testSnapshot): void
+    {
+        $this->storeAudit(
+            $actor,
+            self::ACTION_TEST_CREATED,
+            null,
+            [
+                'test' => $testSnapshot,
+            ],
+            'Создание теста'
+        );
+    }
+
+    public function auditTestUpdated(User $actor, array $testSnapshot, array $changedQuestions): void
+    {
+        $this->storeAudit(
+            $actor,
+            self::ACTION_TEST_UPDATED,
+            null,
+            [
+                'test' => $testSnapshot,
+                'changed_questions' => array_values($changedQuestions),
+            ],
+            'Обновление теста'
+        );
+    }
+
+    public function auditTestDeleted(User $actor, array $testSnapshot): void
+    {
+        $this->storeAudit(
+            $actor,
+            self::ACTION_TEST_DELETED,
+            [
+                'test' => $testSnapshot,
+            ],
+            null,
+            'Удаление теста'
         );
     }
 

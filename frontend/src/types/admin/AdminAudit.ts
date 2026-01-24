@@ -2,7 +2,10 @@ export type AdminAuditActionType =
 	| 'admin_roles_change'
 	| 'admin_permissions_change'
 	| 'admin_user_add'
-	| 'admin_user_remove';
+	| 'admin_user_remove'
+	| 'test_created'
+	| 'test_updated'
+	| 'test_deleted';
 
 export type AdminAuditActor = {
 	id: number;
@@ -20,6 +23,17 @@ export type AdminAuditObjectState = {
 	user?: AdminAuditUserSnapshot;
 	roles?: string[];
 	permissions?: string[];
+	test?: {
+		id: string;
+		title: string;
+		link?: string;
+	};
+	changed_questions?: {
+		id?: number;
+		title: string;
+		type: string;
+		action?: 'added' | 'updated' | 'removed';
+	}[];
 };
 
 export type AdminAuditRecord = {

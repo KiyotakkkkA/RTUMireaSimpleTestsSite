@@ -10,8 +10,12 @@ use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-    public function __construct(private AdminUsersService $adminUsersService)
-    {}
+    protected AdminUsersService $adminUsersService;
+
+    public function __construct(AdminUsersService $adminUsersService)
+    {
+        $this->adminUsersService = $adminUsersService;
+    }
 
     public function index(): Response
     {

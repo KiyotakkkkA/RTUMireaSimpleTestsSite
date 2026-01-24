@@ -7,7 +7,15 @@ export interface InputMediaProps extends Omit<React.InputHTMLAttributes<HTMLInpu
     label?: string;
     helperText?: string;
     value?: File[];
+    existingFiles?: {
+        id: number;
+        name: string;
+        url: string;
+        mime_type?: string | null;
+        size?: number | null;
+    }[];
     onChange?: (files: File[]) => void;
+    onRemoveExisting?: (file: { id: number; name: string }) => void;
 }
 
 const formatFileSize = (bytes: number) => {
@@ -22,7 +30,9 @@ export const InputMedia = ({
     label,
     helperText,
     value,
+    existingFiles = [],
     onChange,
+    onRemoveExisting,
     className,
     disabled,
     id,
@@ -47,6 +57,7 @@ export const InputMedia = ({
             setInternalFiles(selected);
         }
         onChange?.(selected);
+        event.target.value = '';
     };
 
     const handleRemoveFile = (fileToRemove: File) => {
@@ -58,6 +69,18 @@ export const InputMedia = ({
         }
         onChange?.(nextFiles);
     };
+
+    const previewItems = useMemo(() => {
+        return files.map((file) => ({
+            id: `${file.name}-${file.lastModified}`,
+            name: file.name,
+            size: file.size,
+            url: URL.createObjectURL(file),
+            mime_type: file.type,
+            kind: 'new' as const,
+            file,
+        }));
+    }, [files]);
 
     return (
         <div className={`w-full ${className ?? ''}`}>
@@ -90,30 +113,67 @@ export const InputMedia = ({
                 {...props}
             />
 
-            {files.length > 0 && (
-                <div className="mt-3 space-y-2">
-                    {files.map((file) => (
-                        <div
-                            key={`${file.name}-${file.lastModified}`}
-                            className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600"
-                        >
-                            <div className="flex min-w-0 items-center gap-2">
-                                <Icon icon="mdi:file-outline" className="h-4 w-4 text-indigo-400" />
-                                <span className="truncate text-slate-700">{file.name}</span>
+            {(files.length > 0 || existingFiles.length > 0) && (
+                <div className="mt-3 space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                        {existingFiles.map((file) => (
+                            <div
+                                key={`existing-${file.id}`}
+                                className="relative overflow-hidden rounded-lg border border-slate-200 bg-white"
+                            >
+                                <div className="aspect-video w-full bg-slate-100">
+                                    {file.mime_type?.startsWith('image/') ? (
+                                        <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center text-slate-400">
+                                            <Icon icon="mdi:file-outline" className="h-8 w-8" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                    <span className="truncate text-slate-700">{file.name}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => onRemoveExisting?.({ id: file.id, name: file.name })}
+                                        className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
+                                        aria-label={`Удалить файл ${file.name}`}
+                                    >
+                                        <Icon icon="mdi:close" className="h-4 w-4" />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <span className="text-slate-400">{formatFileSize(file.size)}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveFile(file)}
-                                    className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
-                                    aria-label={`Удалить файл ${file.name}`}
-                                >
-                                    <Icon icon="mdi:close" className="h-4 w-4" />
-                                </button>
+                        ))}
+                        {previewItems.map((file) => (
+                            <div
+                                key={`new-${file.id}`}
+                                className="relative overflow-hidden rounded-lg border border-indigo-100 bg-indigo-50"
+                            >
+                                <div className="aspect-video w-full bg-slate-100">
+                                    {file.mime_type?.startsWith('image/') ? (
+                                        <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center text-indigo-300">
+                                            <Icon icon="mdi:file-outline" className="h-8 w-8" />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                    <span className="truncate text-slate-700">{file.name}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveFile(file.file)}
+                                        className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
+                                        aria-label={`Удалить файл ${file.name}`}
+                                    >
+                                        <Icon icon="mdi:close" className="h-4 w-4" />
+                                    </button>
+                                </div>
+                                <div className="px-3 pb-2 text-xs text-slate-400">
+                                    {formatFileSize(file.size)}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

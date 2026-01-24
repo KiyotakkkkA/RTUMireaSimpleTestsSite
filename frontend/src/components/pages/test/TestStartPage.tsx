@@ -1,21 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
-import { Button, InputSlider, SlidedPanel, SwitchRow } from '../../atoms';
+import { Button, InputSlider, Modal, SlidedPanel, SwitchRow } from '../../atoms';
 import { ExpressTestModal } from '../../molecules/modals';
 import { useTest } from '../../../hooks/useTest';
+import { useTestManage } from '../../../hooks/editing/useTestManage';
 import { TESTS } from '../../../tests';
+import { TestService } from '../../../services/test';
+import { Spinner } from '../../atoms';
+import { authStore } from '../../../stores/authStore';
+
+import type { Test } from '../../../types/Test';
 
 export const TestStartPage: React.FC = () => {
 
     const [isOpenSlided, setIsOpenSlided] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
+    const [dbTest, setDbTest] = useState<Test | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const {
+        isSaving,
+        deleteTest,
+    } = useTestManage();
 
     const testId = useParams<{ testId: string }>().testId;
-    const test = TESTS.find(t => t.uuid === testId);
+    const localTest = useMemo(() => TESTS.find(t => t.uuid === testId), [testId]);
+    const source = (location.state as { source?: 'local' | 'db' } | null)?.source
+        ?? (localTest ? 'local' : 'db');
+
+    useEffect(() => {
+        let mounted = true;
+        const load = async () => {
+            if (!testId) return;
+            if (source === 'local') return;
+            try {
+                setIsLoading(true);
+                const response = await TestService.getPublicTestById(testId);
+                if (!mounted) return;
+                setDbTest({
+                    uuid: response.test.id,
+                    discipline_name: response.test.title,
+                    questions: response.test.questions,
+                    is_current_user_creator: response.test.is_current_user_creator ?? false,
+                });
+            } catch (e) {
+                if (!mounted) return;
+                setDbTest(null);
+            } finally {
+                if (mounted) setIsLoading(false);
+            }
+        };
+
+        load();
+
+        return () => {
+            mounted = false;
+        };
+    }, [testId, source]);
+
+    const test = source === 'local' ? localTest : dbTest;
 
     const fullAnswerModes = [
         { value: 'lite', title: 'Lite', description: 'Достаточно передать суть ответа' },
@@ -39,9 +88,26 @@ export const TestStartPage: React.FC = () => {
         navigate(`/tests/${testId}`, { replace: true });
     }, [navigate, session, testId]);
 
+    if (isLoading) {
+        return (
+            <div className="w-full max-w-2xl m-auto">
+                <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 text-center">
+                    <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
+                        <Spinner className="h-4 w-4" />
+                        Загружаем тест...
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (!test) {
         return <div>Тест не найден</div>;
     }
+
+    const accessToTestManagement = (test.is_current_user_creator ?? false) || authStore.hasPermission('tests master access');
+    const canDeleteTest = accessToTestManagement && source === 'db' && authStore.hasPermission('delete tests');
+    const canEditTest = accessToTestManagement && source === 'db' && authStore.hasPermission('edit tests');
 
     return (
         <div className="w-full max-w-2xl space-y-8 m-auto">
@@ -55,12 +121,36 @@ export const TestStartPage: React.FC = () => {
                         <Icon icon="mdi:arrow-left" className="h-7 w-7" />
                         Назад
                     </Button>
-                    <Button
-                        onClick={() => setIsOpenSlided(true)}
-                        primaryNoBackground
-                    >
-                        <Icon icon="mdi:cog" className="h-7 w-7" />
-                    </Button>
+                    <div className="flex items-center">
+                        { (canEditTest || canDeleteTest) && (
+                            <div className="flex items-center bg-indigo-50 p-2 gap-2 rounded-lg mr-4">
+                                {canEditTest && (
+                                    <Button
+                                        onClick={() => { navigate(`/workbench/test/${testId}`) }}
+                                        primaryNoBackground
+                                        className="text-md font-medium flex items-center gap-2"
+                                    >
+                                    <Icon icon="mdi:pen" className="h-7 w-7" />
+                                    </Button>
+                                )}
+                                {canDeleteTest && (
+                                    <Button
+                                        onClick={() => { setIsOpenDeleteModal(true) }}
+                                        dangerNoBackground
+                                        className="text-md font-medium flex items-center gap-2"
+                                    >
+                                    <Icon icon="mdi:delete" className="h-7 w-7" />
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+                        <Button
+                            onClick={() => setIsOpenSlided(true)}
+                            primaryNoBackground
+                        >
+                            <Icon icon="mdi:cog" className="h-7 w-7" />
+                        </Button>
+                    </div>
                 </div>
                 <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6">
                     <h2 className="text-2xl font-bold text-gray-800 mb-4">{test.discipline_name}</h2>
@@ -95,7 +185,7 @@ export const TestStartPage: React.FC = () => {
 
                 <Button
                     onClick={() => {
-                        startTest({ mode: 'normal' });
+                        startTest({ mode: 'normal', source });
                         navigate(`/tests/${test.uuid}`);
                     }}
                     primary
@@ -196,8 +286,35 @@ export const TestStartPage: React.FC = () => {
                 test={test}
                 open={isOpenModal}
                 totalQuestions={test.questions.length}
+                source={source}
                 onClose={() => setIsOpenModal(false)}
             />
+            <Modal
+                open={isOpenDeleteModal}
+                onClose={() => setIsOpenDeleteModal(false)}
+                title={<h3 className="text-lg font-semibold text-slate-800">Подтвердите удаление</h3>}
+                outsideClickClosing
+            >
+                <div className="space-y-4 mb-2">
+                    <p className="text-sm text-slate-600">
+                        Удалить тест{' '}
+                        <span className="font-semibold text-slate-800">{ test.discipline_name }</span>?
+                    </p>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                        <Button secondary className="flex-1 p-2" disabled={isSaving} onClick={() => setIsOpenDeleteModal(false)}>
+                            Отмена
+                        </Button>
+                        <Button danger className="p-2 flex items-center gap-3" disabled={isSaving} onClick={async () => {
+                            if (!testId) return;
+                            await deleteTest(testId);
+                            navigate('/');
+                        }}>
+                            { isSaving && <Spinner className="h-5 w-5" /> }
+                            { isSaving ? 'Удаление...' : 'Удалить'}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

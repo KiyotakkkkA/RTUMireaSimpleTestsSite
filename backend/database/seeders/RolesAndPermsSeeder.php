@@ -54,7 +54,11 @@ class RolesAndPermsSeeder extends Seeder
             [
                 'name' => 'view audit logs',
                 'description' => 'просмотр журнала аудита',
-            ]
+            ],
+            [
+                'name' => 'tests master access',
+                'description' => 'доступ к чужим тестам',
+            ],
         ];
 
         foreach ($permissions as $permission) {

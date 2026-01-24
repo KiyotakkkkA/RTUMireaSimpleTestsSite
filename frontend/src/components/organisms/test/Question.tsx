@@ -154,6 +154,23 @@ export const Question: React.FC<QuestionProps> = ({
       <div className="pt-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">{question.question}</h2>
 
+        {question.files && question.files.length > 0 && (
+          <div className="mb-6 grid gap-3 sm:grid-cols-2">
+            {question.files.map((file) => (
+              <div key={file.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+                {file.mime_type?.startsWith('image/') ? (
+                  <img src={file.url} alt={file.name} className="h-full w-full object-contain bg-slate-50" />
+                ) : (
+                  <div className="flex h-48 w-full items-center justify-center text-slate-400">
+                    <Icon icon="mdi:file-outline" className="h-8 w-8" />
+                  </div>
+                )}
+                <div className="px-3 py-2 text-xs text-slate-600 truncate">{file.name}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {isChecked ? (
           <div
             className={

@@ -72,13 +72,21 @@ export const FullAnswer = ({
       />
 
       {evaluation ? (
-        <div className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-semibold text-indigo-900">Оценка модели</div>
-            <div className="text-sm font-bold text-indigo-900">{Math.round(evaluation.scorePercent)}%</div>
+        <>
+          <div className="rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-indigo-900">Оценка модели</div>
+              <div className="text-sm font-bold text-indigo-900">{Math.round(evaluation.scorePercent)}%</div>
+            </div>
+            <div className="mt-2 text-sm text-indigo-900/90 whitespace-pre-wrap">{evaluation.comment}</div>
           </div>
-          <div className="mt-2 text-sm text-indigo-900/90 whitespace-pre-wrap">{evaluation.comment}</div>
-        </div>
+          <div className="rounded-lg shadow-md border px-4 py-3">
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm font-semibold text-indigo-900">Эталонный ответ</div>
+            </div>
+            <div className="mt-2 text-sm text-indigo-900/90 whitespace-pre-wrap">{question.correctAnswers}</div>
+          </div>
+        </>
       ) : null}
     </div>
   );
