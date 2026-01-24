@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->prefix('workbench')->group(function () {
     Route::post('/tests', [TestsController::class, 'createBlankTest'])->middleware('permission:create tests')->name('workbench.tests.store');
     Route::get('/tests/{testId}', [TestsController::class, 'show'])->middleware('permission:edit tests')->name('workbench.tests.show');
     Route::put('/tests/{testId}', [TestsController::class, 'update'])->middleware('permission:edit tests')->name('workbench.tests.update');
+    Route::post('/tests/{testId}/auto-fill', [TestsController::class, 'autoFill'])->middleware('permission:edit tests')->name('workbench.tests.auto_fill');
     Route::delete('/tests/{testId}', [TestsController::class, 'destroy'])->middleware('permission:delete tests')->name('workbench.tests.delete');
     Route::post('/questions/{questionId}/files', [QuestionFilesController::class, 'store'])->middleware('permission:edit tests')->name('workbench.questions.files.store');
     Route::delete('/questions/{questionId}/files/{fileId}', [QuestionFilesController::class, 'destroy'])->middleware('permission:edit tests')->name('workbench.questions.files.delete');

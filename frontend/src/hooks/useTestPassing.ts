@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   IncorrectReviewItem,
   TestSession,
@@ -6,13 +6,13 @@ import {
   TestSettings,
   TestQuestion,
   FullAnswerReviewItem,
-} from '../types/Test';
-import { StorageService } from '../services/storage';
-import { TestService } from '../services/test';
+} from "../types/Test";
+import { StorageService } from "../services/storage";
+import { TestService } from "../services/test";
 
-import { evaluateAnswer, type AnswerEvaluation } from '../utils/QuestionTypeRegistry';
+import { evaluateAnswer, type AnswerEvaluation } from "../utils/QuestionTypeRegistry";
 
-export const useTest = (testId: string | null, questions: TestQuestion[]) => {
+export const useTestPassing = (testId: string | null, questions: TestQuestion[]) => {
   const [session, setSession] = useState<TestSession | null>(null);
   const [result, setResult] = useState<TestResult | null>(null);
   const [settingsDraft, setSettingsDraft] = useState<TestSettings | null>(null);
@@ -44,7 +44,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       hintsEnabled: false,
       checkAfterAnswer: false,
       showIncorrectAtEnd: false,
-      fullAnswerCheckMode: 'medium',
+      fullAnswerCheckMode: "medium",
     };
   }, [questions.length]);
 
@@ -53,12 +53,12 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       const activeSettings = session?.settings ?? settingsDraft ?? getDefaultSettings();
       const ev = await evaluateAnswer(question, userAnswer, activeSettings);
 
-      if (question.type === 'full_answer') {
+      if (question.type === "full_answer") {
         const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
-        const userAnswerText = String(ua[0] ?? '');
+        const userAnswerText = String(ua[0] ?? "");
         setAnswerEvaluation(question.id, {
           scorePercent: ev.scorePercent ?? (ev.correct ? 100 : 0),
-          comment: ev.comment ?? '',
+          comment: ev.comment ?? "",
           userAnswerText,
         });
       }
@@ -115,8 +115,8 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
   }, [testId, questions.length, session?.testId, session?.settings, getDefaultSettings]);
 
   const startTest = useCallback((opts?: {
-    mode?: 'normal' | 'express';
-    source?: 'local' | 'db';
+    mode?: "normal" | "express";
+    source?: "local" | "db";
     questionIds?: number[];
     settings?: TestSettings;
     timeLimitSeconds?: number;
@@ -137,13 +137,13 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       answerEvaluations: {},
       startTime: now,
       settings,
-      mode: opts?.mode ?? 'normal',
+      mode: opts?.mode ?? "normal",
       questionIds: opts?.questionIds,
       timeLimitSeconds: opts?.timeLimitSeconds,
     };
     timedOutRef.current = false;
     setTimeLeftSeconds(
-      typeof newSession.timeLimitSeconds === 'number'
+      typeof newSession.timeLimitSeconds === "number"
         ? Math.max(0, Math.ceil(newSession.timeLimitSeconds))
         : null
     );
@@ -246,8 +246,8 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
       const ev = evaluations[question.id];
 
       const correct =
-        question.type === 'full_answer'
-          ? Boolean(ev) && ev.userAnswerText === String((userAnswer as string[])[0] ?? '') && ev.scorePercent >= fullAnswerThreshold
+        question.type === "full_answer"
+          ? Boolean(ev) && ev.userAnswerText === String((userAnswer as string[])[0] ?? "") && ev.scorePercent >= fullAnswerThreshold
           : TestService.isAnswerCorrect(question, userAnswer);
 
       if (correct) correctCount++;
@@ -274,7 +274,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
             const correct = TestService.isAnswerCorrect(question, userAnswer);
             if (correct) return null;
 
-            if (question.type === 'single' || question.type === 'multiple') {
+            if (question.type === "single" || question.type === "multiple") {
               const correctAnswersText = question.correctAnswers
                 .slice()
                 .sort((a, b) => a - b)
@@ -287,7 +287,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
               };
             }
 
-            if (question.type === 'matching') {
+            if (question.type === "matching") {
               const correctAnswersText = question.correctAnswers.map((pair) => {
                 const termKey = pair.substring(0, 1);
                 const meaningIndex = Number(pair.substring(1));
@@ -302,7 +302,7 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
               };
             }
 
-            if (question.type === 'full_answer') return null;
+            if (question.type === "full_answer") return null;
 
             return null;
           })
@@ -311,16 +311,16 @@ export const useTest = (testId: string | null, questions: TestQuestion[]) => {
 
     const fullAnswerReview: FullAnswerReviewItem[] = activeQuestions
       .map((question, index) => {
-        if (question.type !== 'full_answer') return null;
+        if (question.type !== "full_answer") return null;
         const ua = session.userAnswers[question.id] || [];
-        const userAnswerText = String((ua as string[])[0] ?? '');
+        const userAnswerText = String((ua as string[])[0] ?? "");
         const ev = evaluations[question.id];
         return {
           questionNumber: index + 1,
           questionText: question.question,
           userAnswerText,
           scorePercent: ev?.userAnswerText === userAnswerText ? ev?.scorePercent ?? 0 : 0,
-          comment: ev?.userAnswerText === userAnswerText ? ev?.comment ?? 'Оценка модели не получена.' : 'Ответ изменён после оценки — оценка устарела.',
+          comment: ev?.userAnswerText === userAnswerText ? ev?.comment ?? "Оценка модели не получена." : "Ответ изменён после оценки — оценка устарела.",
         };
       })
       .filter((x): x is FullAnswerReviewItem => Boolean(x));

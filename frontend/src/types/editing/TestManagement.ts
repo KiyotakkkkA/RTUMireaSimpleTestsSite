@@ -61,3 +61,27 @@ export type TestUpdatePayload = {
   title?: string;
   questions: TestQuestionPayload[];
 };
+
+export type JsonQuestionInput = {
+  id?: number | string;
+  question?: string;
+  title?: string;
+  type: 'single' | 'multiple' | 'matching' | 'full_answer';
+  options?: string[];
+  correctAnswers?: Array<number | string>;
+  terms?: Record<string, string> | string[];
+  meanings?: Record<string, string> | string[];
+};
+
+export type TestAutoFillPayload = {
+  total: number;
+  questions: JsonQuestionInput[];
+  selection?: string;
+  selectedIndexes?: number[];
+};
+
+export type TestAutoFillResponse = {
+  message: string;
+  added: number;
+  total_questions: number;
+};

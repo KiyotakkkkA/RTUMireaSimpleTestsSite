@@ -1,4 +1,4 @@
-import { LOCAL_STORAGE_KEYS, type TestQuestion, type TestResult, type TestSession } from '../types/Test';
+import { LOCAL_STORAGE_KEYS, type TestResult, type TestSession } from '../types/Test';
 
 export const StorageService = {
   getSession: (): TestSession | null => {
@@ -41,31 +41,5 @@ export const StorageService = {
   clear: (): void => {
     StorageService.clearSession();
     StorageService.clearResult();
-  },
-};
-
-export const TestService = {
-  isAnswerCorrect: (question: TestQuestion, userAnswer: number[] | string[]): boolean => {
-    const normalize = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
-
-    if (question.type === 'matching') {
-      const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
-      return ua.length === question.correctAnswers.length && question.correctAnswers.every((c) => ua.includes(c));
-    }
-    
-    if (question.type === 'single' || question.type === 'multiple') {
-      const ua = Array.isArray(userAnswer) ? (userAnswer as number[]) : [];
-      if (ua.length !== question.correctAnswers.length) return false;
-      return question.correctAnswers.every((c) => ua.includes(c));
-    }
-
-    if (question.type === 'full_answer') {
-      const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
-      const text = ua[0] ? normalize(ua[0]) : '';
-      const allowed = question.correctAnswers.map(normalize);
-      return text.length > 0 && allowed.includes(text);
-    }
-
-    return false;
   },
 };

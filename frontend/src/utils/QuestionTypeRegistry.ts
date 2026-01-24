@@ -1,4 +1,4 @@
-import { TestService } from '../services/storage';
+import { TestService } from '../services/test';
 import { OllamaService } from '../services/ollama';
 
 import {

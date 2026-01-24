@@ -4,15 +4,40 @@ import type {
   TestCreationPayload,
   TestCreationResult,
   TestDetailsResponse,
+  TestAutoFillPayload,
+  TestAutoFillResponse,
   TestUpdatePayload,
 } from '../types/editing/TestManagement';
 import type { TestListResponse } from '../types/TestList';
-import type { PublicTestResponse } from '../types/Test';
+import type { PublicTestResponse, TestQuestion } from '../types/Test';
 
 export const TestService = {
   createBlankTest: async (payload: TestCreationPayload): Promise<TestCreationResult> => {
     const response = await api.post('/workbench/tests', payload);
     return response.data;
+  },
+  isAnswerCorrect: (question: TestQuestion, userAnswer: number[] | string[]): boolean => {
+    const normalize = (s: string) => s.trim().replace(/\s+/g, ' ').toLowerCase();
+
+    if (question.type === 'matching') {
+      const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
+      return ua.length === question.correctAnswers.length && question.correctAnswers.every((c) => ua.includes(c));
+    }
+    
+    if (question.type === 'single' || question.type === 'multiple') {
+      const ua = Array.isArray(userAnswer) ? (userAnswer as number[]) : [];
+      if (ua.length !== question.correctAnswers.length) return false;
+      return question.correctAnswers.every((c) => ua.includes(c));
+    }
+
+    if (question.type === 'full_answer') {
+      const ua = Array.isArray(userAnswer) ? (userAnswer as string[]) : [];
+      const text = ua[0] ? normalize(ua[0]) : '';
+      const allowed = question.correctAnswers.map(normalize);
+      return text.length > 0 && allowed.includes(text);
+    }
+
+    return false;
   },
   getTestById: async (testId: string): Promise<TestDetailsResponse> => {
     const response = await api.get(`/workbench/tests/${testId}`);
@@ -20,6 +45,10 @@ export const TestService = {
   },
   updateTest: async (testId: string, payload: TestUpdatePayload): Promise<TestDetailsResponse> => {
     const response = await api.put(`/workbench/tests/${testId}`, payload);
+    return response.data;
+  },
+  autoFillTest: async (testId: string, payload: TestAutoFillPayload): Promise<TestAutoFillResponse> => {
+    const response = await api.post(`/workbench/tests/${testId}/auto-fill`, payload);
     return response.data;
   },
   deleteTest: async (testId: string): Promise<void> => {

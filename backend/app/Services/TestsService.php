@@ -142,6 +142,145 @@ class TestsService
         return true;
     }
 
+    public function autoFillFromJson(string $testId, array $payload): array
+    {
+        $questions = $payload['questions'] ?? [];
+        $selectedIndexes = $payload['selectedIndexes'] ?? [];
+
+        $selected = $this->selectQuestions($questions, $selectedIndexes);
+        if (count($selected) === 0) {
+            throw new \InvalidArgumentException('Не удалось выбрать вопросы для импорта.');
+        }
+
+        $normalized = [];
+        foreach ($selected as $item) {
+            $normalized[] = $this->mapJsonQuestionToPayload($item);
+        }
+
+        [$test, $changedQuestions] = $this->testsRepository->appendQuestions($testId, $normalized);
+
+        if (count($changedQuestions) > 0) {
+            $this->auditService->auditTestUpdated(auth()->user(), $this->mapTestSnapshot($test), $changedQuestions);
+        }
+
+        return [$test, $changedQuestions];
+    }
+
+    private function selectQuestions(array $questions, array $selectedIndexes): array
+    {
+        if (empty($selectedIndexes)) {
+            return $questions;
+        }
+
+        $total = count($questions);
+        $selected = [];
+
+        foreach ($selectedIndexes as $index) {
+            $idx = (int) $index;
+            if ($idx < 1 || $idx > $total) {
+                continue;
+            }
+            $selected[] = $questions[$idx - 1];
+        }
+
+        return $selected;
+    }
+
+    private function mapJsonQuestionToPayload(array $question): array
+    {
+        $type = $question['type'] ?? 'single';
+        $title = $question['question'] ?? $question['title'] ?? '';
+
+        if (!$title) {
+            throw new \InvalidArgumentException('Вопрос без текста не может быть импортирован.');
+        }
+
+        if ($type === 'single' || $type === 'multiple') {
+            $options = array_values($question['options'] ?? []);
+            $correct = array_values($question['correctAnswers'] ?? []);
+            $correct = array_map('intval', $correct);
+
+            return [
+                'title' => $title,
+                'type' => $type,
+                'options' => [
+                    'options' => $options,
+                    'correctOptions' => $correct,
+                ],
+            ];
+        }
+
+        if ($type === 'matching') {
+            [$terms, $termKeys] = $this->normalizeMapList($question['terms'] ?? [], false);
+            [$meanings, $meaningKeys] = $this->normalizeMapList($question['meanings'] ?? [], true);
+
+            $correctAnswers = array_values($question['correctAnswers'] ?? []);
+            $correctMap = [];
+            foreach ($correctAnswers as $pair) {
+                if (!is_string($pair)) {
+                    continue;
+                }
+                $termKey = substr($pair, 0, 1);
+                $meaningIndex = substr($pair, 1);
+                if ($termKey === '' || $meaningIndex === '') {
+                    continue;
+                }
+                $correctMap[(string) $meaningIndex] = $termKey;
+            }
+
+            $matches = [];
+            foreach ($meaningKeys as $key) {
+                $matches[] = $correctMap[(string) $key] ?? '';
+            }
+
+            return [
+                'title' => $title,
+                'type' => $type,
+                'options' => [
+                    'terms' => $terms,
+                    'meanings' => $meanings,
+                    'matches' => $matches,
+                ],
+            ];
+        }
+
+        if ($type === 'full_answer') {
+            $answers = array_values($question['correctAnswers'] ?? []);
+            $answers = array_map('strval', $answers);
+
+            return [
+                'title' => $title,
+                'type' => $type,
+                'options' => [
+                    'answers' => $answers,
+                ],
+            ];
+        }
+
+        throw new \InvalidArgumentException('Неподдерживаемый тип вопроса: ' . $type);
+    }
+
+    private function normalizeMapList($value, bool $numericKeys): array
+    {
+        if (!is_array($value)) {
+            return [[], []];
+        }
+
+        if (array_is_list($value)) {
+            $keys = array_keys($value);
+            return [array_values($value), $keys];
+        }
+
+        $items = $value;
+        if ($numericKeys) {
+            ksort($items, SORT_NUMERIC);
+        } else {
+            ksort($items, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+
+        return [array_values($items), array_keys($items)];
+    }
+
     private function mapTestSnapshot(Test $test): array
     {
         return [

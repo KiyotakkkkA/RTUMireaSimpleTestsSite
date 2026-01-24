@@ -165,6 +165,47 @@ class TestsController extends Controller
         }
     }
 
+    public function autoFill(Request $request, string $testId)
+    {
+        $data = $request->validate([
+            'total' => 'required|integer|min:1',
+            'selection' => 'nullable|string',
+            'selectedIndexes' => 'nullable|array',
+            'selectedIndexes.*' => 'integer|min:1',
+            'questions' => 'required|array|min:1',
+            'questions.*.type' => ['required', 'string', Rule::in(['single', 'multiple', 'matching', 'full_answer'])],
+            'questions.*.question' => 'nullable|string',
+            'questions.*.title' => 'nullable|string',
+            'questions.*.options' => 'nullable|array',
+            'questions.*.correctAnswers' => 'nullable|array',
+            'questions.*.terms' => 'nullable|array',
+            'questions.*.meanings' => 'nullable|array',
+        ]);
+
+        try {
+            [$test, $added] = $this->testsService->autoFillFromJson($testId, $data);
+
+            return response()->json([
+                'message' => 'Вопросы успешно импортированы',
+                'added' => count($added),
+                'total_questions' => $test->total_questions,
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Тест не найден',
+            ], 404);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function destroy(string $testId)
     {
         try {

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Icon } from "@iconify/react";
 
 import { Button, InputSmall, Modal, Spinner } from "../../atoms";
+import { TestAutoCreateModal } from "../../molecules/modals";
 import { QuestionEditEntity } from "../../organisms/test";
 import { useTestManage } from "../../../hooks/editing/useTestManage";
 import { useToasts } from "../../../hooks/useToasts";
@@ -17,6 +18,7 @@ export const TestEditingPage = () => {
     const [testTitle, setTestTitle] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [deleteTargetIndex, setDeleteTargetIndex] = useState<number | null>(null);
+    const [isAutoFillOpen, setIsAutoFillOpen] = useState(false);
 
     const current = questions[currentIndex];
 
@@ -233,6 +235,33 @@ export const TestEditingPage = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="mt-5 p-5 bg-white rounded-2xl space-y-3 border border-slate-200 shadow-sm">
+                        <Button
+                            primary
+                            className="w-full px-4 py-2 text-sm"
+                            onClick={() => setIsAutoFillOpen(true)}
+                            disabled={isFetching || isSaving}
+                        >
+                            Импортировать вопросы
+                        </Button>
+                        <Button
+                            secondary
+                            className="w-full px-4 py-2 text-sm"
+                            onClick={() => {}}
+                            disabled={isFetching || isSaving}
+                        >
+                            Экспортировать вопросы
+                        </Button>
+                        <div className="border-b border-slate-200" />
+                        <Button
+                            successInverted
+                            className="w-full px-4 py-2 text-sm"
+                            onClick={() => {}}
+                            disabled={isFetching || isSaving}
+                        >
+                            Заполнить с помощью ИИ
+                        </Button>
+                    </div>
                 </aside>
 
                 <div className="flex-1 space-y-5">
@@ -309,6 +338,23 @@ export const TestEditingPage = () => {
                     </div>
                 </div>
             </Modal>
+            {testId ? (
+                <TestAutoCreateModal
+                    open={isAutoFillOpen}
+                    onClose={() => setIsAutoFillOpen(false)}
+                    testId={testId}
+                    fillBy="json"
+                    onCompleted={async () => {
+                        const refreshed = await getTestById(testId);
+                        if (refreshed) {
+                            const mapped = refreshed.questions.map(mapApiQuestionToDraft);
+                            setQuestions(mapped.length ? mapped : [createQuestionDraft()]);
+                            setCurrentIndex(0);
+                            setTestTitle(refreshed.title);
+                        }
+                    }}
+                />
+            ) : null}
         </div>
     );
 };

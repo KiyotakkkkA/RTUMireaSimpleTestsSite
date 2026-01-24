@@ -44,7 +44,7 @@ export const Button = ({
     ...props
 }: ButtonProps) => {
 
-    let buttonClasses = `transition-colors duration-300 rounded-lg`;
+    let buttonClasses = `transition-colors duration-300 rounded-lg font-semibold`;
     if (primary) buttonClasses += ' bg-indigo-500 text-white hover:bg-indigo-600';
     if (primaryNoBackground) buttonClasses += ' text-gray-600 hover:text-indigo-600';
 
