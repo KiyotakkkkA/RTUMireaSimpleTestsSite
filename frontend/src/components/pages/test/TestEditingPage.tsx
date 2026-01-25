@@ -9,6 +9,7 @@ import { useTestManage } from "../../../hooks/editing/useTestManage";
 import { useToasts } from "../../../hooks/useToasts";
 import { createQuestionDraft, mapApiQuestionToDraft, mapDraftToPayload } from "../../../utils/testEditing";
 import { QuestionFilesService } from "../../../services/questionFiles";
+import { TestService } from "../../../services/test";
 
 import type { QuestionDraft } from "../../organisms/test/QuestionEditEntity";
 
@@ -20,6 +21,7 @@ export const TestEditingPage = () => {
     const [deleteTargetIndex, setDeleteTargetIndex] = useState<number | null>(null);
     const [isAutoFillOpen, setIsAutoFillOpen] = useState(false);
     const [autoFillType, setAutoFillType] = useState<'json' | 'ai'>('json');
+    const [isDownloadingJson, setIsDownloadingJson] = useState(false);
 
     const current = questions[currentIndex];
 
@@ -152,6 +154,18 @@ export const TestEditingPage = () => {
         setDeleteTargetIndex(null);
     };
 
+    const handleExportJson = async () => {
+        if (!testId) return;
+        try {
+            setIsDownloadingJson(true);
+            await TestService.downloadTestJson(testId);
+        } catch (e: any) {
+            toast.danger(e?.response?.data?.message || 'Не удалось скачать JSON файл.');
+        } finally {
+            setIsDownloadingJson(false);
+        }
+    };
+
     return (
         <div className="w-full">
             <div className="flex w-full flex-col gap-6 lg:flex-row">
@@ -250,10 +264,11 @@ export const TestEditingPage = () => {
                         </Button>
                         <Button
                             secondary
-                            className="w-full px-4 py-2 text-sm"
-                            onClick={() => {}}
-                            disabled={isFetching || isSaving}
+                            className="w-full px-4 py-2 text-sm flex justify-center items-center"
+                            onClick={handleExportJson}
+                            disabled={isFetching || isSaving || isDownloadingJson}
                         >
+                            {isDownloadingJson && <Spinner className="h-4 w-4 mr-2" />}
                             Экспортировать вопросы
                         </Button>
                         <div className="border-b border-slate-200" />

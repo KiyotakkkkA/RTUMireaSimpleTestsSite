@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\TestsController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\QuestionFilesController;
 use Illuminate\Http\Request;
@@ -37,6 +38,14 @@ Route::middleware(['auth:sanctum', 'permission:view admin panel'])->prefix('admi
     Route::group(['prefix' => 'statistics'], function () {
         Route::get('/', [AdminController::class, 'statistics'])->name('admin.statistics')->middleware('permission:view statistics');
     });
+});
+
+// Download reports AND statistics
+Route::middleware('auth:sanctum')->prefix('download')->group(function () {
+    
+    Route::get('/test/{testId}/pdf', [ReportsController::class, 'makeTestToPDF'])->middleware('permission:make reports')->name('download.test.pdf');
+    Route::get('/test/{testId}/json', [ReportsController::class, 'makeTestToJSON'])->middleware('permission:make reports')->name('download.test.json');
+
 });
 
 // Workbench routes for test creation and editing

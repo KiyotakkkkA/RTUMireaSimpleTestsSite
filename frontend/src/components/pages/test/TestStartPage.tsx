@@ -19,6 +19,7 @@ export const TestStartPage: React.FC = () => {
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
     const [dbTest, setDbTest] = useState<Test | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -108,6 +109,17 @@ export const TestStartPage: React.FC = () => {
     const accessToTestManagement = (test.is_current_user_creator ?? false) || authStore.hasPermission('tests master access');
     const canDeleteTest = accessToTestManagement && source === 'db' && authStore.hasPermission('delete tests');
     const canEditTest = accessToTestManagement && source === 'db' && authStore.hasPermission('edit tests');
+    const canDownloadTest = authStore.hasPermission('make reports');
+
+    const handleDownload = async () => {
+        if (!testId) return;
+        try {
+            setIsDownloadingPdf(true);
+            await TestService.downloadTestPdf(testId);
+        } finally {
+            setIsDownloadingPdf(false);
+        }
+    };
 
     return (
         <div className="w-full max-w-2xl space-y-8 m-auto">
@@ -122,8 +134,22 @@ export const TestStartPage: React.FC = () => {
                         Назад
                     </Button>
                     <div className="flex items-center">
-                        { (canEditTest || canDeleteTest) && (
-                            <div className="flex items-center bg-indigo-50 p-2 gap-2 rounded-lg mr-4">
+                        { (canEditTest || canDeleteTest || canDownloadTest) && (
+                            <div className="flex items-center border shadow-sm p-2 gap-6 rounded-lg mr-4">
+                                {canDownloadTest && (
+                                    <Button
+                                        onClick={handleDownload}
+                                        primaryNoBackground
+                                        className="text-md font-medium flex items-center gap-2"
+                                        disabled={isDownloadingPdf}
+                                    >
+                                    {isDownloadingPdf ? (
+                                        <Spinner className="h-6 w-6" />
+                                    ) : (
+                                        <Icon icon="mdi:download" className="h-7 w-7" />
+                                    )}
+                                    </Button>
+                                )}
                                 {canEditTest && (
                                     <Button
                                         onClick={() => { navigate(`/workbench/test/${testId}`) }}

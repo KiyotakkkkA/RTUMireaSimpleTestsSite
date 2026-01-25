@@ -36,7 +36,7 @@ export const TestsStatisticsGeneral = ({ series, summary }: TestsStatisticsGener
           <div className="mt-2 text-2xl font-semibold text-slate-800">{summary.average_percentage}%</div>
         </div>
         <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Уникальных пользователей</div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Различных тестов пройдено</div>
           <div className="mt-2 text-2xl font-semibold text-slate-800">{summary.unique_tests}</div>
         </div>
       </div>

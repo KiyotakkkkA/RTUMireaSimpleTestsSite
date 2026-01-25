@@ -79,4 +79,32 @@ export const TestService = {
     const response = await api.post('/statistics/test', payload);
     return response.data;
   },
+  downloadTestPdf: async (testId: string): Promise<void> => {
+    const response = await api.get(`/download/test/${testId}/pdf`, { responseType: 'blob' });
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const disposition = response.headers?.['content-disposition'] as string | undefined;
+    const match = disposition?.match(/filename="?([^";]+)"?/i);
+    link.href = url;
+    link.download = match?.[1] ?? `test-${testId}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
+  downloadTestJson: async (testId: string): Promise<void> => {
+    const response = await api.get(`/download/test/${testId}/json`, { responseType: 'blob' });
+    const blob = new Blob([response.data], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const disposition = response.headers?.['content-disposition'] as string | undefined;
+    const match = disposition?.match(/filename="?([^";]+)"?/i);
+    link.href = url;
+    link.download = match?.[1] ?? `test-${testId}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
 };

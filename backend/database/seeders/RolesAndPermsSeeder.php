@@ -63,6 +63,10 @@ class RolesAndPermsSeeder extends Seeder
                 'name' => 'tests master access',
                 'description' => 'доступ к чужим тестам',
             ],
+            [
+                'name' => 'make reports',
+                'description' => 'создание отчетов',
+            ]
         ];
 
         foreach ($permissions as $permission) {
