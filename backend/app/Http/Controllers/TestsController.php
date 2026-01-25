@@ -126,7 +126,7 @@ class TestsController extends Controller
             'questions' => 'required|array',
             'questions.*.id' => 'nullable|integer',
             'questions.*.title' => 'required|string',
-            'questions.*.disabled' => 'required|boolean',
+            'questions.*.disabled' => 'boolean',
             'questions.*.type' => ['required', 'string', Rule::in(['single', 'multiple', 'matching', 'full_answer'])],
             'questions.*.options' => 'nullable|array',
         ]);
