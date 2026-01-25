@@ -11,6 +11,7 @@ export interface TestCreationResult {
 export type TestQuestionPayload = {
   id?: number;
   title: string;
+  disabled?: boolean;
   type: 'single' | 'multiple' | 'matching' | 'full_answer';
   options?: {
     options?: string[];
@@ -25,6 +26,7 @@ export type TestQuestionPayload = {
 export type TestQuestionResponse = {
   id: number;
   title: string;
+  disabled: boolean;
   type: 'single' | 'multiple' | 'matching' | 'full_answer';
   options?: {
     options?: string[];

@@ -12,11 +12,13 @@ class Question extends Model
         'test_id',
         'title',
         'type',
-        'options'
+        'options',
+        'disabled',
     ];
 
     protected $casts = [
         'options' => 'array',
+        'disabled' => 'boolean',
     ];
 
     public $timestamps = true;

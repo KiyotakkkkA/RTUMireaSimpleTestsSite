@@ -21,7 +21,7 @@ export const TestListElementCard = ({ test }: TestListElementCardProps) => {
                     </div>
                     <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
                         <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                        {test.questionCount} вопросов
+                        {test.questionCount - test.disabledCount} вопросов
                     </div>
                 </div>
                 <div className="shrink-0 text-indigo-600 font-semibold transition group-hover:translate-x-1">

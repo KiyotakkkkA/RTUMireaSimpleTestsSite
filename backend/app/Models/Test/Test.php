@@ -19,6 +19,7 @@ class Test extends Model
         'creator_id',
         'title',
         'total_questions',
+        'total_disabled',
     ];
 
     public $appends = ['is_current_user_creator'];
@@ -34,6 +35,11 @@ class Test extends Model
     public function questions()
     {
         return $this->hasMany(Question::class, 'test_id');
+    }
+
+    public function nonDisabledQuestions()
+    {
+        return $this->hasMany(Question::class, 'test_id')->where('disabled', 0);
     }
 
     public function creator()

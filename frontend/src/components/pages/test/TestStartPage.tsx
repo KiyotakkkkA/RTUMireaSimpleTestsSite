@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
@@ -6,7 +6,6 @@ import { Button, InputSlider, Modal, SlidedPanel, SwitchRow } from '../../atoms'
 import { ExpressTestModal } from '../../molecules/modals';
 import { useTestPassing } from '../../../hooks/useTestPassing';
 import { useTestManage } from '../../../hooks/editing/useTestManage';
-import { TESTS } from '../../../tests';
 import { TestService } from '../../../services/test';
 import { Spinner } from '../../atoms';
 import { authStore } from '../../../stores/authStore';
@@ -30,9 +29,8 @@ export const TestStartPage: React.FC = () => {
     } = useTestManage();
 
     const testId = useParams<{ testId: string }>().testId;
-    const localTest = useMemo(() => TESTS.find(t => t.uuid === testId), [testId]);
     const source = (location.state as { source?: 'local' | 'db' } | null)?.source
-        ?? (localTest ? 'local' : 'db');
+        ?? 'db';
 
     useEffect(() => {
         let mounted = true;
@@ -47,6 +45,8 @@ export const TestStartPage: React.FC = () => {
                     uuid: response.test.id,
                     discipline_name: response.test.title,
                     questions: response.test.questions,
+                    total_questions: response.test.total_questions,
+                    total_disabled: response.test.total_disabled,
                     is_current_user_creator: response.test.is_current_user_creator ?? false,
                 });
             } catch (e) {
@@ -64,7 +64,7 @@ export const TestStartPage: React.FC = () => {
         };
     }, [testId, source]);
 
-    const test = source === 'local' ? localTest : dbTest;
+    const test = dbTest;
 
     const fullAnswerModes = [
         { value: 'lite', title: 'Lite', description: 'Достаточно передать суть ответа' },

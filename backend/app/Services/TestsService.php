@@ -56,7 +56,7 @@ class TestsService
 
         $alphabet = range('A', 'Z');
 
-        $questions = $test->questions->map(function ($question) use ($alphabet) {
+        $questions = $test->nonDisabledQuestions->map(function ($question) use ($alphabet) {
             $options = $question->options ?? [];
             $files = $question->files->map(fn ($file) => [
                 'id' => $file->id,
@@ -124,6 +124,8 @@ class TestsService
         return [
             'id' => $test->id,
             'title' => $test->title,
+            'total_questions' => $test->total_questions,
+            'total_disabled' => $test->total_disabled, 
             'is_current_user_creator' => $test->is_current_user_creator,
             'questions' => $questions,
         ];
@@ -160,7 +162,8 @@ class TestsService
         }
 
         if ($replace) {
-            [$test, $changedQuestions] = $this->testsRepository->replaceQuestions($testId, $normalized);
+            throw new \RuntimeException('Замена вопросов временно недоступна.');
+            # [$test, $changedQuestions] = $this->testsRepository->replaceQuestions($testId, $normalized);
         } else {
             [$test, $changedQuestions] = $this->testsRepository->appendQuestions($testId, $normalized);
         }

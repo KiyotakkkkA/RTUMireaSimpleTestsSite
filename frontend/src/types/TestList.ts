@@ -4,6 +4,7 @@ export type TestListDbItem = {
     id: string;
     title: string;
     total_questions: number;
+    total_disabled?: number;
     is_current_user_creator?: boolean;
 };
 
@@ -21,6 +22,7 @@ export type TestListItem = {
     id: string;
     title: string;
     questionCount: number;
+    disabledCount: number;
     link: string;
     source: 'db' | 'local';
 };

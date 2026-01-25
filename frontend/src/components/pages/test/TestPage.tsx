@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import { useTestPassing } from "../../../hooks/useTestPassing";
-import { TESTS } from "../../../tests";
 import { TestService } from "../../../services/test";
 import { StorageService } from "../../../services/storage";
 import { QuestionNavigator } from "../../molecules/test";
@@ -17,7 +16,6 @@ export const TestPage = () => {
 
     const testId = useParams<{ testId: string }>().testId;
     const location = useLocation();
-    const localTest = useMemo(() => TESTS.find(t => t.uuid === testId), [testId]);
     const [dbTest, setDbTest] = useState<Test | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +24,7 @@ export const TestPage = () => {
     const savedSource = StorageService.getSession()?.source;
     const source = (location.state as { source?: 'local' | 'db' } | null)?.source
         ?? savedSource
-        ?? (localTest ? 'local' : 'db');
+        ?? 'db';
 
     useEffect(() => {
         let mounted = true;
@@ -41,6 +39,8 @@ export const TestPage = () => {
                 setDbTest({
                     uuid: response.test.id,
                     discipline_name: response.test.title,
+                    total_questions: response.test.total_questions,
+                    total_disabled: response.test.total_disabled,
                     questions: response.test.questions,
                 });
             } catch (e) {
@@ -58,7 +58,7 @@ export const TestPage = () => {
         };
     }, [testId, source]);
 
-    const test = source === 'local' ? localTest : dbTest;
+    const test = dbTest;
 
     const {
         resetTest,

@@ -110,6 +110,8 @@ export type TestQuestion =
 export interface Test {
   uuid: string;
   discipline_name: string;
+  total_questions: number;
+  total_disabled: number;
   is_current_user_creator?: boolean;
   questions: TestQuestion[];
 }
@@ -119,6 +121,8 @@ export type PublicTestResponse = {
     id: string;
     title: string;
     is_current_user_creator: boolean;
+    total_questions: number;
+    total_disabled: number;
     questions: TestQuestion[];
   };
 };

@@ -55,13 +55,16 @@ class TestsRepository
                 $normalizedOptions = $this->normalizeOptions($item['options'] ?? []);
                 if (!empty($item['id']) && $existing->has((int) $item['id'])) {
                     $question = $existing->get((int) $item['id']);
-                    $changed = $this->isQuestionChanged($question->title, $question->type, $question->options ?? [], $item['title'], $item['type'], $normalizedOptions);
+                    $changed = $this->isQuestionChanged($question->title, $question->disabled, $question->type, $question->options ?? [], $item['title'], $item['disabled'] ?? false, $item['type'], $normalizedOptions);
 
                     $question->update([
+                        'disabled' => $item['disabled'] ?? false,
                         'title' => $item['title'],
                         'type' => $item['type'],
                         'options' => $normalizedOptions,
                     ]);
+
+                    $this->recalculateTotalDisabledQuestions($test);
 
                     if ($changed) {
                         $changedQuestions[] = [
@@ -183,6 +186,13 @@ class TestsRepository
         });
     }
 
+    private function recalculateTotalDisabledQuestions(Test $test): void
+    {
+        $totalDisabled = $test->questions()->where('disabled', 1)->count();
+        $test->total_disabled = $totalDisabled;
+        $test->save();
+    }
+
     private function normalizeOptions(?array $options): array
     {
         return [
@@ -197,13 +207,15 @@ class TestsRepository
 
     private function isQuestionChanged(
         string $oldTitle,
+        string $oldDisabled,
         string $oldType,
         ?array $oldOptions,
         string $newTitle,
+        string $newDisabled,
         string $newType,
         array $newOptions
     ): bool {
-        if ($oldTitle !== $newTitle || $oldType !== $newType) {
+        if ($oldTitle !== $newTitle || $oldType !== $newType || $oldDisabled !== $newDisabled) {
             return true;
         }
 

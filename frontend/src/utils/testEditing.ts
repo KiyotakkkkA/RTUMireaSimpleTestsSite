@@ -5,6 +5,7 @@ export const createQuestionDraft = (id?: number, type: QuestionDraftType = 'sing
   id,
   type,
   question: '',
+  disabled: false,
   media: [],
   existingFiles: [],
   removedFileIds: [],
@@ -28,6 +29,7 @@ export const mapApiQuestionToDraft = (question: TestQuestionResponse): QuestionD
   const mapped = {
     ...base,
     question: question.title,
+    disabled: question.disabled ?? false,
     options: ensureList(options.options, ['']),
     correctOptions: options.correctOptions ?? [],
     terms: ensureList(options.terms, ['']),
@@ -58,6 +60,7 @@ export const mapDraftToPayload = (draft: QuestionDraft): TestQuestionPayload => 
       return {
         id: draft.id,
         title: draft.question,
+        disabled: draft.disabled,
         type: draft.type,
         options: {
           options: draft.options,
@@ -68,6 +71,7 @@ export const mapDraftToPayload = (draft: QuestionDraft): TestQuestionPayload => 
       return {
         id: draft.id,
         title: draft.question,
+        disabled: draft.disabled,
         type: draft.type,
         options: {
           terms: draft.terms,
@@ -79,6 +83,7 @@ export const mapDraftToPayload = (draft: QuestionDraft): TestQuestionPayload => 
     default:
       return {
         id: draft.id,
+        disabled: draft.disabled,
         title: draft.question,
         type: draft.type,
         options: {

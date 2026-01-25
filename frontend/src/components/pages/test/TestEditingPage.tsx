@@ -280,7 +280,7 @@ export const TestEditingPage = () => {
                             </div>
                             <Button
                                 primary
-                                disabled={isFetching || isSaving}
+                                disabled={isFetching || isSaving || !testTitle.trim().length}
                                 className="px-5 py-2 text-sm"
                                 onClick={handleSave}
                             >

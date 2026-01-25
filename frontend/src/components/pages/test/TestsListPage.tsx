@@ -2,7 +2,6 @@ import { useMemo, useState } from "react"
 import { Icon } from "@iconify/react"
 import { useNavigate } from "react-router-dom"
 
-import { TESTS } from "../../../tests"
 import { Button, InputSmall, Modal, Selector, Spinner } from "../../atoms"
 import { TestListElementCard } from "../../molecules/cards"
 import { authStore } from "../../../stores/authStore"
@@ -33,23 +32,17 @@ export const TestsListPage = () => {
     const navigate = useNavigate();
 
     const listItems = useMemo<TestListItem[]>(() => {
-        const localItems = TESTS.map((test) => ({
-            id: test.uuid,
-            title: test.discipline_name,
-            questionCount: test.questions.length,
-            link: `/tests/${test.uuid}/start`,
-            source: 'local' as const,
-        }));
-
+        
         const dbItems = dbTests.map((test) => ({
             id: test.id,
             title: test.title,
             questionCount: test.total_questions ?? 0,
+            disabledCount: test.total_disabled ?? 0,
             link: `/tests/${test.id}/start`,
             source: 'db' as const,
         }));
 
-        return [...localItems, ...dbItems];
+        return [...dbItems];
     }, [dbTests]);
 
     const sortOptions = useMemo(

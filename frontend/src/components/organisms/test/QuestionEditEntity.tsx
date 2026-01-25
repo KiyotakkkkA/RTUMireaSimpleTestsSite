@@ -1,18 +1,20 @@
 import { useMemo } from 'react';
 
-import { InputBig, InputMedia, Selector } from '../../atoms';
+import { Button, InputBig, InputMedia, Selector } from '../../atoms';
 import {
   FullAnswerForm,
   MatchingForm,
   MultipleChoiceForm,
   SingleChoiceForm,
 } from '../../molecules/forms/test/editing';
+import { Icon } from '@iconify/react';
 
 export type QuestionDraftType = 'single' | 'multiple' | 'matching' | 'full_answer';
 
 export type QuestionDraft = {
   id?: number;
   type: QuestionDraftType;
+  disabled?: boolean;
   question: string;
   media: File[];
   existingFiles: {
@@ -132,12 +134,33 @@ export const QuestionEditEntity = ({ index, draft, onChange }: QuestionEditEntit
           <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Вопрос {index + 1}</div>
           <div className="text-lg font-semibold text-slate-800">Настройка вопроса</div>
         </div>
-        <div className="w-full sm:w-64">
+        <div className="w-full sm:w-64 flex items-center gap-3">
           <Selector
             value={draft.type}
             options={typeOptions}
+            className='flex-1'
             onChange={(value) => update({ type: value as QuestionDraftType })}
           />
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-1">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Видимость</div>
+        <div className={`${draft.disabled ? 'bg-red-100' : 'bg-green-100'} p-3 rounded-lg text-slate-600 text-sm flex justify-between items-center transition-colors`}>
+          { draft.disabled ?  (
+            <>
+              <span>Этот вопрос не будет будет показан никому во время прохождения теста.</span>
+              <Button className='p-2 bg-red-500' onClick={() => update({ disabled: false })}>
+                <Icon icon="mdi:eye-off" className="h-5 w-5 text-white" />
+              </Button>
+            </> ) : (
+            <>
+              <span>Этот вопрос будет показан всем во время прохождения теста.</span>
+              <Button className='p-2 bg-green-500' onClick={() => update({ disabled: true })}>
+                <Icon icon="mdi:eye" className="h-5 w-5 text-white" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
 

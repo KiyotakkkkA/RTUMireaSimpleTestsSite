@@ -59,6 +59,7 @@ class TestsController extends Controller
                 'id' => $test->id,
                 'title' => $test->title,
                 'total_questions' => $test->total_questions,
+                'total_disabled' =>$test->total_disabled,
             ])->values()->all(),
             'pagination' => [
                 'page' => $tests->currentPage(),
@@ -87,6 +88,7 @@ class TestsController extends Controller
                 'questions' => $test->questions->map(fn ($question) => [
                     'id' => $question->id,
                     'title' => $question->title,
+                    'disabled' => $question->disabled,
                     'type' => $question->type,
                     'options' => $question->options,
                     'files' => $question->files->map(fn ($file) => [
@@ -124,6 +126,7 @@ class TestsController extends Controller
             'questions' => 'required|array',
             'questions.*.id' => 'nullable|integer',
             'questions.*.title' => 'required|string',
+            'questions.*.disabled' => 'required|boolean',
             'questions.*.type' => ['required', 'string', Rule::in(['single', 'multiple', 'matching', 'full_answer'])],
             'questions.*.options' => 'nullable|array',
         ]);
@@ -139,6 +142,7 @@ class TestsController extends Controller
                     'total_questions' => $test->total_questions,
                     'questions' => $test->questions->map(fn ($question) => [
                         'id' => $question->id,
+                        'disabled' => $question->disabled,
                         'title' => $question->title,
                         'type' => $question->type,
                         'options' => $question->options,
