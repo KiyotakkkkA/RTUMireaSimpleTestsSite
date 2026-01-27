@@ -66,15 +66,13 @@ class TestsRepository
 
                     $this->recalculateTotalDisabledQuestions($test);
 
-                    if ($changed) {
-                        $changedQuestions[] = [
-                            'id' => $question->id,
-                            'title' => $question->title,
-                            'type' => $question->type,
-                            'action' => 'updated',
-                            'client_id' => $item['client_id'] ?? null,
-                        ];
-                    }
+                    $changedQuestions[] = [
+                        'id' => $question->id,
+                        'title' => $question->title,
+                        'type' => $question->type,
+                        'action' => 'updated',
+                        'client_id' => $item['client_id'] ?? null,
+                    ];
                 } else {
                     $question = $test->questions()->create([
                         'title' => $item['title'],

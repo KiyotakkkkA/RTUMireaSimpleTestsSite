@@ -3,11 +3,17 @@ import { useCallback, useState } from 'react';
 import { TestService } from '../../services/test';
 
 import type {
+    ChangedQuestion,
     TestCreationPayload,
     TestCreationResult,
     TestDetails,
     TestUpdatePayload,
 } from '../../types/editing/TestManagement';
+
+export type TestUpdateResult = {
+    test: TestDetails | null;
+    changedQuestions: ChangedQuestion[];
+};
 
 export const useTestManage = () => {
   const [isCreating, setIsCreating] = useState(false);
@@ -45,12 +51,15 @@ export const useTestManage = () => {
         }
     }, []);
 
-    const updateTest = useCallback(async (testId: string, payload: TestUpdatePayload): Promise<TestDetails | null> => {
+    const updateTest = useCallback(async (testId: string, payload: TestUpdatePayload): Promise<TestUpdateResult | null> => {
         try {
             setIsSaving(true);
             setError(null);
             const result = await TestService.updateTest(testId, payload);
-            return result.test;
+            return {
+                test: result.test ?? null,
+                changedQuestions: result.changedQuestions ?? [],
+            };
         } catch (e: any) {
             if (e?.response?.status === 404) {
                 return null;

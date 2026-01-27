@@ -113,7 +113,7 @@ export const TestEditingPage = () => {
         };
 
         const updated = await updateTest(testId, payload);
-        if (!updated) {
+        if (!updated || !updated.test) {
             toast.danger(error || 'Не удалось сохранить тест');
             return;
         }
@@ -122,7 +122,7 @@ export const TestEditingPage = () => {
             const draftsById = new Map(questions.filter((d) => d.id).map((d) => [d.id as number, d]));
             const draftsByClientId = new Map(questions.map((d) => [d.clientId, d]));
 
-            const changed = (updated as any)?.changedQuestions ?? [];
+            const changed = updated.changedQuestions ?? [];
 
             await Promise.all(
                 changed.map(async (item: any) => {
