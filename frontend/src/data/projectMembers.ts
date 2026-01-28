@@ -49,5 +49,4 @@ export const teamMembers = [
 ];
 
 export const projectParticipants = [
-    'Иванов Иван',
 ]
