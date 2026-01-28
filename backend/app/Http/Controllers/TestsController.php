@@ -18,23 +18,16 @@ class TestsController extends Controller
 
     public function createBlankTest(Request $request)
     {
-        try {
-            $data = $request->validate([
-                'title' => 'required|string|max:255',
-            ]);
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
 
-            $test = $this->testsService->createBlankTest($data);
+        $test = $this->testsService->createBlankTest($data);
 
-            return response()->json([
-                'message' => 'Тест успешно создан',
-                'testId' => $test->id,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Тест успешно создан',
+            'testId' => $test->id,
+        ], 201);
     }
 
     public function index(Request $request)
@@ -134,43 +127,32 @@ class TestsController extends Controller
             'removed_question_ids.*' => 'integer',
         ]);
 
-        try {
-            [$test, $changedQuestions] = $this->testsService->updateTest($testId, $data);
+        [$test, $changedQuestions] = $this->testsService->updateTest($testId, $data);
 
-            return response()->json([
-                'message' => 'Тест успешно обновлён',
-                'changedQuestions' => $changedQuestions,
-                'test' => [
-                    'id' => $test->id,
-                    'title' => $test->title,
-                    'total_questions' => $test->total_questions,
-                    'questions' => $test->questions->map(fn ($question) => [
-                        'id' => $question->id,
-                        'disabled' => $question->disabled,
-                        'title' => $question->title,
-                        'type' => $question->type,
-                        'options' => $question->options,
-                        'files' => $question->files->map(fn ($file) => [
-                            'id' => $file->id,
-                            'name' => $file->name,
-                            'alias' => $file->alias,
-                            'mime_type' => $file->mime_type,
-                            'size' => $file->size,
-                            'url' => Storage::disk('public')->url($file->alias),
-                        ])->values()->all(),
+        return response()->json([
+            'message' => 'Тест успешно обновлён',
+            'changedQuestions' => $changedQuestions,
+            'test' => [
+                'id' => $test->id,
+                'title' => $test->title,
+                'total_questions' => $test->total_questions,
+                'questions' => $test->questions->map(fn ($question) => [
+                    'id' => $question->id,
+                    'disabled' => $question->disabled,
+                    'title' => $question->title,
+                    'type' => $question->type,
+                    'options' => $question->options,
+                    'files' => $question->files->map(fn ($file) => [
+                        'id' => $file->id,
+                        'name' => $file->name,
+                        'alias' => $file->alias,
+                        'mime_type' => $file->mime_type,
+                        'size' => $file->size,
+                        'url' => Storage::disk('public')->url($file->alias),
                     ])->values()->all(),
-                ],
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Тест не найден',
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+                ])->values()->all(),
+            ],
+        ], 200);
     }
 
     public function autoFill(Request $request, string $testId)
@@ -191,49 +173,27 @@ class TestsController extends Controller
             'questions.*.meanings' => 'nullable|array',
         ]);
 
-        try {
-            [$test, $added] = $this->testsService->autoFillFromJson($testId, $data);
+        [$test, $added] = $this->testsService->autoFillFromJson($testId, $data);
 
-            return response()->json([
-                'message' => 'Вопросы успешно импортированы',
-                'added' => count($added),
-                'total_questions' => $test->total_questions,
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Тест не найден',
-            ], 404);
-        } catch (\InvalidArgumentException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], 422);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json([
+            'message' => 'Вопросы успешно импортированы',
+            'added' => count($added),
+            'total_questions' => $test->total_questions,
+        ], 200);
     }
 
     public function destroy(string $testId)
     {
-        try {
-            $deleted = $this->testsService->deleteTest($testId);
+        $deleted = $this->testsService->deleteTest($testId);
 
-            if (!$deleted) {
-                return response()->json([
-                    'message' => 'Тест не найден',
-                ], 404);
-            }
-
+        if (!$deleted) {
             return response()->json([
-                'message' => 'Тест успешно удалён',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => 'Тест не найден',
+            ], 404);
         }
+
+        return response()->json([
+            'message' => 'Тест успешно удалён',
+        ], 200);
     }
 }

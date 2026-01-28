@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Exceptions\ApiException;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 class AuthService
@@ -13,7 +13,7 @@ class AuthService
     public function register(array $data): array
     {
         if (User::where('email', $data['email'])->exists()) {
-            throw ValidationException::withMessages([
+            throw new ApiException('Email уже зарегистрирован', 422, [
                 'email' => ['Email уже зарегистрирован'],
             ]);
         }
@@ -42,7 +42,7 @@ class AuthService
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            throw ValidationException::withMessages([
+            throw new ApiException('Неправильный логин или пароль', 401, [
                 'email' => ['Email или пароль не верны'],
             ]);
         }

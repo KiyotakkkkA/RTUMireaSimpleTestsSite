@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ApiException;
 use App\Repositories\TestsRepository;
 use App\Models\Test\Test;
 use App\Services\Admin\AdminAuditService;
@@ -153,7 +154,7 @@ class TestsService
 
         $selected = $this->selectQuestions($questions, $selectedIndexes);
         if (count($selected) === 0) {
-            throw new \InvalidArgumentException('Не удалось выбрать вопросы для импорта.');
+            throw new ApiException('Не удалось выбрать вопросы для импорта.', 422);
         }
 
         $normalized = [];
@@ -162,7 +163,7 @@ class TestsService
         }
 
         if ($replace) {
-            throw new \RuntimeException('Замена вопросов временно недоступна.');
+            throw new ApiException('Замена вопросов временно недоступна.', 409);
             # [$test, $changedQuestions] = $this->testsRepository->replaceQuestions($testId, $normalized);
         } else {
             [$test, $changedQuestions] = $this->testsRepository->appendQuestions($testId, $normalized);
@@ -201,7 +202,7 @@ class TestsService
         $title = $question['question'] ?? $question['title'] ?? '';
 
         if (!$title) {
-            throw new \InvalidArgumentException('Вопрос без текста не может быть импортирован.');
+            throw new ApiException('Вопрос без текста не может быть импортирован.', 422);
         }
 
         if ($type === 'single' || $type === 'multiple') {
@@ -266,7 +267,7 @@ class TestsService
             ];
         }
 
-        throw new \InvalidArgumentException('Неподдерживаемый тип вопроса: ' . $type);
+        throw new ApiException('Неподдерживаемый тип вопроса: ' . $type, 422);
     }
 
     private function normalizeMapList($value, bool $numericKeys): array
