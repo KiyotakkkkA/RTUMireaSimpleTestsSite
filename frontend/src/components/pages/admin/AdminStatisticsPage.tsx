@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { Button, InputDate, Selector, Spinner } from '../../atoms';
 import { TestsStatisticsGeneral } from '../../organisms/admin';
@@ -9,7 +10,7 @@ type StatisticsViewMode = 'general' | 'target';
 const formatRangeDate = (value: string) =>
   new Date(value).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric' });
 
-export const AdminStatisticsPage = () => {
+export const AdminStatisticsPage = observer(() => {
   const [viewMode, setViewMode] = useState<StatisticsViewMode>('general');
   const { data, isLoading, error, filters, updateFilters } = useAdminStatistics();
 
@@ -192,4 +193,4 @@ export const AdminStatisticsPage = () => {
       )}
     </div>
   );
-};
+});

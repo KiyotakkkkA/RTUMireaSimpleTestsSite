@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { NavLink, Outlet } from 'react-router-dom';
 
@@ -11,16 +11,27 @@ const navItemClass = ({ isActive }: { isActive: boolean }) =>
 
 export const AdminLayout = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 200);
+      if (rafRef.current !== null) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        const nextValue = window.scrollY > 200;
+        setShowScrollTop((prev) => (prev === nextValue ? prev : nextValue));
+      });
     };
 
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      if (rafRef.current !== null) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleScrollTop = () => {

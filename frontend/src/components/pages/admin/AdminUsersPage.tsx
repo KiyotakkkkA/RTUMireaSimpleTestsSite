@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { UserCard } from '../../molecules/cards';
 import { authStore } from '../../../stores/authStore';
@@ -8,7 +9,7 @@ import { RegisterForm } from '../../molecules/forms';
 import { useAdministrateUsers } from '../../../hooks/admin/useAdministrateUsers';
 import { useToasts } from '../../../hooks/useToasts';
 
-export const AdminUsersPage = () => {
+export const AdminUsersPage = observer(() => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<null | { id: number; name: string; email: string }>(null);
   const { toast } = useToasts();
@@ -320,4 +321,4 @@ export const AdminUsersPage = () => {
       </Modal>
     </div>
   );
-};
+});
