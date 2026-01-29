@@ -1,101 +1,101 @@
 export interface TestCreationPayload {
-  title: string;
+    title: string;
 }
 
 export interface TestCreationResult {
-  testId: string;
-  error?: string;
-  message: string;
+    testId: string;
+    error?: string;
+    message: string;
 }
 
 export type TestQuestionPayload = {
-  id?: number;
-  client_id?: string;
-  title: string;
-  disabled?: boolean;
-  type: 'single' | 'multiple' | 'matching' | 'full_answer';
-  options?: {
-    options?: string[];
-    correctOptions?: number[];
-    terms?: string[];
-    meanings?: string[];
-    matches?: string[];
-    answers?: string[];
-  };
+    id?: number;
+    client_id?: string;
+    title: string;
+    disabled?: boolean;
+    type: "single" | "multiple" | "matching" | "full_answer";
+    options?: {
+        options?: string[];
+        correctOptions?: number[];
+        terms?: string[];
+        meanings?: string[];
+        matches?: string[];
+        answers?: string[];
+    };
 };
 
 export type TestQuestionResponse = {
-  id: number;
-  title: string;
-  disabled: boolean;
-  type: 'single' | 'multiple' | 'matching' | 'full_answer';
-  options?: {
-    options?: string[];
-    correctOptions?: number[];
-    terms?: string[];
-    meanings?: string[];
-    matches?: string[];
-    answers?: string[];
-  } | null;
-  files?: QuestionFile[];
+    id: number;
+    title: string;
+    disabled: boolean;
+    type: "single" | "multiple" | "matching" | "full_answer";
+    options?: {
+        options?: string[];
+        correctOptions?: number[];
+        terms?: string[];
+        meanings?: string[];
+        matches?: string[];
+        answers?: string[];
+    } | null;
+    files?: QuestionFile[];
 };
 
 export type QuestionFile = {
-  id: number;
-  name: string;
-  alias: string;
-  url: string;
-  mime_type?: string | null;
-  size?: number | null;
+    id: number;
+    name: string;
+    alias: string;
+    url: string;
+    mime_type?: string | null;
+    size?: number | null;
 };
 
 export type TestDetails = {
-  id: string;
-  title: string;
-  total_questions: number;
-  questions: TestQuestionResponse[];
+    id: string;
+    title: string;
+    total_questions: number;
+    questions: TestQuestionResponse[];
 };
 
 export type TestDetailsResponse = {
-  test: TestDetails;
-  changedQuestions?: ChangedQuestion[];
+    test: TestDetails;
+    changedQuestions?: ChangedQuestion[];
 };
 
 export type TestUpdatePayload = {
-  title?: string;
-  questions?: TestQuestionPayload[];
-  removed_question_ids?: number[];
+    title?: string;
+    questions?: TestQuestionPayload[];
+    removed_question_ids?: number[];
 };
 
 export type ChangedQuestion = {
-  id: number;
-  title: string;
-  type: string;
-  action: 'added' | 'updated' | 'removed';
-  client_id?: string;
+    id: number;
+    title: string;
+    type: string;
+    action: "added" | "updated" | "removed";
+    client_id?: string;
 };
 
 export type JsonQuestionInput = {
-  id?: number | string;
-  question?: string;
-  title?: string;
-  type: 'single' | 'multiple' | 'matching' | 'full_answer';
-  options?: string[];
-  correctAnswers?: Array<number | string>;
-  terms?: Record<string, string> | string[];
-  meanings?: Record<string, string> | string[];
+    id?: number | string;
+    question?: string;
+    title?: string;
+    type: "single" | "multiple" | "matching" | "full_answer";
+    options?: string[];
+    correctAnswers?: Array<number | string>;
+    terms?: Record<string, string> | string[];
+    meanings?: Record<string, string> | string[];
 };
 
 export type TestAutoFillPayload = {
-  total: number;
-  questions: JsonQuestionInput[];
-  selection?: string;
-  selectedIndexes?: number[];
-  replace?: boolean;
+    total: number;
+    questions: JsonQuestionInput[];
+    selection?: string;
+    selectedIndexes?: number[];
+    replace?: boolean;
 };
 
 export type TestAutoFillResponse = {
-  message: string;
-  added: number;
-  total_questions: number;
+    message: string;
+    added: number;
+    total_questions: number;
 };

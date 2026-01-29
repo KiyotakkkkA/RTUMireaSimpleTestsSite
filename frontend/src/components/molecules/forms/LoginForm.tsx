@@ -9,18 +9,20 @@ import { useToasts } from "../../../hooks/useToasts";
 import { authStore } from "../../../stores/authStore";
 
 const loginSchema = z.object({
-    email: z.string().email('Введите корректный email'),
-    password: z.string().min(8, 'Пароль должен быть минимум 8 символов'),
+    email: z.string().email("Введите корректный email"),
+    password: z.string().min(8, "Пароль должен быть минимум 8 символов"),
     rememberMe: z.boolean().optional(),
 });
 
 export const LoginForm = observer(() => {
     const navigate = useNavigate();
     const { toast } = useToasts();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+        {},
+    );
     const [formError, setFormError] = useState<string | null>(null);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -31,7 +33,7 @@ export const LoginForm = observer(() => {
         if (!parsed.success) {
             const nextErrors: { email?: string; password?: string } = {};
             parsed.error.issues.forEach((issue) => {
-                const key = issue.path[0] as 'email' | 'password';
+                const key = issue.path[0] as "email" | "password";
                 nextErrors[key] = issue.message;
             });
             setErrors(nextErrors);
@@ -45,25 +47,34 @@ export const LoginForm = observer(() => {
             rememberMe,
         });
         if (ok) {
-            toast.success('Вы вошли в систему');
-            navigate('/', { replace: true });
+            toast.success("Вы вошли в систему");
+            navigate("/", { replace: true });
             return;
         }
-        const message = authStore.error ?? 'Не удалось войти';
+        const message = authStore.error ?? "Не удалось войти";
         setFormError(message);
         toast.danger(message);
     };
 
     return (
-        <form className="w-full max-w-md bg-white p-6 shadow-lg rounded-lg" onSubmit={handleSubmit}>
+        <form
+            className="w-full max-w-md bg-white p-6 shadow-lg rounded-lg"
+            onSubmit={handleSubmit}
+        >
             <div className="mb-6">
-                <h2 className="text-xl font-semibold text-slate-800">С возвращением</h2>
-                <p className="text-sm text-slate-500">Войдите в аккаунт, чтобы продолжить.</p>
+                <h2 className="text-xl font-semibold text-slate-800">
+                    С возвращением
+                </h2>
+                <p className="text-sm text-slate-500">
+                    Войдите в аккаунт, чтобы продолжить.
+                </p>
             </div>
             <div className="flex flex-col gap-4">
                 <div>
                     {errors.email && (
-                        <span className="text-xs text-rose-600">{errors.email}</span>
+                        <span className="text-xs text-rose-600">
+                            {errors.email}
+                        </span>
                     )}
                     <InputSmall
                         name="email"
@@ -78,7 +89,9 @@ export const LoginForm = observer(() => {
                 </div>
                 <div>
                     {errors.password && (
-                        <span className="text-xs text-rose-600">{errors.password}</span>
+                        <span className="text-xs text-rose-600">
+                            {errors.password}
+                        </span>
                     )}
                     <InputSmall
                         name="password"
@@ -96,7 +109,9 @@ export const LoginForm = observer(() => {
                         checked={rememberMe}
                         onChange={() => setRememberMe(!rememberMe)}
                     />
-                    <label className="ml-2 text-sm text-slate-500">Запомнить меня</label>
+                    <label className="ml-2 text-sm text-slate-500">
+                        Запомнить меня
+                    </label>
                 </div>
             </div>
             {formError && (
@@ -105,8 +120,15 @@ export const LoginForm = observer(() => {
                 </div>
             )}
             <div className="mt-6 flex items-center justify-between">
-                <Button primary className="flex-1 px-5 py-2 text-sm font-medium flex items-center justify-center" type="submit" disabled={authStore.isLoading}>
-                    { authStore.isLoading && <Spinner className="h-4 w-4 mr-2" /> }
+                <Button
+                    primary
+                    className="flex-1 px-5 py-2 text-sm font-medium flex items-center justify-center"
+                    type="submit"
+                    disabled={authStore.isLoading}
+                >
+                    {authStore.isLoading && (
+                        <Spinner className="h-4 w-4 mr-2" />
+                    )}
                     Войти
                 </Button>
             </div>

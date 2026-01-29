@@ -1,4 +1,4 @@
-export type TestListSort = 'title_asc' | 'title_desc';
+export type TestListSort = "title_asc" | "title_desc";
 
 export type TestListDbItem = {
     id: string;
@@ -24,5 +24,5 @@ export type TestListItem = {
     questionCount: number;
     disabledCount: number;
     link: string;
-    source: 'db' | 'local';
+    source: "db" | "local";
 };

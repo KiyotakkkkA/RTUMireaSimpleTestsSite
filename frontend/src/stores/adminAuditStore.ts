@@ -1,8 +1,12 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction } from "mobx";
 
-import { AdminService } from '../services/admin';
+import { AdminService } from "../services/admin";
 
-import type { AdminAuditFilters, AdminAuditPagination, AdminAuditRecord } from '../types/admin/AdminAudit';
+import type {
+    AdminAuditFilters,
+    AdminAuditPagination,
+    AdminAuditRecord,
+} from "../types/admin/AdminAudit";
 
 const getErrorMessage = (error: any, fallback: string) =>
     error?.response?.data?.message || error?.message || fallback;
@@ -19,9 +23,9 @@ export class AdminAuditStore {
         last_page: 1,
     };
     auditFilters: AdminAuditFilters = {
-        action_type: '',
-        date_from: '',
-        date_to: '',
+        action_type: "",
+        date_from: "",
+        date_to: "",
         page: 1,
         per_page: 10,
     };
@@ -43,12 +47,20 @@ export class AdminAuditStore {
 
     updateAuditFilters(next: Partial<AdminAuditFilters>): void {
         const updated = {
-        ...this.auditFilters,
-        ...next,
+            ...this.auditFilters,
+            ...next,
         };
-        const shouldResetPage = Object.keys(next).some((key) => key !== 'page' && key !== 'per_page');
+        const shouldResetPage = Object.keys(next).some(
+            (key) => key !== "page" && key !== "per_page",
+        );
         if (shouldResetPage) updated.page = 1;
-        if (isShallowEqual(updated as Record<string, any>, this.auditFilters as Record<string, any>)) return;
+        if (
+            isShallowEqual(
+                updated as Record<string, any>,
+                this.auditFilters as Record<string, any>,
+            )
+        )
+            return;
         this.auditFilters = updated;
     }
 
@@ -56,14 +68,19 @@ export class AdminAuditStore {
         try {
             this.auditLoading = true;
             this.auditError = null;
-            const response = await AdminService.getAudit(this.auditAppliedFilters);
+            const response = await AdminService.getAudit(
+                this.auditAppliedFilters,
+            );
             runInAction(() => {
                 this.auditRecords = response.data;
                 this.auditPagination = response.pagination;
             });
         } catch (e: any) {
             runInAction(() => {
-                this.auditError = getErrorMessage(e, 'Не удалось загрузить журнал аудита');
+                this.auditError = getErrorMessage(
+                    e,
+                    "Не удалось загрузить журнал аудита",
+                );
             });
         } finally {
             runInAction(() => {

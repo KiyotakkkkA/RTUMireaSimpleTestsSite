@@ -28,7 +28,8 @@ export const InputSmall = ({
     const paddingLeft = leftIcon ? "pl-10" : "pl-4";
     const paddingRight = isPassword ? "pr-10" : "pr-4";
 
-    const behaviorClasses = 'transition-colors duration-300 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100';
+    const behaviorClasses =
+        "transition-colors duration-300 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100";
 
     return (
         <div className="relative">
@@ -41,11 +42,9 @@ export const InputSmall = ({
                 id={inputId}
                 type={computedType}
                 disabled={disabled}
-                className={
-                    `w-full rounded-lg border ${paddingLeft} ${paddingRight} ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
-                        className ?? ""
-                    }`
-                }
+                className={`w-full rounded-lg border ${paddingLeft} ${paddingRight} ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
+                    className ?? ""
+                }`}
                 {...props}
             />
             {isPassword && (
@@ -53,9 +52,18 @@ export const InputSmall = ({
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-indigo-500"
-                    aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+                    aria-label={
+                        showPassword ? "Скрыть пароль" : "Показать пароль"
+                    }
                 >
-                    <Icon icon={showPassword ? "mdi:eye-off-outline" : "mdi:eye-outline"} className="h-4 w-4" />
+                    <Icon
+                        icon={
+                            showPassword
+                                ? "mdi:eye-off-outline"
+                                : "mdi:eye-outline"
+                        }
+                        className="h-4 w-4"
+                    />
                 </button>
             )}
         </div>

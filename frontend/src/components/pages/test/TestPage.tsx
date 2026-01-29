@@ -11,8 +11,9 @@ import { Spinner } from "../../atoms";
 import type { Test } from "../../../types/Test";
 
 export const TestPage = () => {
-
-    const [checkGlow, setCheckGlow] = useState<'none' | 'correct' | 'wrong'>('none');
+    const [checkGlow, setCheckGlow] = useState<"none" | "correct" | "wrong">(
+        "none",
+    );
 
     const testId = useParams<{ testId: string }>().testId;
     const location = useLocation();
@@ -22,16 +23,17 @@ export const TestPage = () => {
     const navigate = useNavigate();
 
     const savedSource = StorageService.getSession()?.source;
-    const source = (location.state as { source?: 'local' | 'db' } | null)?.source
-        ?? savedSource
-        ?? 'db';
+    const source =
+        (location.state as { source?: "local" | "db" } | null)?.source ??
+        savedSource ??
+        "db";
 
     useEffect(() => {
         let mounted = true;
 
         const load = async () => {
             if (!testId) return;
-            if (source === 'local') return;
+            if (source === "local") return;
             try {
                 setIsLoading(true);
                 const response = await TestService.getPublicTestById(testId);
@@ -75,7 +77,7 @@ export const TestPage = () => {
         currentQuestion,
         questions,
         result,
-    } = useTestPassing(testId || '', test?.questions || []);
+    } = useTestPassing(testId || "", test?.questions || []);
 
     useEffect(() => {
         if (!result) return;
@@ -110,12 +112,12 @@ export const TestPage = () => {
             <div className="mb-6 flex justify-end">
                 <button
                     onClick={() => {
-                        setCheckGlow('none');
+                        setCheckGlow("none");
                         resetTest();
                         navigate(`/tests/${testId}/start`, { replace: true });
                     }}
                     className="px-4 py-2 text-gray-600 bg-white rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
-                    >
+                >
                     Выход
                 </button>
             </div>
@@ -127,44 +129,48 @@ export const TestPage = () => {
                         currentIndex={session.currentQuestionIndex}
                         answered={answeredFlags}
                         onNavigate={(index) => {
-                            setCheckGlow('none');
+                            setCheckGlow("none");
                             goToQuestion(index);
                         }}
                     />
                 </div>
 
                 <div className="flex-1">
-                <div
-                    className={
-                    `bg-white rounded-lg shadow-xl p-6 md:p-8 transition-shadow ` +
-                    (checkGlow === 'correct'
-                        ? 'shadow-emerald-200/60 ring-2 ring-emerald-300'
-                        : checkGlow === 'wrong'
-                        ? 'shadow-rose-200/60 ring-2 ring-rose-300'
-                        : '')
-                    }
-                >
-                    <Question
-                        question={currentQuestion}
-                        currentQuestionIndex={session.currentQuestionIndex}
-                        totalQuestions={questions.length}
-                        userAnswer={session.userAnswers[currentQuestion.id]}
-                        onAnswerChange={(answer) => saveAnswer(currentQuestion.id, answer)}
-                        evaluation={answerEvaluations[currentQuestion.id] ?? null}
-                        onEvaluateAnswer={evaluateAnswer}
-                        onNext={nextQuestion}
-                        onPrev={prevQuestion}
-                        onFinish={async () => {
-                            await finishTest();
-                            navigate(`/tests/${testId}/results`);
-                        }}
-                        onCheckGlowChange={setCheckGlow}
-                        timeLeftSeconds={timeLeftSeconds}
-                        settings={settings}
-                    />
-                </div>
+                    <div
+                        className={
+                            `bg-white rounded-lg shadow-xl p-6 md:p-8 transition-shadow ` +
+                            (checkGlow === "correct"
+                                ? "shadow-emerald-200/60 ring-2 ring-emerald-300"
+                                : checkGlow === "wrong"
+                                  ? "shadow-rose-200/60 ring-2 ring-rose-300"
+                                  : "")
+                        }
+                    >
+                        <Question
+                            question={currentQuestion}
+                            currentQuestionIndex={session.currentQuestionIndex}
+                            totalQuestions={questions.length}
+                            userAnswer={session.userAnswers[currentQuestion.id]}
+                            onAnswerChange={(answer) =>
+                                saveAnswer(currentQuestion.id, answer)
+                            }
+                            evaluation={
+                                answerEvaluations[currentQuestion.id] ?? null
+                            }
+                            onEvaluateAnswer={evaluateAnswer}
+                            onNext={nextQuestion}
+                            onPrev={prevQuestion}
+                            onFinish={async () => {
+                                await finishTest();
+                                navigate(`/tests/${testId}/results`);
+                            }}
+                            onCheckGlowChange={setCheckGlow}
+                            timeLeftSeconds={timeLeftSeconds}
+                            settings={settings}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};

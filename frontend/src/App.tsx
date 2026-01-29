@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+    BrowserRouter,
+    Route,
+    Routes,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 
 import { Footer, Header } from "./components/layouts";
@@ -26,71 +32,87 @@ import { StorageService } from "./services/storage";
 import { authStore } from "./stores/authStore";
 
 const TestSessionGuard = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const session = StorageService.getSession();
-    if (!session) return;
+    useEffect(() => {
+        const session = StorageService.getSession();
+        if (!session) return;
 
-    const targetPath = `/tests/${session.testId}`;
-    if (location.pathname.startsWith(targetPath)) return;
+        const targetPath = `/tests/${session.testId}`;
+        if (location.pathname.startsWith(targetPath)) return;
 
-    navigate(targetPath, { replace: true });
-  }, [location.pathname, navigate]);
+        navigate(targetPath, { replace: true });
+    }, [location.pathname, navigate]);
 
-  return null;
+    return null;
 };
 
 function App() {
-  useEffect(() => {
-    authStore.init();
-  }, []);
+    useEffect(() => {
+        authStore.init();
+    }, []);
 
-  return (
-    <BrowserRouter>
-      <div className="min-h-screen overflow-auto bg-slate-100 flex flex-col">
-        <TestSessionGuard />
-        <Header />
-        <main className="flex flex-1 w-full p-6">
-          <Routes>
-            <Route path="/" element={<TestsListPage />} />
-            <Route path="/team" element={<OurTeamPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/tests/:testId/start" element={<TestStartPage />} />
-            <Route path="/tests/:testId/results" element={<TestResultsPage />} />
-            <Route path="/tests/:testId" element={<TestPage />} />
-            <Route
-              path="/workbench/test/:testId"
-              element={
-                <RouteGuard requiredPermissions={["create tests", "edit tests"]}>
-                  <TestEditingPage />
-                </RouteGuard>
-              }
-            />
-            <Route
-              path="/admin"
-              element={
-                <RouteGuard requiredPermissions={["view admin panel"]}>
-                  <AdminLayout />
-                </RouteGuard>
-              }
-            >
-              <Route index element={<AdminCabinetPage />} />
-              <Route path="users" element={<AdminUsersPage />} />
-              <Route path="audit" element={<AdminAuditPage />} />
-              <Route path="statistics" element={<AdminStatisticsPage />} />
-            </Route>
-            <Route path="/errors/403" element={<E403 />} />
-            <Route path="/errors/404" element={<E404 />} />
-            <Route path="*" element={<E404 />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <div className="min-h-screen overflow-auto bg-slate-100 flex flex-col">
+                <TestSessionGuard />
+                <Header />
+                <main className="flex flex-1 w-full p-6">
+                    <Routes>
+                        <Route path="/" element={<TestsListPage />} />
+                        <Route path="/team" element={<OurTeamPage />} />
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route path="/register" element={<RegisterPage />} />
+                        <Route
+                            path="/tests/:testId/start"
+                            element={<TestStartPage />}
+                        />
+                        <Route
+                            path="/tests/:testId/results"
+                            element={<TestResultsPage />}
+                        />
+                        <Route path="/tests/:testId" element={<TestPage />} />
+                        <Route
+                            path="/workbench/test/:testId"
+                            element={
+                                <RouteGuard
+                                    requiredPermissions={[
+                                        "create tests",
+                                        "edit tests",
+                                    ]}
+                                >
+                                    <TestEditingPage />
+                                </RouteGuard>
+                            }
+                        />
+                        <Route
+                            path="/admin"
+                            element={
+                                <RouteGuard
+                                    requiredPermissions={["view admin panel"]}
+                                >
+                                    <AdminLayout />
+                                </RouteGuard>
+                            }
+                        >
+                            <Route index element={<AdminCabinetPage />} />
+                            <Route path="users" element={<AdminUsersPage />} />
+                            <Route path="audit" element={<AdminAuditPage />} />
+                            <Route
+                                path="statistics"
+                                element={<AdminStatisticsPage />}
+                            />
+                        </Route>
+                        <Route path="/errors/403" element={<E403 />} />
+                        <Route path="/errors/404" element={<E404 />} />
+                        <Route path="*" element={<E404 />} />
+                    </Routes>
+                </main>
+                <Footer />
+            </div>
+        </BrowserRouter>
+    );
 }
 
 export default App;

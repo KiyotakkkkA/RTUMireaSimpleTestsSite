@@ -16,34 +16,49 @@ export type TeamMemberCardProps = {
 };
 
 const getInitials = (name: string) => {
-  const parts = name.trim().split(/\s+/g);
-  const first = parts[0]?.[0] ?? 'A';
-  const last = parts.length > 1 ? parts[parts.length - 1]?.[0] ?? '' : '';
-  return `${first}${last}`.toUpperCase();
+    const parts = name.trim().split(/\s+/g);
+    const first = parts[0]?.[0] ?? "A";
+    const last = parts.length > 1 ? (parts[parts.length - 1]?.[0] ?? "") : "";
+    return `${first}${last}`.toUpperCase();
 };
 
-export const TeamMemberCard = ({ firstname, surname, pseudonym, roles, bio, socials }: TeamMemberCardProps) => {
-
-    const socialBaseStyles = 'border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600'
+export const TeamMemberCard = ({
+    firstname,
+    surname,
+    pseudonym,
+    roles,
+    bio,
+    socials,
+}: TeamMemberCardProps) => {
+    const socialBaseStyles =
+        "border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600";
     const socialStylesTable = {
-        tg: 'bg-blue-400 text-white hover:bg-blue-500',
-        github: 'bg-slate-800 text-white hover:bg-slate-900',
-        vk: 'bg-blue-500 text-white hover:bg-blue-600',
-    }
+        tg: "bg-blue-400 text-white hover:bg-blue-500",
+        github: "bg-slate-800 text-white hover:bg-slate-900",
+        vk: "bg-blue-500 text-white hover:bg-blue-600",
+    };
 
     return (
         <div className="flex gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex flex-1 items-start gap-4">
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-indigo-100 text-indigo-700">
                     <div className="flex h-full w-full items-center justify-center text-sm font-semibold">
-                    {getInitials(firstname + ' ' + surname)}
+                        {getInitials(firstname + " " + surname)}
                     </div>
                 </div>
                 <div className="min-w-0 flex-1 space-y-2">
-                    <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
-                        <div className="text-base font-semibold text-slate-800">{firstname}</div>
-                        {pseudonym && <div className="text-base font-semibold text-indigo-600">"{pseudonym}"</div>}
-                        <div className="text-base font-semibold text-slate-800">{surname}</div>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <div className="text-base font-semibold text-slate-800">
+                            {firstname}
+                        </div>
+                        {pseudonym && (
+                            <div className="text-base font-semibold text-indigo-600">
+                                "{pseudonym}"
+                            </div>
+                        )}
+                        <div className="text-base font-semibold text-slate-800">
+                            {surname}
+                        </div>
                     </div>
                     {roles.length > 0 && (
                         <div className="flex flex-wrap gap-2">
@@ -63,9 +78,11 @@ export const TeamMemberCard = ({ firstname, surname, pseudonym, roles, bio, soci
             {socials && socials.length > 0 && (
                 <div className="inline-flex h-fit w-fit self-start flex-shrink-0 flex-col items-start gap-2 rounded-full border p-1 shadow-md">
                     {socials.map((social) => {
+                        const currentSocialStyles =
+                            socialStylesTable[
+                                social.type as keyof typeof socialStylesTable
+                            ] ?? socialBaseStyles;
 
-                        const currentSocialStyles = socialStylesTable[social.type as keyof typeof socialStylesTable] ?? socialBaseStyles;
-                        
                         return (
                             <a
                                 key={social.url}
@@ -76,7 +93,7 @@ export const TeamMemberCard = ({ firstname, surname, pseudonym, roles, bio, soci
                             >
                                 <Icon icon={social.icon} className="h-5 w-5" />
                             </a>
-                        )
+                        );
                     })}
                 </div>
             )}

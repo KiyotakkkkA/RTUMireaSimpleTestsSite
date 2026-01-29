@@ -1,1 +1,1 @@
-export { TestsStatisticsGeneral } from './TestsStatisticsGeneral';
+export { TestsStatisticsGeneral } from "./TestsStatisticsGeneral";

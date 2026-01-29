@@ -3,7 +3,10 @@ import { Icon } from "@iconify/react";
 
 import type React from "react";
 
-export interface InputMediaProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'onChange' | 'value'> {
+export interface InputMediaProps extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "type" | "onChange" | "value"
+> {
     label?: string;
     helperText?: string;
     value?: File[];
@@ -47,8 +50,11 @@ export const InputMedia = ({
     const files = value ?? internalFiles;
 
     const acceptLabel = useMemo(() => {
-        if (!accept) return 'Любые файлы';
-        return accept.split(',').map((item) => item.trim()).join(', ');
+        if (!accept) return "Любые файлы";
+        return accept
+            .split(",")
+            .map((item) => item.trim())
+            .join(", ");
     }, [accept]);
 
     const handleFilesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,12 +63,16 @@ export const InputMedia = ({
             setInternalFiles(selected);
         }
         onChange?.(selected);
-        event.target.value = '';
+        event.target.value = "";
     };
 
     const handleRemoveFile = (fileToRemove: File) => {
         const nextFiles = files.filter(
-            (file) => !(file.name === fileToRemove.name && file.lastModified === fileToRemove.lastModified)
+            (file) =>
+                !(
+                    file.name === fileToRemove.name &&
+                    file.lastModified === fileToRemove.lastModified
+                ),
         );
         if (!value) {
             setInternalFiles(nextFiles);
@@ -77,13 +87,13 @@ export const InputMedia = ({
             size: file.size,
             url: URL.createObjectURL(file),
             mime_type: file.type,
-            kind: 'new' as const,
+            kind: "new" as const,
             file,
         }));
     }, [files]);
 
     return (
-        <div className={`w-full ${className ?? ''}`}>
+        <div className={`w-full ${className ?? ""}`}>
             {label && (
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
                     {label}
@@ -92,15 +102,19 @@ export const InputMedia = ({
             <label
                 htmlFor={inputId}
                 className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-indigo-300 bg-white/70 px-4 py-6 text-center text-sm text-indigo-600 transition hover:border-indigo-400 hover:bg-indigo-50 ${
-                    disabled ? 'cursor-not-allowed opacity-60' : ''
+                    disabled ? "cursor-not-allowed opacity-60" : ""
                 }`}
             >
                 <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50">
                     <Icon icon="mdi:plus" className="h-6 w-6" />
                 </span>
                 <div className="font-semibold">Прикрепить файл</div>
-                <div className="text-xs text-indigo-400">Поддерживаемые типы: {acceptLabel}</div>
-                {helperText && <div className="text-xs text-slate-400">{helperText}</div>}
+                <div className="text-xs text-indigo-400">
+                    Поддерживаемые типы: {acceptLabel}
+                </div>
+                {helperText && (
+                    <div className="text-xs text-slate-400">{helperText}</div>
+                )}
             </label>
             <input
                 id={inputId}
@@ -122,23 +136,40 @@ export const InputMedia = ({
                                 className="relative overflow-hidden rounded-lg border border-slate-200 bg-white"
                             >
                                 <div className="aspect-video w-full bg-slate-100">
-                                    {file.mime_type?.startsWith('image/') ? (
-                                        <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                                    {file.mime_type?.startsWith("image/") ? (
+                                        <img
+                                            src={file.url}
+                                            alt={file.name}
+                                            className="h-full w-full object-cover"
+                                        />
                                     ) : (
                                         <div className="flex h-full w-full items-center justify-center text-slate-400">
-                                            <Icon icon="mdi:file-outline" className="h-8 w-8" />
+                                            <Icon
+                                                icon="mdi:file-outline"
+                                                className="h-8 w-8"
+                                            />
                                         </div>
                                     )}
                                 </div>
                                 <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
-                                    <span className="truncate text-slate-700">{file.name}</span>
+                                    <span className="truncate text-slate-700">
+                                        {file.name}
+                                    </span>
                                     <button
                                         type="button"
-                                        onClick={() => onRemoveExisting?.({ id: file.id, name: file.name })}
+                                        onClick={() =>
+                                            onRemoveExisting?.({
+                                                id: file.id,
+                                                name: file.name,
+                                            })
+                                        }
                                         className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                                         aria-label={`Удалить файл ${file.name}`}
                                     >
-                                        <Icon icon="mdi:close" className="h-4 w-4" />
+                                        <Icon
+                                            icon="mdi:close"
+                                            className="h-4 w-4"
+                                        />
                                     </button>
                                 </div>
                             </div>
@@ -149,23 +180,37 @@ export const InputMedia = ({
                                 className="relative overflow-hidden rounded-lg border border-indigo-100 bg-indigo-50"
                             >
                                 <div className="aspect-video w-full bg-slate-100">
-                                    {file.mime_type?.startsWith('image/') ? (
-                                        <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                                    {file.mime_type?.startsWith("image/") ? (
+                                        <img
+                                            src={file.url}
+                                            alt={file.name}
+                                            className="h-full w-full object-cover"
+                                        />
                                     ) : (
                                         <div className="flex h-full w-full items-center justify-center text-indigo-300">
-                                            <Icon icon="mdi:file-outline" className="h-8 w-8" />
+                                            <Icon
+                                                icon="mdi:file-outline"
+                                                className="h-8 w-8"
+                                            />
                                         </div>
                                     )}
                                 </div>
                                 <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
-                                    <span className="truncate text-slate-700">{file.name}</span>
+                                    <span className="truncate text-slate-700">
+                                        {file.name}
+                                    </span>
                                     <button
                                         type="button"
-                                        onClick={() => handleRemoveFile(file.file)}
+                                        onClick={() =>
+                                            handleRemoveFile(file.file)
+                                        }
                                         className="inline-flex h-6 w-6 items-center justify-center rounded-full text-slate-400 transition hover:bg-rose-50 hover:text-rose-500"
                                         aria-label={`Удалить файл ${file.name}`}
                                     >
-                                        <Icon icon="mdi:close" className="h-4 w-4" />
+                                        <Icon
+                                            icon="mdi:close"
+                                            className="h-4 w-4"
+                                        />
                                     </button>
                                 </div>
                                 <div className="px-3 pb-2 text-xs text-slate-400">

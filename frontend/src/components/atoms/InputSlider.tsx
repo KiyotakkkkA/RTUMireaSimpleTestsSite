@@ -1,13 +1,20 @@
 interface InputSliderProps {
-  min: number;
-  max: number;
-  step?: number;
-  value: number;
-  className?: string;
-  onChange: (value: number) => void;
+    min: number;
+    max: number;
+    step?: number;
+    value: number;
+    className?: string;
+    onChange: (value: number) => void;
 }
 
-export const InputSlider = ({ min, max, step = 1, value, className, onChange }: InputSliderProps) => {
+export const InputSlider = ({
+    min,
+    max,
+    step = 1,
+    value,
+    className,
+    onChange,
+}: InputSliderProps) => {
     return (
         <input
             type="range"
@@ -16,8 +23,7 @@ export const InputSlider = ({ min, max, step = 1, value, className, onChange }: 
             step={step}
             value={value}
             onChange={(e) => onChange(Number(e.target.value))}
-            className={`mt-4 w-full accent-indigo-600 ${className ?? ''}`}
+            className={`mt-4 w-full accent-indigo-600 ${className ?? ""}`}
         />
-    )
-}
-  
+    );
+};

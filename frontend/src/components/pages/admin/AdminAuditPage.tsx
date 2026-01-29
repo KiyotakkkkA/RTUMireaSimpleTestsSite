@@ -13,10 +13,14 @@ import {
     AdminAuditTestDeletedCard,
 } from "../../molecules/cards/admin";
 
-import type { AdminAuditActionType, AdminAuditRecord } from "../../../types/admin/AdminAudit";
+import type {
+    AdminAuditActionType,
+    AdminAuditRecord,
+} from "../../../types/admin/AdminAudit";
 
 export const AdminAuditPage = observer(() => {
-    const { records, pagination, isLoading, error, filters, updateFilters } = useAdminAudit();
+    const { records, pagination, isLoading, error, filters, updateFilters } =
+        useAdminAudit();
 
     const actionOptions = useMemo(
         () => [
@@ -29,25 +33,54 @@ export const AdminAuditPage = observer(() => {
             { value: "test_updated", label: "Изменение теста" },
             { value: "test_deleted", label: "Удаление теста" },
         ],
-        []
+        [],
     );
 
     const renderCard = (record: AdminAuditRecord) => {
         switch (record.action_type as AdminAuditActionType) {
             case "admin_roles_change":
-                return <AdminAuditRolesChangeCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditRolesChangeCard
+                        key={record.id}
+                        record={record}
+                    />
+                );
             case "admin_permissions_change":
-                return <AdminAuditPermissionsChangeCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditPermissionsChangeCard
+                        key={record.id}
+                        record={record}
+                    />
+                );
             case "admin_user_add":
-                return <AdminAuditUserAddCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditUserAddCard key={record.id} record={record} />
+                );
             case "admin_user_remove":
-                return <AdminAuditUserRemoveCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditUserRemoveCard key={record.id} record={record} />
+                );
             case "test_created":
-                return <AdminAuditTestCreatedCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditTestCreatedCard
+                        key={record.id}
+                        record={record}
+                    />
+                );
             case "test_updated":
-                return <AdminAuditTestUpdatedCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditTestUpdatedCard
+                        key={record.id}
+                        record={record}
+                    />
+                );
             case "test_deleted":
-                return <AdminAuditTestDeletedCard key={record.id} record={record} />;
+                return (
+                    <AdminAuditTestDeletedCard
+                        key={record.id}
+                        record={record}
+                    />
+                );
             default:
                 return null;
         }
@@ -69,22 +102,33 @@ export const AdminAuditPage = observer(() => {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Тип события</div>
+                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                Тип события
+                            </div>
                             <Selector
                                 value={filters.action_type ?? ""}
                                 options={actionOptions}
-                                onChange={(value) => updateFilters({ action_type: value as AdminAuditActionType })}
+                                onChange={(value) =>
+                                    updateFilters({
+                                        action_type:
+                                            value as AdminAuditActionType,
+                                    })
+                                }
                             />
                         </div>
                         <InputDate
                             label="С"
                             value={filters.date_from ?? ""}
-                            onChange={(event) => updateFilters({ date_from: event.target.value })}
+                            onChange={(event) =>
+                                updateFilters({ date_from: event.target.value })
+                            }
                         />
                         <InputDate
                             label="По"
                             value={filters.date_to ?? ""}
-                            onChange={(event) => updateFilters({ date_to: event.target.value })}
+                            onChange={(event) =>
+                                updateFilters({ date_to: event.target.value })
+                            }
                         />
                     </div>
                 </div>
@@ -99,13 +143,22 @@ export const AdminAuditPage = observer(() => {
                             Назад
                         </Button>
                         <div className="text-center text-sm text-slate-500 sm:text-left">
-                            Страница <span className="font-semibold text-slate-700">{pagination.page}</span> из{' '}
-                            <span className="font-semibold text-slate-700">{pagination.last_page}</span>
+                            Страница{" "}
+                            <span className="font-semibold text-slate-700">
+                                {pagination.page}
+                            </span>{" "}
+                            из{" "}
+                            <span className="font-semibold text-slate-700">
+                                {pagination.last_page}
+                            </span>
                         </div>
                         <Button
                             primary
                             className="w-full px-4 py-2 text-sm sm:w-auto"
-                            disabled={pagination.page >= pagination.last_page || isLoading}
+                            disabled={
+                                pagination.page >= pagination.last_page ||
+                                isLoading
+                            }
                             onClick={handleNextPage}
                         >
                             Вперёд
@@ -114,7 +167,13 @@ export const AdminAuditPage = observer(() => {
                     <Button
                         dangerInverted
                         className="w-full px-4 py-2 text-sm sm:w-auto"
-                        onClick={() => updateFilters({ action_type: '', date_from: '', date_to: '' })}
+                        onClick={() =>
+                            updateFilters({
+                                action_type: "",
+                                date_from: "",
+                                date_to: "",
+                            })
+                        }
                     >
                         Сбросить фильтры
                     </Button>

@@ -7,28 +7,39 @@ import { TestAutoCreateModal } from "../../molecules/modals";
 import { QuestionEditEntity } from "../../organisms/test";
 import { useTestManage } from "../../../hooks/tests/useTestManage";
 import { useToasts } from "../../../hooks/useToasts";
-import { createQuestionDraft, isDraftChanged, isDraftEmpty, mapApiQuestionToDraft, mapDraftToPayload } from "../../../utils/testEditing";
+import {
+    createQuestionDraft,
+    isDraftChanged,
+    isDraftEmpty,
+    mapApiQuestionToDraft,
+    mapDraftToPayload,
+} from "../../../utils/testEditing";
 import { QuestionFilesService } from "../../../services/questionFiles";
 import { TestService } from "../../../services/test";
 
 import type { QuestionDraft } from "../../organisms/test/QuestionEditEntity";
 
 export const TestEditingPage = () => {
-    const [questions, setQuestions] = useState<QuestionDraft[]>([createQuestionDraft()]);
+    const [questions, setQuestions] = useState<QuestionDraft[]>([
+        createQuestionDraft(),
+    ]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [testTitle, setTestTitle] = useState('');
-    const [savedTitle, setSavedTitle] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [deleteTargetIndex, setDeleteTargetIndex] = useState<number | null>(null);
+    const [testTitle, setTestTitle] = useState("");
+    const [savedTitle, setSavedTitle] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [deleteTargetIndex, setDeleteTargetIndex] = useState<number | null>(
+        null,
+    );
     const [isAutoFillOpen, setIsAutoFillOpen] = useState(false);
-    const [autoFillType, setAutoFillType] = useState<'json' | 'ai'>('json');
+    const [autoFillType, setAutoFillType] = useState<"json" | "ai">("json");
     const [isDownloadingJson, setIsDownloadingJson] = useState(false);
     const [removedQuestionIds, setRemovedQuestionIds] = useState<number[]>([]);
 
     const current = questions[currentIndex];
 
     const { testId } = useParams();
-    const { getTestById, updateTest, isFetching, isSaving, error } = useTestManage();
+    const { getTestById, updateTest, isFetching, isSaving, error } =
+        useTestManage();
     const { toast } = useToasts();
     const navigate = useNavigate();
 
@@ -37,7 +48,7 @@ export const TestEditingPage = () => {
 
         const load = async () => {
             if (!testId) {
-                navigate('/errors/404', { replace: true });
+                navigate("/errors/404", { replace: true });
                 return;
             }
 
@@ -45,7 +56,7 @@ export const TestEditingPage = () => {
             if (!mounted) return;
 
             if (!test) {
-                navigate('/errors/404', { replace: true });
+                navigate("/errors/404", { replace: true });
                 return;
             }
 
@@ -72,10 +83,15 @@ export const TestEditingPage = () => {
     };
 
     const handleUpdateCurrent = (next: QuestionDraft) => {
-        setQuestions((prev) => prev.map((item, idx) => (idx === currentIndex ? next : item)));
+        setQuestions((prev) =>
+            prev.map((item, idx) => (idx === currentIndex ? next : item)),
+        );
     };
 
-    const navItems = useMemo(() => questions.map((_, idx) => idx + 1), [questions]);
+    const navItems = useMemo(
+        () => questions.map((_, idx) => idx + 1),
+        [questions],
+    );
 
     const searchResults = useMemo(() => {
         const query = searchQuery.trim().toLowerCase();
@@ -102,7 +118,7 @@ export const TestEditingPage = () => {
         const hasRemoved = removedQuestionIds.length > 0;
 
         if (!hasTitleChange && changedQuestions.length === 0 && !hasRemoved) {
-            toast.info('Нет изменений для сохранения');
+            toast.info("Нет изменений для сохранения");
             return;
         }
 
@@ -114,33 +130,47 @@ export const TestEditingPage = () => {
 
         const updated = await updateTest(testId, payload);
         if (!updated || !updated.test) {
-            toast.danger(error || 'Не удалось сохранить тест');
+            toast.danger(error || "Не удалось сохранить тест");
             return;
         }
 
         try {
-            const draftsById = new Map(questions.filter((d) => d.id).map((d) => [d.id as number, d]));
-            const draftsByClientId = new Map(questions.map((d) => [d.clientId, d]));
+            const draftsById = new Map(
+                questions.filter((d) => d.id).map((d) => [d.id as number, d]),
+            );
+            const draftsByClientId = new Map(
+                questions.map((d) => [d.clientId, d]),
+            );
 
             const changed = updated.changedQuestions ?? [];
 
             await Promise.all(
                 changed.map(async (item: any) => {
-                    if (item.action === 'removed') return;
-                    const draft = draftsById.get(item.id) || (item.client_id ? draftsByClientId.get(item.client_id) : undefined);
+                    if (item.action === "removed") return;
+                    const draft =
+                        draftsById.get(item.id) ||
+                        (item.client_id
+                            ? draftsByClientId.get(item.client_id)
+                            : undefined);
                     if (!draft) return;
 
                     const deleteIds = draft.removedFileIds ?? [];
                     const newFiles = draft.media ?? [];
 
                     await Promise.all([
-                        ...deleteIds.map((fileId) => QuestionFilesService.delete(item.id, fileId)),
-                        ...(newFiles.length ? [QuestionFilesService.upload(item.id, newFiles)] : []),
+                        ...deleteIds.map((fileId) =>
+                            QuestionFilesService.delete(item.id, fileId),
+                        ),
+                        ...(newFiles.length
+                            ? [QuestionFilesService.upload(item.id, newFiles)]
+                            : []),
                     ]);
-                })
+                }),
             );
         } catch (e: any) {
-            toast.danger(e?.response?.data?.message || 'Не удалось сохранить файлы');
+            toast.danger(
+                e?.response?.data?.message || "Не удалось сохранить файлы",
+            );
             return;
         }
 
@@ -154,7 +184,7 @@ export const TestEditingPage = () => {
             setRemovedQuestionIds([]);
         }
 
-        toast.success('Изменения сохранены');
+        toast.success("Изменения сохранены");
     };
 
     const handleRequestDelete = (index: number) => {
@@ -166,7 +196,9 @@ export const TestEditingPage = () => {
 
         const deleting = questions[deleteTargetIndex];
         if (deleting?.id) {
-            setRemovedQuestionIds((prev) => Array.from(new Set([...prev, deleting.id as number])));
+            setRemovedQuestionIds((prev) =>
+                Array.from(new Set([...prev, deleting.id as number])),
+            );
         }
 
         setQuestions((prev) => {
@@ -193,7 +225,9 @@ export const TestEditingPage = () => {
             setIsDownloadingJson(true);
             await TestService.downloadTestJson(testId);
         } catch (e: any) {
-            toast.danger(e?.response?.data?.message || 'Не удалось скачать JSON файл.');
+            toast.danger(
+                e?.response?.data?.message || "Не удалось скачать JSON файл.",
+            );
         } finally {
             setIsDownloadingJson(false);
         }
@@ -205,17 +239,22 @@ export const TestEditingPage = () => {
                 <aside className="w-full lg:w-72">
                     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                         <div className="flex items-center justify-between">
-                            <div className="font-bold text-slate-800">Вопросы</div>
-                            <div className="text-xs text-slate-500">{currentIndex + 1}/{questions.length}</div>
+                            <div className="font-bold text-slate-800">
+                                Вопросы
+                            </div>
+                            <div className="text-xs text-slate-500">
+                                {currentIndex + 1}/{questions.length}
+                            </div>
                         </div>
                         <div className="mt-4 max-h-64 overflow-auto pr-1 lg:max-h-[calc(100vh-220px)]">
                             <div className="grid grid-cols-6 gap-2">
                                 {navItems.map((item, idx) => {
                                     const isCurrent = idx === currentIndex;
-                                    const base = 'h-9 w-full rounded-lg text-sm font-semibold transition-all border flex items-center justify-center select-none';
+                                    const base =
+                                        "h-9 w-full rounded-lg text-sm font-semibold transition-all border flex items-center justify-center select-none";
                                     const cls = isCurrent
-                                        ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-indigo-400 shadow'
-                                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50';
+                                        ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-indigo-400 shadow"
+                                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
 
                                     return (
                                         <button
@@ -243,16 +282,22 @@ export const TestEditingPage = () => {
                             <Button
                                 danger
                                 className="w-full px-4 py-2 text-sm"
-                                onClick={() => handleRequestDelete(currentIndex)}
+                                onClick={() =>
+                                    handleRequestDelete(currentIndex)
+                                }
                                 disabled={isFetching || isSaving}
                             >
                                 Удалить текущий вопрос
                             </Button>
                             <div>
-                                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">Поиск по вопросам</div>
+                                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                                    Поиск по вопросам
+                                </div>
                                 <InputSmall
                                     value={searchQuery}
-                                    onChange={(event) => setSearchQuery(event.target.value)}
+                                    onChange={(event) =>
+                                        setSearchQuery(event.target.value)
+                                    }
                                     placeholder="Введите фразу..."
                                     leftIcon="mdi:magnify"
                                     className="py-2"
@@ -265,18 +310,31 @@ export const TestEditingPage = () => {
                                                     <button
                                                         key={`search-${item.index}`}
                                                         type="button"
-                                                        onClick={() => setCurrentIndex(item.index)}
+                                                        onClick={() =>
+                                                            setCurrentIndex(
+                                                                item.index,
+                                                            )
+                                                        }
                                                         className="w-full rounded-md px-2 py-1 text-left transition hover:bg-slate-100"
                                                     >
-                                                        <span className="font-semibold text-slate-800">Вопрос {item.index + 1}:</span>{' '}
+                                                        <span className="font-semibold text-slate-800">
+                                                            Вопрос{" "}
+                                                            {item.index + 1}:
+                                                        </span>{" "}
                                                         <span className="text-slate-500">
-                                                            {item.text.length > 60 ? `${item.text.slice(0, 60)}...` : item.text || 'Без текста'}
+                                                            {item.text.length >
+                                                            60
+                                                                ? `${item.text.slice(0, 60)}...`
+                                                                : item.text ||
+                                                                  "Без текста"}
                                                         </span>
                                                     </button>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="px-2 py-1 text-slate-400">Совпадений не найдено.</div>
+                                            <div className="px-2 py-1 text-slate-400">
+                                                Совпадений не найдено.
+                                            </div>
                                         )}
                                     </div>
                                 )}
@@ -288,7 +346,7 @@ export const TestEditingPage = () => {
                             primary
                             className="w-full px-4 py-2 text-sm"
                             onClick={() => {
-                                setAutoFillType('json');
+                                setAutoFillType("json");
                                 setIsAutoFillOpen(true);
                             }}
                             disabled={isFetching || isSaving}
@@ -299,9 +357,13 @@ export const TestEditingPage = () => {
                             secondary
                             className="w-full px-4 py-2 text-sm flex justify-center items-center"
                             onClick={handleExportJson}
-                            disabled={isFetching || isSaving || isDownloadingJson}
+                            disabled={
+                                isFetching || isSaving || isDownloadingJson
+                            }
                         >
-                            {isDownloadingJson && <Spinner className="h-4 w-4 mr-2" />}
+                            {isDownloadingJson && (
+                                <Spinner className="h-4 w-4 mr-2" />
+                            )}
                             Экспортировать вопросы
                         </Button>
                         <div className="border-b border-slate-200" />
@@ -309,7 +371,7 @@ export const TestEditingPage = () => {
                             successInverted
                             className="w-full px-4 py-2 text-sm"
                             onClick={() => {
-                                setAutoFillType('ai');
+                                setAutoFillType("ai");
                                 setIsAutoFillOpen(true);
                             }}
                             disabled={isFetching || isSaving}
@@ -323,12 +385,20 @@ export const TestEditingPage = () => {
                     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <h1 className="text-2xl font-bold text-slate-800">Редактирование теста</h1>
-                                <p className="mt-1 text-sm text-slate-500">{testTitle || 'Загрузка...'}</p>
+                                <h1 className="text-2xl font-bold text-slate-800">
+                                    Редактирование теста
+                                </h1>
+                                <p className="mt-1 text-sm text-slate-500">
+                                    {testTitle || "Загрузка..."}
+                                </p>
                             </div>
                             <Button
                                 primary
-                                disabled={isFetching || isSaving || !testTitle.trim().length}
+                                disabled={
+                                    isFetching ||
+                                    isSaving ||
+                                    !testTitle.trim().length
+                                }
                                 className="px-5 py-2 text-sm"
                                 onClick={handleSave}
                             >
@@ -338,7 +408,7 @@ export const TestEditingPage = () => {
                                         Сохраняем...
                                     </span>
                                 ) : (
-                                    'Сохранить изменения'
+                                    "Сохранить изменения"
                                 )}
                             </Button>
                         </div>
@@ -375,19 +445,34 @@ export const TestEditingPage = () => {
             <Modal
                 open={deleteTargetIndex !== null}
                 onClose={() => setDeleteTargetIndex(null)}
-                title={<h3 className="text-lg font-semibold text-slate-800">Подтвердите удаление</h3>}
+                title={
+                    <h3 className="text-lg font-semibold text-slate-800">
+                        Подтвердите удаление
+                    </h3>
+                }
                 outsideClickClosing
             >
                 <div className="space-y-4 mb-2">
                     <p className="text-sm text-slate-600">
-                        Удалить вопрос{' '}
-                        <span className="font-semibold text-slate-800">№{(deleteTargetIndex ?? 0) + 1}</span>?
+                        Удалить вопрос{" "}
+                        <span className="font-semibold text-slate-800">
+                            №{(deleteTargetIndex ?? 0) + 1}
+                        </span>
+                        ?
                     </p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-                        <Button secondary className="flex-1 p-2" onClick={() => setDeleteTargetIndex(null)}>
+                        <Button
+                            secondary
+                            className="flex-1 p-2"
+                            onClick={() => setDeleteTargetIndex(null)}
+                        >
                             Отмена
                         </Button>
-                        <Button danger className="p-2" onClick={handleConfirmDelete}>
+                        <Button
+                            danger
+                            className="p-2"
+                            onClick={handleConfirmDelete}
+                        >
                             Удалить
                         </Button>
                     </div>
@@ -402,8 +487,14 @@ export const TestEditingPage = () => {
                     onCompleted={async () => {
                         const refreshed = await getTestById(testId);
                         if (refreshed) {
-                            const mapped = refreshed.questions.map(mapApiQuestionToDraft);
-                            setQuestions(mapped.length ? mapped : [createQuestionDraft()]);
+                            const mapped = refreshed.questions.map(
+                                mapApiQuestionToDraft,
+                            );
+                            setQuestions(
+                                mapped.length
+                                    ? mapped
+                                    : [createQuestionDraft()],
+                            );
                             setCurrentIndex(0);
                             setTestTitle(refreshed.title);
                             setSavedTitle(refreshed.title);

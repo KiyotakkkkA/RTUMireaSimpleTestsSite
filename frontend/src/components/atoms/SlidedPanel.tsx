@@ -11,7 +11,13 @@ interface SlidedPanelProps {
     outsideClickClosing?: boolean;
 }
 
-const SlidedPanel = ({ open, onClose, title, children, outsideClickClosing = false }: SlidedPanelProps) => {
+const SlidedPanel = ({
+    open,
+    onClose,
+    title,
+    children,
+    outsideClickClosing = false,
+}: SlidedPanelProps) => {
     if (typeof document === "undefined") {
         return null;
     }
@@ -33,9 +39,7 @@ const SlidedPanel = ({ open, onClose, title, children, outsideClickClosing = fal
                 }`}
             >
                 <div className="flex items-center justify-between border-b border-slate-100 p-4">
-                    <div>
-                        { title }
-                    </div>
+                    <div>{title}</div>
                     <button
                         type="button"
                         onClick={onClose}
@@ -45,10 +49,12 @@ const SlidedPanel = ({ open, onClose, title, children, outsideClickClosing = fal
                         <Icon icon="mdi:close" className="h-7 w-7" />
                     </button>
                 </div>
-                <div className="px-4 py-4 flex-1 min-h-0 overflow-y-auto">{children}</div>
+                <div className="px-4 py-4 flex-1 min-h-0 overflow-y-auto">
+                    {children}
+                </div>
             </aside>
         </div>,
-        document.body
+        document.body,
     );
 };
 

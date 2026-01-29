@@ -10,7 +10,13 @@ interface ModalProps {
     outsideClickClosing?: boolean;
 }
 
-const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: ModalProps) => {
+const Modal = ({
+    open,
+    title,
+    onClose,
+    children,
+    outsideClickClosing = false,
+}: ModalProps) => {
     if (typeof document === "undefined") {
         return null;
     }
@@ -30,12 +36,16 @@ const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: 
                 role="dialog"
                 aria-modal="true"
                 className={`relative w-full max-w-lg max-h-[calc(100dvh-3rem)] rounded-lg bg-white shadow-2xl transition-all duration-300 flex flex-col ${
-                    open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+                    open
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-4 opacity-0"
                 }`}
             >
                 <div className="flex items-center justify-end p-4 border-b border-gray-200">
-                    <div className={`flex ${title ? "justify-between" : "justify-end"} items-start w-full`}>
-                        { title }
+                    <div
+                        className={`flex ${title ? "justify-between" : "justify-end"} items-start w-full`}
+                    >
+                        {title}
                         <button
                             type="button"
                             onClick={onClose}
@@ -46,10 +56,12 @@ const Modal = ({ open, title, onClose, children, outsideClickClosing = false }: 
                         </button>
                     </div>
                 </div>
-                <div className="py-2 px-4 min-h-0 overflow-y-auto">{children}</div>
+                <div className="py-2 px-4 min-h-0 overflow-y-auto">
+                    {children}
+                </div>
             </div>
         </div>,
-        document.body
+        document.body,
     );
 };
 

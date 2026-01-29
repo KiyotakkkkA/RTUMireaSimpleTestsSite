@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { Icon } from '@iconify/react';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
-import { Button, InputSlider, Modal, SlidedPanel, SwitchRow } from '../../atoms';
-import { ExpressTestModal } from '../../molecules/modals';
-import { useTestPassing } from '../../../hooks/tests/useTestPassing';
-import { useTestManage } from '../../../hooks/tests/useTestManage';
-import { TestService } from '../../../services/test';
-import { Spinner } from '../../atoms';
-import { authStore } from '../../../stores/authStore';
+import {
+    Button,
+    InputSlider,
+    Modal,
+    SlidedPanel,
+    SwitchRow,
+} from "../../atoms";
+import { ExpressTestModal } from "../../molecules/modals";
+import { useTestPassing } from "../../../hooks/tests/useTestPassing";
+import { useTestManage } from "../../../hooks/tests/useTestManage";
+import { TestService } from "../../../services/test";
+import { Spinner } from "../../atoms";
+import { authStore } from "../../../stores/authStore";
 
-import type { Test } from '../../../types/Test';
+import type { Test } from "../../../types/Test";
 
 export const TestStartPage: React.FC = () => {
-
     const [isOpenSlided, setIsOpenSlided] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);
@@ -24,20 +29,17 @@ export const TestStartPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const {
-        isSaving,
-        deleteTest,
-    } = useTestManage();
+    const { isSaving, deleteTest } = useTestManage();
 
     const testId = useParams<{ testId: string }>().testId;
-    const source = (location.state as { source?: 'local' | 'db' } | null)?.source
-        ?? 'db';
+    const source =
+        (location.state as { source?: "local" | "db" } | null)?.source ?? "db";
 
     useEffect(() => {
         let mounted = true;
         const load = async () => {
             if (!testId) return;
-            if (source === 'local') return;
+            if (source === "local") return;
             try {
                 setIsLoading(true);
                 const response = await TestService.getPublicTestById(testId);
@@ -48,7 +50,8 @@ export const TestStartPage: React.FC = () => {
                     questions: response.test.questions,
                     total_questions: response.test.total_questions,
                     total_disabled: response.test.total_disabled,
-                    is_current_user_creator: response.test.is_current_user_creator ?? false,
+                    is_current_user_creator:
+                        response.test.is_current_user_creator ?? false,
                 });
             } catch (e) {
                 if (!mounted) return;
@@ -68,24 +71,38 @@ export const TestStartPage: React.FC = () => {
     const test = dbTest;
 
     const fullAnswerModes = [
-        { value: 'lite', title: 'Lite', description: 'Достаточно передать суть ответа' },
-        { value: 'medium', title: 'Medium', description: 'Нужны ключевые термины и конструкции' },
-        { value: 'hard', title: 'Hard', description: 'Почти полное воспроизведение ответа' },
-        { value: 'unreal', title: 'Unreal', description: 'Практически дословное совпадение' },
+        {
+            value: "lite",
+            title: "Lite",
+            description: "Достаточно передать суть ответа",
+        },
+        {
+            value: "medium",
+            title: "Medium",
+            description: "Нужны ключевые термины и конструкции",
+        },
+        {
+            value: "hard",
+            title: "Hard",
+            description: "Почти полное воспроизведение ответа",
+        },
+        {
+            value: "unreal",
+            title: "Unreal",
+            description: "Практически дословное совпадение",
+        },
     ] as const;
 
-    const {
-        settings,
-        updateSettings,
-        startTest,
-        session,
-    } = useTestPassing(testId || '', test?.questions || []);
+    const { settings, updateSettings, startTest, session } = useTestPassing(
+        testId || "",
+        test?.questions || [],
+    );
 
     useEffect(() => {
         if (!testId) return;
         if (!session) return;
         if (session.testId !== testId) return;
-        if (session.mode && session.mode !== 'normal') return;
+        if (session.mode && session.mode !== "normal") return;
         navigate(`/tests/${testId}`, { replace: true });
     }, [navigate, session, testId]);
 
@@ -106,10 +123,18 @@ export const TestStartPage: React.FC = () => {
         return <div>Тест не найден</div>;
     }
 
-    const accessToTestManagement = (test.is_current_user_creator ?? false) || authStore.hasPermission('tests master access');
-    const canDeleteTest = accessToTestManagement && source === 'db' && authStore.hasPermission('delete tests');
-    const canEditTest = accessToTestManagement && source === 'db' && authStore.hasPermission('edit tests');
-    const canDownloadTest = authStore.hasPermission('make reports');
+    const accessToTestManagement =
+        (test.is_current_user_creator ?? false) ||
+        authStore.hasPermission("tests master access");
+    const canDeleteTest =
+        accessToTestManagement &&
+        source === "db" &&
+        authStore.hasPermission("delete tests");
+    const canEditTest =
+        accessToTestManagement &&
+        source === "db" &&
+        authStore.hasPermission("edit tests");
+    const canDownloadTest = authStore.hasPermission("make reports");
 
     const handleDownload = async () => {
         if (!testId) return;
@@ -124,9 +149,11 @@ export const TestStartPage: React.FC = () => {
     return (
         <div className="w-full max-w-2xl space-y-8 m-auto">
             <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 text-center space-y-6">
-                <div className='flex justify-between'>
+                <div className="flex justify-between">
                     <Button
-                        onClick={() => { navigate('/') }}
+                        onClick={() => {
+                            navigate("/");
+                        }}
                         primaryNoBackground
                         className="text-md font-medium flex items-center gap-2"
                     >
@@ -134,7 +161,7 @@ export const TestStartPage: React.FC = () => {
                         Назад
                     </Button>
                     <div className="flex items-center">
-                        { (canEditTest || canDeleteTest || canDownloadTest) && (
+                        {(canEditTest || canDeleteTest || canDownloadTest) && (
                             <div className="flex items-center border shadow-sm p-2 gap-6 rounded-lg mr-4">
                                 {canDownloadTest && (
                                     <Button
@@ -143,29 +170,44 @@ export const TestStartPage: React.FC = () => {
                                         className="text-md font-medium flex items-center gap-2"
                                         disabled={isDownloadingPdf}
                                     >
-                                    {isDownloadingPdf ? (
-                                        <Spinner className="h-6 w-6" />
-                                    ) : (
-                                        <Icon icon="mdi:download" className="h-7 w-7" />
-                                    )}
+                                        {isDownloadingPdf ? (
+                                            <Spinner className="h-6 w-6" />
+                                        ) : (
+                                            <Icon
+                                                icon="mdi:download"
+                                                className="h-7 w-7"
+                                            />
+                                        )}
                                     </Button>
                                 )}
                                 {canEditTest && (
                                     <Button
-                                        onClick={() => { navigate(`/workbench/test/${testId}`) }}
+                                        onClick={() => {
+                                            navigate(
+                                                `/workbench/test/${testId}`,
+                                            );
+                                        }}
                                         primaryNoBackground
                                         className="text-md font-medium flex items-center gap-2"
                                     >
-                                    <Icon icon="mdi:pen" className="h-7 w-7" />
+                                        <Icon
+                                            icon="mdi:pen"
+                                            className="h-7 w-7"
+                                        />
                                     </Button>
                                 )}
                                 {canDeleteTest && (
                                     <Button
-                                        onClick={() => { setIsOpenDeleteModal(true) }}
+                                        onClick={() => {
+                                            setIsOpenDeleteModal(true);
+                                        }}
                                         dangerNoBackground
                                         className="text-md font-medium flex items-center gap-2"
                                     >
-                                    <Icon icon="mdi:delete" className="h-7 w-7" />
+                                        <Icon
+                                            icon="mdi:delete"
+                                            className="h-7 w-7"
+                                        />
                                     </Button>
                                 )}
                             </div>
@@ -179,20 +221,28 @@ export const TestStartPage: React.FC = () => {
                     </div>
                 </div>
                 <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">{test.discipline_name}</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                        {test.discipline_name}
+                    </h2>
                     <div className="flex items-center justify-center gap-2 text-gray-700">
-                        <span className="text-lg font-semibold">{test.questions.length} вопросов</span>
+                        <span className="text-lg font-semibold">
+                            {test.questions.length} вопросов
+                        </span>
                     </div>
                 </div>
 
                 <div className="space-y-3 text-left bg-gray-50 rounded-lg p-6">
-                <h3 className="font-semibold text-gray-800">Как это работает:</h3>
+                    <h3 className="font-semibold text-gray-800">
+                        Как это работает:
+                    </h3>
                     <ul className="space-y-2 text-gray-700">
                         <li className="flex items-start gap-3">
                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
                                 1
                             </span>
-                            <span>Вам будут предложены вопросы разных типов</span>
+                            <span>
+                                Вам будут предложены вопросы разных типов
+                            </span>
                         </li>
                         <li className="flex items-start gap-3">
                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
@@ -204,19 +254,21 @@ export const TestStartPage: React.FC = () => {
                             <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
                                 3
                             </span>
-                            <span>После завершения вы увидите результат и оценку</span>
+                            <span>
+                                После завершения вы увидите результат и оценку
+                            </span>
                         </li>
                     </ul>
                 </div>
 
                 <Button
                     onClick={() => {
-                        startTest({ mode: 'normal', source });
+                        startTest({ mode: "normal", source });
                         navigate(`/tests/${test.uuid}`);
                     }}
                     primary
                     className="w-full py-3.5 text-xl font-medium tracking-tight"
-                    >
+                >
                     Начать тестирование
                 </Button>
 
@@ -224,24 +276,33 @@ export const TestStartPage: React.FC = () => {
                     onClick={() => setIsOpenModal(true)}
                     secondary
                     className="w-full py-3.5 text-xl font-medium tracking-tight"
-                    >
+                >
                     Сгенерировать экспресс-тест
                 </Button>
             </div>
-            <SlidedPanel open={isOpenSlided} onClose={() => setIsOpenSlided(false)} title={
-                <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                    Настройки
-                </h2>
-            }>
+            <SlidedPanel
+                open={isOpenSlided}
+                onClose={() => setIsOpenSlided(false)}
+                title={
+                    <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                        Настройки
+                    </h2>
+                }
+            >
                 <div className="px-6 py-4 overflow-y-auto">
                     <div className="py-4">
                         <div className="flex items-baseline justify-between gap-3">
                             <div>
-                                <div className="font-semibold text-gray-800">Порог прохода</div>
-                                <div className="text-sm text-gray-600 mt-1">Минимум правильных ответов</div>
+                                <div className="font-semibold text-gray-800">
+                                    Порог прохода
+                                </div>
+                                <div className="text-sm text-gray-600 mt-1">
+                                    Минимум правильных ответов
+                                </div>
                             </div>
                             <div className="text-sm font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-1">
-                                {settings.passThreshold} / {test.questions.length}
+                                {settings.passThreshold} /{" "}
+                                {test.questions.length}
                             </div>
                         </div>
 
@@ -249,8 +310,13 @@ export const TestStartPage: React.FC = () => {
                             min={1}
                             max={Math.max(1, test.questions.length)}
                             step={1}
-                            value={Math.min(Math.max(1, settings.passThreshold), Math.max(1, test.questions.length))}
-                            onChange={(value) => updateSettings({ passThreshold: value })}
+                            value={Math.min(
+                                Math.max(1, settings.passThreshold),
+                                Math.max(1, test.questions.length),
+                            )}
+                            onChange={(value) =>
+                                updateSettings({ passThreshold: value })
+                            }
                         />
                     </div>
 
@@ -260,7 +326,9 @@ export const TestStartPage: React.FC = () => {
                         title="Включить подсказки во время теста"
                         description="Показывает дополнительную кнопку, подсвечивающую правильные ответы"
                         checked={settings.hintsEnabled}
-                        onChange={(checked) => updateSettings({ hintsEnabled: checked })}
+                        onChange={(checked) =>
+                            updateSettings({ hintsEnabled: checked })
+                        }
                     />
 
                     <div className="border-t border-gray-200" />
@@ -269,30 +337,45 @@ export const TestStartPage: React.FC = () => {
                         title="Проверять вопрос после ответа"
                         description="После нажатия 'Далее' выполняется автопроверка"
                         checked={settings.checkAfterAnswer}
-                        onChange={(checked) => updateSettings({ checkAfterAnswer: checked })}
+                        onChange={(checked) =>
+                            updateSettings({ checkAfterAnswer: checked })
+                        }
                     />
 
                     <div className="border-t border-gray-200" />
 
                     <div className="py-4">
-                        <div className="font-semibold text-gray-800">Режим проверки для полного ответа</div>
-                        <div className="text-sm text-gray-600 mt-1">Определяет строгость оценки AI</div>
+                        <div className="font-semibold text-gray-800">
+                            Режим проверки для полного ответа
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                            Определяет строгость оценки AI
+                        </div>
 
                         <div className="mt-3 grid grid-cols-2 gap-3">
                             {fullAnswerModes.map((mode) => (
                                 <button
                                     key={mode.value}
                                     type="button"
-                                    onClick={() => updateSettings({ fullAnswerCheckMode: mode.value })}
+                                    onClick={() =>
+                                        updateSettings({
+                                            fullAnswerCheckMode: mode.value,
+                                        })
+                                    }
                                     className={
                                         `rounded-lg border px-4 py-3 text-left transition-colors ` +
-                                        (settings.fullAnswerCheckMode === mode.value
-                                            ? 'border-indigo-200 bg-indigo-50'
-                                            : 'border-gray-200 bg-white hover:bg-gray-50')
+                                        (settings.fullAnswerCheckMode ===
+                                        mode.value
+                                            ? "border-indigo-200 bg-indigo-50"
+                                            : "border-gray-200 bg-white hover:bg-gray-50")
                                     }
                                 >
-                                    <div className="font-semibold text-gray-900">{mode.title}</div>
-                                    <div className="text-sm text-gray-600 mt-1">{mode.description}</div>
+                                    <div className="font-semibold text-gray-900">
+                                        {mode.title}
+                                    </div>
+                                    <div className="text-sm text-gray-600 mt-1">
+                                        {mode.description}
+                                    </div>
                                 </button>
                             ))}
                         </div>
@@ -304,7 +387,9 @@ export const TestStartPage: React.FC = () => {
                         title="Отображать неправильные ответы в конце теста"
                         description="Показывает вопросы, где были допущены ошибки и правильные ответы"
                         checked={settings.showIncorrectAtEnd}
-                        onChange={(checked) => updateSettings({ showIncorrectAtEnd: checked })}
+                        onChange={(checked) =>
+                            updateSettings({ showIncorrectAtEnd: checked })
+                        }
                     />
                 </div>
             </SlidedPanel>
@@ -318,25 +403,42 @@ export const TestStartPage: React.FC = () => {
             <Modal
                 open={isOpenDeleteModal}
                 onClose={() => setIsOpenDeleteModal(false)}
-                title={<h3 className="text-lg font-semibold text-slate-800">Подтвердите удаление</h3>}
+                title={
+                    <h3 className="text-lg font-semibold text-slate-800">
+                        Подтвердите удаление
+                    </h3>
+                }
                 outsideClickClosing
             >
                 <div className="space-y-4 mb-2">
                     <p className="text-sm text-slate-600">
-                        Удалить тест{' '}
-                        <span className="font-semibold text-slate-800">{ test.discipline_name }</span>?
+                        Удалить тест{" "}
+                        <span className="font-semibold text-slate-800">
+                            {test.discipline_name}
+                        </span>
+                        ?
                     </p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-                        <Button secondary className="flex-1 p-2" disabled={isSaving} onClick={() => setIsOpenDeleteModal(false)}>
+                        <Button
+                            secondary
+                            className="flex-1 p-2"
+                            disabled={isSaving}
+                            onClick={() => setIsOpenDeleteModal(false)}
+                        >
                             Отмена
                         </Button>
-                        <Button danger className="p-2 flex items-center gap-3" disabled={isSaving} onClick={async () => {
-                            if (!testId) return;
-                            await deleteTest(testId);
-                            navigate('/');
-                        }}>
-                            { isSaving && <Spinner className="h-5 w-5" /> }
-                            { isSaving ? 'Удаление...' : 'Удалить'}
+                        <Button
+                            danger
+                            className="p-2 flex items-center gap-3"
+                            disabled={isSaving}
+                            onClick={async () => {
+                                if (!testId) return;
+                                await deleteTest(testId);
+                                navigate("/");
+                            }}
+                        >
+                            {isSaving && <Spinner className="h-5 w-5" />}
+                            {isSaving ? "Удаление..." : "Удалить"}
                         </Button>
                     </div>
                 </div>

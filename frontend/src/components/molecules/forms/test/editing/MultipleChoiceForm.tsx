@@ -1,6 +1,6 @@
-import { Icon } from '@iconify/react';
+import { Icon } from "@iconify/react";
 
-import { Button, InputSmall } from '../../../../atoms';
+import { Button, InputSmall } from "../../../../atoms";
 
 export type MultipleChoiceFormProps = {
     options: string[];
@@ -21,12 +21,17 @@ export const MultipleChoiceForm = ({
 }: MultipleChoiceFormProps) => {
     return (
         <div className="space-y-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Варианты ответа</div>
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Варианты ответа
+            </div>
             <div className="space-y-3">
                 {options.map((option, index) => {
                     const isCorrect = correctAnswers.includes(index);
                     return (
-                        <div key={index} className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                        <div
+                            key={index}
+                            className="flex flex-col gap-2 sm:flex-row sm:items-center"
+                        >
                             <label className="flex flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
                                 <input
                                     type="checkbox"
@@ -36,7 +41,12 @@ export const MultipleChoiceForm = ({
                                 />
                                 <InputSmall
                                     value={option}
-                                    onChange={(event) => onOptionChange(index, event.target.value)}
+                                    onChange={(event) =>
+                                        onOptionChange(
+                                            index,
+                                            event.target.value,
+                                        )
+                                    }
                                     placeholder={`Вариант ${index + 1}`}
                                     className="border-0 p-0 focus:border-0 hover:border-0"
                                 />
