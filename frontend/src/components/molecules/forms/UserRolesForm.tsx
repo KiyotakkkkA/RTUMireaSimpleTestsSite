@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { InputCheckbox, Button, Spinner } from "../../atoms";
-import { ROLE_RANKS } from "../../../data/admin";
+import { ROLE_RANKS, ROLES_NAMES } from "../../../data/admin";
 import { authStore } from "../../../stores/authStore";
 
 import type { User } from "../../../types/User";
@@ -108,7 +108,11 @@ export const UserRolesForm = ({
                                 key={role.name}
                                 className={`flex items-center justify-between rounded-lg border px-3 py-2 text-sm ${disabled ? "bg-slate-50 text-slate-400" : "bg-white"} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}
                             >
-                                <span>{role.name}</span>
+                                <span>
+                                    {ROLES_NAMES[
+                                        role.name as keyof typeof ROLES_NAMES
+                                    ] || role.name}
+                                </span>
                                 <InputCheckbox
                                     checked={selectedRoles.includes(role.name)}
                                     onChange={() => {

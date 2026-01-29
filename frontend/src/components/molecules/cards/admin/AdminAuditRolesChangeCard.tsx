@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 
 import { Button } from "../../../atoms";
+import { ROLES_NAMES } from "../../../../data/admin";
 
 import type { AdminAuditRecord } from "../../../../types/admin/AdminAudit";
 
@@ -100,7 +101,9 @@ export const AdminAuditRolesChangeCard = ({
                                             key={role}
                                             className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs font-medium text-slate-600"
                                         >
-                                            {role}
+                                            {ROLES_NAMES[
+                                                role as keyof typeof ROLES_NAMES
+                                            ] || role}
                                         </span>
                                     ))
                                 ) : (
@@ -121,7 +124,9 @@ export const AdminAuditRolesChangeCard = ({
                                             key={role}
                                             className="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600"
                                         >
-                                            {role}
+                                            {ROLES_NAMES[
+                                                role as keyof typeof ROLES_NAMES
+                                            ] || role}
                                         </span>
                                     ))
                                 ) : (
