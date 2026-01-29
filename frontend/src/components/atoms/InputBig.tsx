@@ -7,6 +7,7 @@ export const InputBig = ({
     className,
     id,
     disabled,
+    maxLength = 2000,
     ...props
 }: InputSmallProps) => {
     const autoId = useId();
@@ -19,6 +20,7 @@ export const InputBig = ({
         <textarea
             id={inputId}
             disabled={disabled}
+            maxLength={maxLength}
             className={`w-full rounded-lg border ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
                 className ?? ""
             }`}

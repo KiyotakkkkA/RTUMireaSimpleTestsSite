@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 
-import { adminStatisticsStore } from "../../stores/adminStatisticsStore";
+import { adminStatisticsStore } from "../../stores/admin/adminStatisticsStore";
 
 import type { AdminStatisticsFilters } from "../../types/admin/AdminStatistics";
 

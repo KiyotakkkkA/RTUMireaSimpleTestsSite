@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 
-import { adminUsersStore } from "../../stores/adminUsersStore";
+import { adminUsersStore } from "../../stores/admin/adminUsersStore";
 
 import type { AdminUsersFilters } from "../../types/admin/AdminUsers";
 

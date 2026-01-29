@@ -58,12 +58,13 @@ function App() {
             <div className="min-h-screen overflow-auto bg-slate-100 flex flex-col">
                 <TestSessionGuard />
                 <Header />
-                <main className="flex flex-1 w-full p-6">
+                <main className="flex flex-1 w-full px-6 pt-20">
                     <Routes>
                         <Route path="/" element={<TestsListPage />} />
                         <Route path="/team" element={<OurTeamPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+
                         <Route
                             path="/tests/:testId/start"
                             element={<TestStartPage />}

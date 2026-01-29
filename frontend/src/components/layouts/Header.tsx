@@ -121,7 +121,7 @@ export const Header = () => {
     const [isOpenSlided, setIsOpenSlided] = useState(false);
 
     return (
-        <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+        <header className="fixed w-full z-30 border-b border-slate-200/70 bg-white">
             <div className="mx-auto flex items-center justify-between px-4 py-3 md:px-8">
                 <LeftPart />
                 <RightPart />

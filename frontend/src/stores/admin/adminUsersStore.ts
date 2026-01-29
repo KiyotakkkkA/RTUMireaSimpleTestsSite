@@ -1,14 +1,14 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { AdminService } from "../services/admin";
+import { AdminService } from "../../services/admin";
 
-import type { User } from "../types/User";
+import type { User } from "../../types/User";
 import type {
     AdminPermissionsResponse,
     AdminRolesResponse,
     AdminUsersFilters,
     AdminUsersPagination,
-} from "../types/admin/AdminUsers";
+} from "../../types/admin/AdminUsers";
 
 const getErrorMessage = (error: any, fallback: string) =>
     error?.response?.data?.message || error?.message || fallback;

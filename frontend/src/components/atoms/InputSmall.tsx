@@ -13,6 +13,7 @@ export const InputSmall = ({
     type = "text",
     id,
     disabled,
+    maxLength = 500,
     ...props
 }: InputSmallProps) => {
     const autoId = useId();
@@ -42,6 +43,7 @@ export const InputSmall = ({
                 id={inputId}
                 type={computedType}
                 disabled={disabled}
+                maxLength={maxLength}
                 className={`w-full rounded-lg border ${paddingLeft} ${paddingRight} ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
                     className ?? ""
                 }`}

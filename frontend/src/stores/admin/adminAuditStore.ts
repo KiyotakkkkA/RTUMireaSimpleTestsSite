@@ -1,12 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
-import { AdminService } from "../services/admin";
+import { AdminService } from "../../services/admin";
 
 import type {
     AdminAuditFilters,
     AdminAuditPagination,
     AdminAuditRecord,
-} from "../types/admin/AdminAudit";
+} from "../../types/admin/AdminAudit";
 
 const getErrorMessage = (error: any, fallback: string) =>
     error?.response?.data?.message || error?.message || fallback;
