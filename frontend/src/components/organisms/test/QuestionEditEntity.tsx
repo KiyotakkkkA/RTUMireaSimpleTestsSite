@@ -172,7 +172,7 @@ export const QuestionEditEntity = ({
 
             <div className="mt-5 space-y-1">
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                    Видимость
+                    Видимость вопроса
                 </div>
                 <div
                     className={`${draft.disabled ? "bg-red-100" : "bg-green-100"} p-3 rounded-lg text-slate-600 text-sm flex justify-between items-center transition-colors`}

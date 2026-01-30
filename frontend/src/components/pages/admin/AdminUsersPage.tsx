@@ -268,13 +268,15 @@ export const AdminUsersPage = observer(() => {
                             Вперёд
                         </Button>
                     </div>
-                    <Button
-                        dangerInverted
-                        className="w-full px-4 py-2 text-sm sm:w-auto"
-                        onClick={handleResetFilters}
-                    >
-                        Сбросить фильтры
-                    </Button>
+                    <div className="flex gap-2 items-center">
+                        <Button
+                            dangerInverted
+                            className="w-full px-4 py-2 text-sm sm:w-auto"
+                            onClick={handleResetFilters}
+                        >
+                            Сбросить фильтры
+                        </Button>
+                    </div>
                 </div>
             </div>
 

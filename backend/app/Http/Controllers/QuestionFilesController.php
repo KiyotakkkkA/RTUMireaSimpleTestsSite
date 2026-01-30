@@ -12,7 +12,11 @@ class QuestionFilesController extends Controller
 {
     public function store(QuestionFilesStoreRequest $request, int $questionId)
     {
-        $question = Question::findOrFail($questionId);
+        $question = Question::with('test')->findOrFail($questionId);
+
+        if ($question->test) {
+            $this->authorize('update', $question->test);
+        }
 
         $request->validated();
 
@@ -49,12 +53,19 @@ class QuestionFilesController extends Controller
 
     public function destroy(int $questionId, int $fileId)
     {
-        $file = QuestionFile::where('question_id', $questionId)->where('id', $fileId)->first();
+        $file = QuestionFile::with('question.test')
+            ->where('question_id', $questionId)
+            ->where('id', $fileId)
+            ->first();
 
         if (!$file) {
             return response()->json([
                 'message' => 'Файл не найден',
             ], 404);
+        }
+
+        if ($file->question?->test) {
+            $this->authorize('update', $file->question->test);
         }
 
         Storage::disk('public')->delete($file->alias);

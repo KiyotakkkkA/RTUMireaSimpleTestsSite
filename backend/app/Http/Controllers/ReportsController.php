@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Test\Test;
 use App\Services\ReportService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,6 +17,9 @@ class ReportsController extends Controller
 
     public function makeTestToPDF(string $testId): Response
     {
+        $test = Test::findOrFail($testId);
+        $this->authorize('export', $test);
+
         $payload = $this->reportService->makeTestToPDF($testId);
 
         return $payload->download("test-{$testId}.pdf");
@@ -23,6 +27,9 @@ class ReportsController extends Controller
 
     public function makeTestToJSON(string $testId): Response
     {
+        $test = Test::findOrFail($testId);
+        $this->authorize('export', $test);
+
         $payload = $this->reportService->makeTestToJSON($testId);
 
         return response()->json(

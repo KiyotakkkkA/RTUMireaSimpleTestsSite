@@ -8,6 +8,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\ApiException;
+use App\Enum\ErrorMessages;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,21 +37,21 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Resource not found.',
+                'message' => ErrorMessages::RES_NOT_FOUND->value,
             ], 404);
         });
 
         $exceptions->render(function (AuthenticationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthenticated.',
+                'message' => ErrorMessages::UNAUTHENTICATED->value,
             ], 401);
         });
 
         $exceptions->render(function (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'The given data was invalid.',
+                'message' => ErrorMessages::DATA_VALIDATION_FAILED->value,
                 'errors' => $e->errors(),
             ], 422);
         });
@@ -58,14 +59,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthorizationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage() ?: 'Forbidden.',
+                'message' => $e->getMessage() ?: ErrorMessages::UNAUTHORIZED->value,
             ], 403);
         });
 
         $exceptions->render(function (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage() ?: 'Server Error.',
+                'message' => $e->getMessage() ?: ErrorMessages::SERVER_ERROR->value,
             ], 500);
         });
     })->create();

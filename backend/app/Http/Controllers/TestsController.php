@@ -6,6 +6,7 @@ use App\Http\Requests\Tests\TestsAutoFillRequest;
 use App\Http\Requests\Tests\TestsCreateRequest;
 use App\Http\Requests\Tests\TestsIndexRequest;
 use App\Http\Requests\Tests\TestsUpdateRequest;
+use App\Models\Test\Test;
 use App\Services\TestsService;
 use Illuminate\Support\Facades\Storage;
 
@@ -20,6 +21,8 @@ class TestsController extends Controller
 
     public function createBlankTest(TestsCreateRequest $request)
     {
+        $this->authorize('create', Test::class);
+
         $data = $request->validated();
 
         $test = $this->testsService->createBlankTest($data);
@@ -68,6 +71,8 @@ class TestsController extends Controller
             ], 404);
         }
 
+        $this->authorize('view', $test);
+
         return response()->json([
             'test' => [
                 'id' => $test->id,
@@ -111,6 +116,15 @@ class TestsController extends Controller
     {
         $data = $request->validated();
 
+        $test = $this->testsService->getTestById($testId);
+        if (!$test) {
+            return response()->json([
+                'message' => 'Тест не найден',
+            ], 404);
+        }
+
+        $this->authorize('update', $test);
+
         [$test, $changedQuestions] = $this->testsService->updateTest($testId, $data);
 
         return response()->json([
@@ -143,6 +157,15 @@ class TestsController extends Controller
     {
         $data = $request->validated();
 
+        $test = $this->testsService->getTestById($testId);
+        if (!$test) {
+            return response()->json([
+                'message' => 'Тест не найден',
+            ], 404);
+        }
+
+        $this->authorize('autoFill', $test);
+
         [$test, $added] = $this->testsService->autoFillFromJson($testId, $data);
 
         return response()->json([
@@ -154,13 +177,16 @@ class TestsController extends Controller
 
     public function destroy(string $testId)
     {
-        $deleted = $this->testsService->deleteTest($testId);
-
-        if (!$deleted) {
+        $test = $this->testsService->getTestById($testId);
+        if (!$test) {
             return response()->json([
                 'message' => 'Тест не найден',
             ], 404);
         }
+
+        $this->authorize('delete', $test);
+
+        $this->testsService->deleteTest($testId);
 
         return response()->json([
             'message' => 'Тест успешно удалён',

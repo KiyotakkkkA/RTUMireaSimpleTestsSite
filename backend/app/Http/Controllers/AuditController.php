@@ -11,6 +11,8 @@ class AuditController extends Controller
 {
     public function index(AuditIndexRequest $request): Response
     {
+        $this->authorize('viewAny', Audit::class);
+
         $validated = $request->validated();
 
         $query = Audit::query()

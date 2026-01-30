@@ -26,6 +26,8 @@ class AdminController extends Controller
 
     public function index(AdminUsersIndexRequest $request): Response
     {
+        $this->authorize('viewAny', User::class);
+
         $validated = $request->validated();
 
         $data = $this->adminUsersService->listUsers([
@@ -41,6 +43,8 @@ class AdminController extends Controller
 
     public function roles(): Response
     {
+        $this->authorize('viewAny', User::class);
+
         return response([
             'roles' => $this->adminUsersService->listRoles(),
         ], 200);
@@ -48,6 +52,8 @@ class AdminController extends Controller
 
     public function permissions(): Response
     {
+        $this->authorize('viewAny', User::class);
+
         return response([
             'permissions' => $this->adminUsersService->listPermissions(),
         ], 200);
@@ -55,6 +61,8 @@ class AdminController extends Controller
 
     public function updateRoles(AdminUpdateRolesRequest $request, User $user): Response
     {
+        $this->authorize('updateRoles', $user);
+
         $validated = $request->validated();
 
         $updated = $this->adminUsersService->updateRoles($request->user(), $user, $validated['roles']);
@@ -66,6 +74,8 @@ class AdminController extends Controller
 
     public function updatePermissions(AdminUpdatePermissionsRequest $request, User $user): Response
     {
+        $this->authorize('updatePermissions', $user);
+
         $validated = $request->validated();
 
         $updated = $this->adminUsersService->updatePermissions($request->user(), $user, $validated['perms']);
@@ -77,6 +87,8 @@ class AdminController extends Controller
 
     public function store(AdminStoreUserRequest $request): Response
     {
+        $this->authorize('create', User::class);
+
         $validated = $request->validated();
 
         $user = $this->adminUsersService->createUser($request->user(), $validated);
@@ -88,6 +100,8 @@ class AdminController extends Controller
 
     public function destroy(Request $request, User $user): Response
     {
+        $this->authorize('delete', $user);
+
         $this->adminUsersService->deleteUser($request->user(), $user);
 
         return response([
@@ -97,6 +111,8 @@ class AdminController extends Controller
 
     public function statistics(AdminStatisticsRequest $request): Response
     {
+        $this->authorize('viewAny', User::class);
+
         $validated = $request->validated();
 
         $data = $this->adminStatisticsService->getGeneralStatistics($validated);
