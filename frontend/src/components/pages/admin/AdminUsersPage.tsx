@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { Icon } from "@iconify/react";
 
 import { AdminUserCard } from "../../molecules/cards/admin";
 import { authStore } from "../../../stores/authStore";
@@ -170,23 +171,33 @@ export const AdminUsersPage = observer(() => {
     return (
         <div className="w-full space-y-6">
             <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-                <h1 className="text-2xl font-bold text-slate-800">
-                    Пользователи
-                </h1>
-                <p className="mt-2 text-sm text-slate-500">
-                    Управляйте ролями и правами пользователей.
-                </p>
-                {canAddUsers && (
-                    <div className="mt-4">
-                        <Button
-                            primary
-                            className="px-4 py-2 text-sm"
-                            onClick={() => setIsAddModalOpen(true)}
-                        >
-                            Добавить пользователя
-                        </Button>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div className="text-2xl font-semibold text-slate-800">
+                            Пользователи
+                        </div>
+                        <div className="text-sm text-slate-500">
+                            Управляйте ролями и правами пользователей.
+                        </div>
                     </div>
-                )}
+                    <div className="flex items-center gap-3">
+                        {canAddUsers && (
+                            <div className="mt-4">
+                                <Button
+                                    primary
+                                    className="px-4 py-2 text-sm flex gap-2 items-center"
+                                    onClick={() => setIsAddModalOpen(true)}
+                                >
+                                    <Icon
+                                        icon="mdi:account-plus-outline"
+                                        className="w-5 h-5 mr-2"
+                                    />
+                                    Добавить
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
@@ -396,13 +407,12 @@ export const AdminUsersPage = observer(() => {
                 onClose={() => setIsAddModalOpen(false)}
                 title={
                     <h3 className="text-lg font-semibold text-slate-800">
-                        Добавить пользователя
+                        Создание пользователя
                     </h3>
                 }
-                outsideClickClosing
             >
                 <RegisterForm
-                    submitLabel="Создать пользователя"
+                    submitLabel="Создать"
                     onSubmit={handleCreateUser}
                     isLoading={isAdding}
                     className="w-full bg-white p-2"

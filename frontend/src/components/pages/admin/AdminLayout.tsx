@@ -25,6 +25,7 @@ const NavigationPanel = () => {
                 <NavLink to="/admin/tests-access" className={navItemClass}>
                     Доступ к тестам
                 </NavLink>
+                <div className="border-t border-slate-200 my-2" />
                 <NavLink to="/admin/audit" className={navItemClass}>
                     Журнал аудита
                 </NavLink>

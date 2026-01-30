@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import { AdminService } from "../../services/admin";
 
@@ -25,6 +25,14 @@ export class AdminStatisticsStore {
 
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
+
+        reaction(
+            () => this.statisticsAppliedFilters,
+            () => {
+                this.loadStatistics();
+            },
+            { fireImmediately: false },
+        );
     }
 
     get statisticsAppliedFilters(): AdminStatisticsFilters {

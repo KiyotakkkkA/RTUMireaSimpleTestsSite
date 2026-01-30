@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import { AdminService } from "../../services/admin";
 
@@ -34,6 +34,14 @@ export class AdminAuditStore {
 
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
+
+        reaction(
+            () => this.auditAppliedFilters,
+            () => {
+                this.loadAudit();
+            },
+            { fireImmediately: false },
+        );
     }
 
     get auditAppliedFilters(): AdminAuditFilters {

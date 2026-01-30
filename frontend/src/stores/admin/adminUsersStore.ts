@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import { AdminService } from "../../services/admin";
 
@@ -40,6 +40,14 @@ export class AdminUsersStore {
 
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
+
+        reaction(
+            () => this.usersAppliedFilters,
+            () => {
+                this.loadUsers();
+            },
+            { fireImmediately: false },
+        );
     }
 
     get usersAppliedFilters(): AdminUsersFilters {

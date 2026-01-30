@@ -88,15 +88,18 @@ export const AdminTestsAccessPage = observer(() => {
     return (
         <div className="w-full space-y-6">
             <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-                <h1 className="text-2xl font-bold text-slate-800">
-                    Доступ к тестам
-                </h1>
-                <p className="mt-2 text-sm text-slate-500">
-                    Настраивайте видимость тестов и выдавайте доступ выбранным
-                    пользователям.
-                </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <div className="text-2xl font-semibold text-slate-800">
+                            Доступ к тестам
+                        </div>
+                        <div className="text-sm text-slate-500">
+                            Настраивайте видимость тестов и выдавайте доступ
+                            выбранным пользователям.
+                        </div>
+                    </div>
+                </div>
             </div>
-
             <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="grid w-full gap-4 sm:grid-cols-2">

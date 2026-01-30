@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import { AdminService } from "../../services/admin";
 
@@ -41,6 +41,14 @@ export class AdminTestsAccessStore {
 
     constructor() {
         makeAutoObservable(this, {}, { autoBind: true });
+
+        reaction(
+            () => this.appliedFilters,
+            () => {
+                this.loadTests();
+            },
+            { fireImmediately: false },
+        );
     }
 
     get appliedFilters(): AdminTestsAccessFilters {
