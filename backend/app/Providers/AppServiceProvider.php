@@ -2,10 +2,8 @@
 
 namespace App\Providers;
 
-use App\Models\Audit;
 use App\Models\Test\Test;
 use App\Models\User;
-use App\Policies\AdminAuditPolicy;
 use App\Policies\TestPolicy;
 use App\Policies\AdminUsersPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -28,6 +26,5 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Test::class, TestPolicy::class);
         Gate::policy(User::class, AdminUsersPolicy::class);
-        Gate::policy(Audit::class, AdminAuditPolicy::class);
     }
 }

@@ -21,7 +21,7 @@ class TestPolicy
 
     public function view(User $user, Test $test): Response
     {
-        $status = $this->canManage($user, $test) && $user->can('edit tests');
+        $status = $this->canManage($user, $test);
         if (!$status) {
             return Response::denyAsNotFound(ErrorMessages::RES_NOT_FOUND->value);
         }
@@ -30,16 +30,12 @@ class TestPolicy
 
     public function create(User $user): Response
     {
-        $status = $user->can('create tests');
-        if (!$status) {
-            return Response::deny(ErrorMessages::NOT_ALLOWED_TEST_CREATE->value);
-        }
         return Response::allow();
     }
 
     public function update(User $user, Test $test): Response
     {
-        $status = $this->canManage($user, $test) && $user->can('edit tests');
+        $status = $this->canManage($user, $test);
         if (!$status) {
             return Response::deny(ErrorMessages::NOT_ALLOWED_TEST_UPDATE->value);
         }
@@ -48,7 +44,7 @@ class TestPolicy
 
     public function delete(User $user, Test $test): Response
     {
-        $status = $this->canManage($user, $test) && $user->can('delete tests');
+        $status = $this->canManage($user, $test);
         if (!$status) {
             return Response::denyAsNotFound(ErrorMessages::RES_NOT_FOUND->value);
         }
@@ -57,7 +53,7 @@ class TestPolicy
 
     public function export(User $user, Test $test): Response
     {
-        $status = $this->canManage($user, $test) && $user->can('make reports');
+        $status = $this->canManage($user, $test);
         if (!$status) {
             return Response::deny(ErrorMessages::NOT_ALLOWED_TEST_EXPORT->value);
         }
@@ -66,7 +62,7 @@ class TestPolicy
 
     public function autoFill(User $user, Test $test): Response
     {
-        $status = $this->canManage($user, $test) && $user->can('edit tests');
+        $status = $this->canManage($user, $test);
         if (!$status) {
             return Response::deny(ErrorMessages::NOT_ALLOWED_TEST_AUTOFILL->value);
         }

@@ -10,10 +10,6 @@ class AdminUsersPolicy
 {
     public function viewAny(User $user): Response
     {
-        $status = $user->can('view admin panel');
-        if (!$status) {
-            return Response::deny(ErrorMessages::NOT_ALLOWED_ADMIN_PANEL_VIEW->value);
-        }
         return Response::allow();
     }
 
