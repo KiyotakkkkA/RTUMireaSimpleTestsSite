@@ -41,7 +41,7 @@ export const TestsStatisticsGeneral = ({
     );
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <div className="text-lg font-semibold text-slate-800">
@@ -55,7 +55,7 @@ export const TestsStatisticsGeneral = ({
             </div>
 
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                <div className="rounded-lg border border-slate-100 bg-slate-100 p-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         {totalLabel}
                     </div>
@@ -63,7 +63,7 @@ export const TestsStatisticsGeneral = ({
                         {summary.total_completions}
                     </div>
                 </div>
-                <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                <div className="rounded-lg border border-slate-100 bg-slate-100 p-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Средний процент
                     </div>
@@ -71,7 +71,7 @@ export const TestsStatisticsGeneral = ({
                         {summary.average_percentage}%
                     </div>
                 </div>
-                <div className="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                <div className="rounded-lg border border-slate-100 bg-slate-100 p-4">
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Различных тестов пройдено
                     </div>
@@ -83,11 +83,11 @@ export const TestsStatisticsGeneral = ({
 
             <div className="mt-6">
                 {series.length === 0 ? (
-                    <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                         Данных пока нет. Попробуйте изменить фильтры.
                     </div>
                 ) : (
-                    <div className="flex h-64 items-end gap-2 rounded-lg border border-slate-100 bg-slate-50 p-4">
+                    <div className="flex h-64 items-end gap-2 rounded-lg border border-slate-100 bg-slate-100 p-4">
                         {series.map((day) => {
                             const height = Math.max(
                                 6,
@@ -99,7 +99,7 @@ export const TestsStatisticsGeneral = ({
                                     key={day.date}
                                     className="group relative flex h-full flex-1 flex-col justify-end"
                                 >
-                                    <div className="absolute -top-2 left-1/2 z-10 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-white p-3 text-xs text-slate-600 shadow-lg group-hover:block">
+                                    <div className="absolute -top-2 left-1/2 z-10 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600 shadow-lg group-hover:block">
                                         <div className="text-sm font-semibold text-slate-800">
                                             {formatFullDate(day.date)}
                                         </div>

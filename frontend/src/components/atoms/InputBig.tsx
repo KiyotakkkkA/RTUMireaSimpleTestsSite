@@ -21,7 +21,7 @@ export const InputBig = ({
             id={inputId}
             disabled={disabled}
             maxLength={maxLength}
-            className={`w-full rounded-lg border ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
+            className={`w-full rounded-lg border border-slate-300/40 bg-slate-50 ${behaviorClasses} text-slate-800 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
                 className ?? ""
             }`}
             {...props}

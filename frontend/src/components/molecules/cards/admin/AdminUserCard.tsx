@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 
 import { UserRolesForm } from "../../forms";
 import { Button, Spinner } from "../../../atoms";
+import { ROLES_NAMES } from "../../../../data/admin";
 
 import type { User } from "../../../../types/User";
 import type {
@@ -44,7 +45,7 @@ export const AdminUserCard = ({
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-4 md:p-5 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 md:p-5 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1">
                     <div className="text-lg font-semibold text-slate-800 break-words">
@@ -59,7 +60,9 @@ export const AdminUserCard = ({
                                 key={role}
                                 className="rounded-full border border-indigo-100 bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-600"
                             >
-                                {role}
+                                {ROLES_NAMES[
+                                    role as keyof typeof ROLES_NAMES
+                                ] || role}
                             </span>
                         ))}
                         {(user.perms ?? []).map((perm) => {

@@ -44,7 +44,7 @@ export const InputSmall = ({
                 type={computedType}
                 disabled={disabled}
                 maxLength={maxLength}
-                className={`w-full rounded-lg border ${paddingLeft} ${paddingRight} ${behaviorClasses} text-slate-700 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
+                className={`w-full rounded-lg border border-slate-300/40 bg-slate-50 ${paddingLeft} ${paddingRight} ${behaviorClasses} text-slate-800 placeholder:text-slate-400 focus:border-indigo-600 hover:border-indigo-400 ${
                     className ?? ""
                 }`}
                 {...props}

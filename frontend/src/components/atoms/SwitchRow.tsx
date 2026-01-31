@@ -20,12 +20,12 @@ export const SwitchRow = ({
             <div className="min-w-0">
                 <label
                     htmlFor={id}
-                    className="block font-semibold text-gray-800"
+                    className="block font-semibold text-slate-800"
                 >
                     {title}
                 </label>
                 {description ? (
-                    <p className="text-sm text-gray-600 mt-1">{description}</p>
+                    <p className="text-sm text-slate-500 mt-1">{description}</p>
                 ) : null}
             </div>
 
@@ -36,12 +36,12 @@ export const SwitchRow = ({
                 onClick={() => onChange(!checked)}
                 className={
                     `relative inline-flex h-7 w-12 flex-none items-center rounded-full transition-colors ` +
-                    (checked ? "bg-indigo-600" : "bg-gray-300")
+                    (checked ? "bg-indigo-600" : "bg-slate-300")
                 }
             >
                 <span
                     className={
-                        `inline-block h-5 w-5 transform rounded-full bg-white transition-transform ` +
+                        `inline-block h-5 w-5 transform rounded-full bg-slate-50 transition-transform ` +
                         (checked ? "translate-x-6" : "translate-x-1")
                     }
                 />

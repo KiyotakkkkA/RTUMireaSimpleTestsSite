@@ -6,7 +6,7 @@ import {
     MultipleChoice,
     Matching,
     FullAnswer,
-} from "../components/molecules/test/answering";
+} from "../components/molecules/tests/answering";
 
 import type { TestSettings, TestQuestion } from "../types/tests/Test";
 import type { FullAnswerModelEvaluation } from "../types/AI";

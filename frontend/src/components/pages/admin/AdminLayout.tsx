@@ -6,7 +6,7 @@ import { NavLink, Outlet } from "react-router-dom";
 const navItemClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition ${
         isActive
-            ? "bg-indigo-600 text-white shadow-sm"
+            ? "bg-indigo-600 text-slate-50 shadow-sm"
             : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-700"
     }`;
 
@@ -77,14 +77,14 @@ export const AdminLayout = () => {
     return (
         <div className="w-full self-stretch">
             <div className="flex w-full">
-                <aside className="hidden rounded-lg shadow-md w-64 border-r border-slate-200 bg-white/90 px-4 py-6 md:block self-start">
+                <aside className="hidden rounded-lg shadow-md w-64 border-r border-slate-200 bg-slate-50/90 px-4 py-6 md:block self-start">
                     <NavigationPanel />
                 </aside>
 
                 <div className="flex-1">
                     <div className="flex w-full justify-center">
                         <div className="w-full max-w-5xl p-4 md:p-6">
-                            <div className="mb-4 rounded-lg border border-slate-200 bg-white p-3 shadow-md md:hidden">
+                            <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50 p-3 shadow-md md:hidden">
                                 <NavigationPanel />
                             </div>
                             <Outlet />
@@ -96,7 +96,7 @@ export const AdminLayout = () => {
             <button
                 type="button"
                 onClick={handleScrollTop}
-                className={`fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg transition-all hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                className={`fixed bottom-6 right-6 z-50 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-slate-50 shadow-lg transition-all hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
                     showScrollTop
                         ? "opacity-100 translate-y-0"
                         : "pointer-events-none opacity-0 translate-y-2"

@@ -66,7 +66,11 @@ class AdminStatisticsService
             ->orderBy('date')
             ->get();
 
-        $breakdownQuery = $applyFilters(TestStatistic::query()->where('type', $type))->with('test:id,title');
+        $breakdownQuery = $applyFilters(TestStatistic::query()->where('type', $type))
+            ->with(['test' => fn ($query) => $query
+                ->select('id', 'title')
+                ->withTrashed()
+            ]);
         $dailyTests = $breakdownQuery
             ->selectRaw('DATE(created_at) as date')
             ->addSelect('test_id')

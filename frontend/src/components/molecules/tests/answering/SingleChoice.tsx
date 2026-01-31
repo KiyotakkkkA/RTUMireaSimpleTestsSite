@@ -40,7 +40,7 @@ export const SingleChoice = ({
                             return "flex items-center p-4 border-2 border-rose-200 bg-rose-50 rounded-lg cursor-pointer transition-all";
                         }
 
-                        return "flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer transition-all hover:border-indigo-400 hover:bg-indigo-50";
+                        return "flex items-center p-4 border-2 border-slate-200 rounded-lg cursor-pointer transition-all hover:border-indigo-400 hover:bg-indigo-50";
                     })()}
                 >
                     <input
@@ -52,7 +52,7 @@ export const SingleChoice = ({
                         disabled={disabled}
                         className="w-5 h-5 text-indigo-600 accent-indigo-600 cursor-pointer disabled:cursor-not-allowed"
                     />
-                    <span className="ml-4 text-gray-700">{option}</span>
+                    <span className="ml-4 text-slate-700">{option}</span>
                 </label>
             ))}
         </div>

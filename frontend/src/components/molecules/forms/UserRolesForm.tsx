@@ -106,7 +106,7 @@ export const UserRolesForm = ({
                         return (
                             <label
                                 key={role.name}
-                                className={`flex items-center justify-between rounded-lg border px-3 py-2 text-sm ${disabled ? "bg-slate-50 text-slate-400" : "bg-white"} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}
+                                className={`flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm ${disabled ? "bg-slate-50 text-slate-400" : "bg-slate-50"} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}
                             >
                                 <span>
                                     {ROLES_NAMES[
@@ -162,7 +162,7 @@ export const UserRolesForm = ({
                             return (
                                 <label
                                     key={perm}
-                                    className={`flex items-center justify-between rounded-lg border px-3 py-2 text-sm ${disabled ? "bg-slate-50 text-slate-400" : "bg-white"} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}
+                                    className={`flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2 text-sm ${disabled ? "bg-slate-50 text-slate-400" : "bg-slate-50"} hover:ring-2 hover:ring-indigo-200 cursor-pointer`}
                                 >
                                     <span className="flex min-w-0 flex-col">
                                         <span className="truncate">

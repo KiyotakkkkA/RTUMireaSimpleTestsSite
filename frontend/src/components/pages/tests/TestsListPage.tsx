@@ -54,7 +54,7 @@ export const TestsListPage = () => {
     return (
         <div className="w-full">
             <div className="mx-auto flex w-full max-w-3xl flex-col space-y-4">
-                <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div className="w-full sm:max-w-xs">
                             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -108,7 +108,7 @@ export const TestsListPage = () => {
                     </div>
                 </div>
                 {authStore.hasPermission("create tests") && (
-                    <div className="flex rounded-lg border border-slate-200 p-3 bg-white">
+                    <div className="flex rounded-lg border border-slate-200 p-3 bg-slate-50">
                         <Button
                             onClick={() => setIsModalOpen(true)}
                             className="flex-1 border-dashed border-2 border-indigo-600 p-5 items-center justify-center flex flex-col text-indigo-600 hover:bg-indigo-50"
@@ -121,7 +121,7 @@ export const TestsListPage = () => {
                     </div>
                 )}
                 {isLoadingTests && (
-                    <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                         <div className="flex items-center justify-center gap-2">
                             <Spinner className="h-4 w-4" />
                             Загружаем тесты...
@@ -134,7 +134,7 @@ export const TestsListPage = () => {
                     </div>
                 )}
                 {!isLoadingTests && !testsError && listItems.length === 0 && (
-                    <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                         Тесты не найдены.
                     </div>
                 )}

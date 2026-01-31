@@ -4,7 +4,7 @@ import { TeamMemberCard } from "../../molecules/cards";
 export const OurTeamPage = () => {
     return (
         <div className="space-y-6 mx-auto">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="text-2xl font-semibold text-slate-800">
                     Наша команда
                 </div>
@@ -19,7 +19,7 @@ export const OurTeamPage = () => {
                 ))}
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="text-lg font-semibold text-slate-800">

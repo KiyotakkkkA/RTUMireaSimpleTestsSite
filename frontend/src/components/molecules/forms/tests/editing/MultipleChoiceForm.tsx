@@ -32,7 +32,7 @@ export const MultipleChoiceForm = ({
                             key={index}
                             className="flex flex-col gap-2 sm:flex-row sm:items-center"
                         >
-                            <label className="flex flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2">
+                            <label className="flex flex-1 items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
                                 <input
                                     type="checkbox"
                                     checked={isCorrect}

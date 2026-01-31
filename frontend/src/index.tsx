@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { ToastProvider } from "./providers/ToastProvider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement,
@@ -11,8 +12,10 @@ const root = ReactDOM.createRoot(
 
 root.render(
     <React.StrictMode>
-        <ToastProvider>
-            <App />
-        </ToastProvider>
+        <ThemeProvider>
+            <ToastProvider>
+                <App />
+            </ToastProvider>
+        </ThemeProvider>
     </React.StrictMode>,
 );

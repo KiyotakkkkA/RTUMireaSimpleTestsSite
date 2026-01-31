@@ -28,17 +28,17 @@ const SlidedPanel = ({
             aria-hidden={!open}
         >
             <div
-                className={`absolute inset-0 bg-slate-900/40 transition-opacity duration-300 ${
+                className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
                     open ? "opacity-100" : "opacity-0"
                 }`}
                 onClick={outsideClickClosing ? onClose : undefined}
             />
             <aside
-                className={`absolute right-0 top-0 h-[100dvh] min-w-72 bg-white shadow-2xl transition-transform duration-300 flex flex-col ${
+                className={`absolute right-0 top-0 h-[100dvh] min-w-72 bg-slate-50 shadow-2xl transition-transform duration-300 flex flex-col ${
                     open ? "translate-x-0" : "translate-x-full"
                 }`}
             >
-                <div className="flex items-center justify-between border-b border-slate-100 p-4">
+                <div className="flex items-center justify-between border-b border-slate-200/70 p-4">
                     <div>{title}</div>
                     <button
                         type="button"

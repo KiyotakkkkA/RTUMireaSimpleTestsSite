@@ -24,9 +24,9 @@ export const ProgressBar = ({
                     {showValue && <span>{Math.round(percent)}%</span>}
                 </div>
             )}
-            <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="h-3 w-full overflow-hidden rounded-full bg-slate-200/70">
                 <div
-                    className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-violet-500 to-blue-500 transition-all duration-300"
+                    className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-500 transition-all duration-300"
                     style={{ width: `${percent}%` }}
                 />
             </div>

@@ -33,13 +33,13 @@ export const TeamMemberCard = ({
     const socialBaseStyles =
         "border border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600";
     const socialStylesTable = {
-        tg: "bg-blue-400 text-white hover:bg-blue-500",
-        github: "bg-slate-800 text-white hover:bg-slate-900",
-        vk: "bg-blue-500 text-white hover:bg-blue-600",
+        tg: "bg-blue-400 text-slate-50 hover:bg-blue-500",
+        github: "bg-slate-700 text-slate-50 hover:bg-slate-800",
+        vk: "bg-blue-500 text-slate-50 hover:bg-blue-600",
     };
 
     return (
-        <div className="flex gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="flex gap-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
             <div className="flex flex-1 items-start gap-4">
                 <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-indigo-100 text-indigo-700">
                     <div className="flex h-full w-full items-center justify-center text-sm font-semibold">
@@ -76,7 +76,7 @@ export const TeamMemberCard = ({
                 </div>
             </div>
             {socials && socials.length > 0 && (
-                <div className="inline-flex h-fit w-fit self-start flex-shrink-0 flex-col items-start gap-2 rounded-full border p-1 shadow-md">
+                <div className="inline-flex h-fit w-fit self-start flex-shrink-0 flex-col items-start gap-2 rounded-full border border-slate-200 p-1 shadow-md shadow-slate">
                     {socials.map((social) => {
                         const currentSocialStyles =
                             socialStylesTable[

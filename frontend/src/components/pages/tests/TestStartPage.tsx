@@ -112,7 +112,7 @@ export const TestStartPage: React.FC = () => {
     if (isLoading) {
         return (
             <div className="w-full max-w-2xl m-auto">
-                <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 text-center">
+                <div className="bg-slate-50 rounded-lg shadow-xl p-8 md:p-12 text-center">
                     <div className="flex items-center justify-center gap-2 text-sm text-slate-500">
                         <Spinner className="h-4 w-4" />
                         Загружаем тест...
@@ -125,7 +125,7 @@ export const TestStartPage: React.FC = () => {
     if (accessError) {
         return (
             <div className="w-full max-w-2xl m-auto">
-                <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 text-center space-y-4">
+                <div className="bg-slate-50 rounded-lg shadow-xl p-8 md:p-12 text-center space-y-4">
                     <div className="text-lg font-semibold text-slate-800">
                         {accessError}
                     </div>
@@ -172,7 +172,7 @@ export const TestStartPage: React.FC = () => {
 
     return (
         <div className="w-full max-w-2xl space-y-8 m-auto">
-            <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 text-center space-y-6">
+            <div className="bg-slate-50 rounded-lg shadow-xl p-8 md:p-12 text-center space-y-6">
                 <div className="flex justify-between">
                     <Button
                         onClick={() => {
@@ -186,7 +186,7 @@ export const TestStartPage: React.FC = () => {
                     </Button>
                     <div className="flex items-center">
                         {(canEditTest || canDeleteTest || canDownloadTest) && (
-                            <div className="flex items-center border shadow-sm p-2 gap-6 rounded-lg mr-4">
+                            <div className="flex items-center border border-slate-200 shadow-sm p-2 gap-6 rounded-lg mr-4">
                                 {canDownloadTest && (
                                     <Button
                                         onClick={handleDownload}
@@ -244,24 +244,24 @@ export const TestStartPage: React.FC = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                <div className="bg-indigo-50 rounded-lg p-6">
+                    <h2 className="text-2xl font-bold text-slate-800 mb-4">
                         {test.discipline_name}
                     </h2>
-                    <div className="flex items-center justify-center gap-2 text-gray-700">
+                    <div className="flex items-center justify-center gap-2 text-slate-700">
                         <span className="text-lg font-semibold">
                             {test.questions.length} вопросов
                         </span>
                     </div>
                 </div>
 
-                <div className="space-y-3 text-left bg-gray-50 rounded-lg p-6">
-                    <h3 className="font-semibold text-gray-800">
+                <div className="space-y-3 text-left bg-slate-50 rounded-lg p-6">
+                    <h3 className="font-semibold text-slate-800">
                         Как это работает:
                     </h3>
-                    <ul className="space-y-2 text-gray-700">
+                    <ul className="space-y-2 text-slate-700">
                         <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-slate-50 text-sm flex items-center justify-center">
                                 1
                             </span>
                             <span>
@@ -269,13 +269,13 @@ export const TestStartPage: React.FC = () => {
                             </span>
                         </li>
                         <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-slate-50 text-sm flex items-center justify-center">
                                 2
                             </span>
                             <span>Вы можете перемещаться между вопросами</span>
                         </li>
                         <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white text-sm flex items-center justify-center">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-slate-50 text-sm flex items-center justify-center">
                                 3
                             </span>
                             <span>
@@ -317,10 +317,10 @@ export const TestStartPage: React.FC = () => {
                     <div className="py-4">
                         <div className="flex items-baseline justify-between gap-3">
                             <div>
-                                <div className="font-semibold text-gray-800">
+                                <div className="font-semibold text-slate-800">
                                     Порог прохода
                                 </div>
-                                <div className="text-sm text-gray-600 mt-1">
+                                <div className="text-sm text-slate-600 mt-1">
                                     Минимум правильных ответов
                                 </div>
                             </div>
@@ -344,7 +344,7 @@ export const TestStartPage: React.FC = () => {
                         />
                     </div>
 
-                    <div className="border-t border-gray-200" />
+                    <div className="border-t border-slate-200" />
 
                     <SwitchRow
                         title="Включить подсказки во время теста"
@@ -355,7 +355,7 @@ export const TestStartPage: React.FC = () => {
                         }
                     />
 
-                    <div className="border-t border-gray-200" />
+                    <div className="border-t border-slate-200" />
 
                     <SwitchRow
                         title="Проверять вопрос после ответа"
@@ -366,13 +366,13 @@ export const TestStartPage: React.FC = () => {
                         }
                     />
 
-                    <div className="border-t border-gray-200" />
+                    <div className="border-t border-slate-200" />
 
                     <div className="py-4">
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold text-slate-800">
                             Режим проверки для полного ответа
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">
+                        <div className="text-sm text-slate-600 mt-1">
                             Определяет строгость оценки AI
                         </div>
 
@@ -391,13 +391,13 @@ export const TestStartPage: React.FC = () => {
                                         (settings.fullAnswerCheckMode ===
                                         mode.value
                                             ? "border-indigo-200 bg-indigo-50"
-                                            : "border-gray-200 bg-white hover:bg-gray-50")
+                                            : "border-slate-200 bg-slate-50 hover:bg-slate-100")
                                     }
                                 >
-                                    <div className="font-semibold text-gray-900">
+                                    <div className="font-semibold text-slate-900">
                                         {mode.title}
                                     </div>
-                                    <div className="text-sm text-gray-600 mt-1">
+                                    <div className="text-sm text-slate-600 mt-1">
                                         {mode.description}
                                     </div>
                                 </button>
@@ -405,7 +405,7 @@ export const TestStartPage: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-200" />
+                    <div className="border-t border-slate-200" />
 
                     <SwitchRow
                         title="Отображать неправильные ответы в конце теста"

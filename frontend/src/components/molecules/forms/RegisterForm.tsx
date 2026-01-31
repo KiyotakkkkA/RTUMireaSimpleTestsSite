@@ -146,7 +146,7 @@ export const RegisterForm = observer(
             <form
                 className={
                     className ??
-                    "w-full max-w-md bg-white p-6 shadow-lg rounded-lg"
+                    "w-full max-w-md bg-slate-50 p-6 shadow-lg rounded-lg"
                 }
                 onSubmit={handleSubmit}
             >

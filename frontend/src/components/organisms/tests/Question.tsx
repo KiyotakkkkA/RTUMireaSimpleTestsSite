@@ -158,7 +158,7 @@ export const Question: React.FC<QuestionProps> = ({
     return (
         <div className="w-full space-y-6">
             <div className="space-y-2">
-                <div className="flex justify-between text-sm text-gray-600">
+                <div className="flex justify-between text-sm text-slate-600">
                     <span>
                         Вопрос {currentQuestionIndex + 1} из {totalQuestions}
                     </span>
@@ -173,7 +173,7 @@ export const Question: React.FC<QuestionProps> = ({
                         </span>
                     </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-slate-200 rounded-full h-2">
                     <div
                         className="bg-gradient-to-r from-indigo-500 to-indigo-600 h-2 rounded-full transition-all duration-300"
                         style={{
@@ -184,7 +184,7 @@ export const Question: React.FC<QuestionProps> = ({
             </div>
 
             <div className="pt-4">
-                <h2 className="text-2xl font-bold text-gray-800 mb-6">
+                <h2 className="text-2xl font-bold text-slate-800 mb-6">
                     {question.question}
                 </h2>
 
@@ -193,7 +193,7 @@ export const Question: React.FC<QuestionProps> = ({
                         {question.files.map((file) => (
                             <div
                                 key={file.id}
-                                className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+                                className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
                             >
                                 {file.mime_type?.startsWith("image/") ? (
                                     <img
@@ -251,7 +251,7 @@ export const Question: React.FC<QuestionProps> = ({
                 })()}
             </div>
 
-            <div className="flex flex-col gap-3 pt-6 border-t border-gray-200 md:flex-row">
+            <div className="flex flex-col gap-3 pt-6 border-t border-slate-200 md:flex-row">
                 <Button
                     secondary
                     onClick={onPrev}
@@ -270,7 +270,7 @@ export const Question: React.FC<QuestionProps> = ({
                             `w-full px-4 py-3 rounded-lg font-semibold transition-all border md:flex-1 md:order-2 order-3 ` +
                             (hintActive
                                 ? "bg-amber-50 border-amber-200 text-amber-800"
-                                : "bg-white border-gray-200 text-gray-700 hover:bg-gray-50") +
+                                : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100") +
                             (!isAnswered
                                 ? " opacity-50 cursor-not-allowed"
                                 : "")

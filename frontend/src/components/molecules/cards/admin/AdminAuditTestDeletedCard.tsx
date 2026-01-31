@@ -12,7 +12,7 @@ export const AdminAuditTestDeletedCard = ({
     const test = record.old_object_state?.test;
 
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-4 md:p-5 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 md:p-5 shadow-sm">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">

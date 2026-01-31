@@ -100,7 +100,7 @@ export const AdminStatisticsPage = observer(() => {
 
     return (
         <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div>
                         <div className="text-2xl font-semibold text-slate-800">
@@ -123,7 +123,7 @@ export const AdminStatisticsPage = observer(() => {
                 </div>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
@@ -188,7 +188,7 @@ export const AdminStatisticsPage = observer(() => {
             </div>
 
             {isLoading && (
-                <div className="w-full rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     <div className="flex items-center justify-center gap-2">
                         <Spinner className="h-4 w-4" />
                         Загружаем статистику...
@@ -222,7 +222,7 @@ export const AdminStatisticsPage = observer(() => {
             )}
 
             {!isLoading && !error && viewMode === "target" && (
-                <div className="rounded-lg border border-slate-200 bg-white p-6 text-sm text-slate-500 shadow-sm">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-sm text-slate-500 shadow-sm">
                     Выберите тест, чтобы увидеть детальную статистику. Скоро
                     здесь появятся фильтры и графики по одному тесту.
                 </div>

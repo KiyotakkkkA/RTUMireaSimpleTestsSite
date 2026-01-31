@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Icon } from "@iconify/react";
 
 import {
     ArrayAutoFillSelector,
@@ -29,6 +30,27 @@ const statusOptions = [
     { value: "auth", label: "Только авторизованные" },
     { value: "protected", label: "Выборочно" },
 ];
+
+const statusMeta: Record<
+    AdminTestsAccessStatus,
+    { label: string; icon: string; className: string }
+> = {
+    all: {
+        label: "Доступен всем",
+        icon: "mdi:earth",
+        className: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+    },
+    auth: {
+        label: "Только авторизованные",
+        icon: "mdi:account-check",
+        className: "bg-indigo-50 text-indigo-700 ring-indigo-200",
+    },
+    protected: {
+        label: "Выборочно",
+        icon: "mdi:lock-check",
+        className: "bg-amber-50 text-amber-700 ring-amber-200",
+    },
+};
 
 export const AdminTestAccessCard = ({
     test,
@@ -65,8 +87,10 @@ export const AdminTestAccessCard = ({
         }
     };
 
+    const statusDetails = statusMeta[test.access_status];
+
     return (
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
                     <div className="text-lg font-semibold text-slate-800 break-words">
@@ -75,6 +99,17 @@ export const AdminTestAccessCard = ({
                     <div className="mt-1 text-sm text-slate-500">
                         Вопросов:{" "}
                         {test.total_questions - (test.total_disabled ?? 0)}
+                    </div>
+                    <div className="mt-3">
+                        <span
+                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${statusDetails.className}`}
+                        >
+                            <Icon
+                                icon={statusDetails.icon}
+                                className="h-4 w-4"
+                            />
+                            {statusDetails.label}
+                        </span>
                     </div>
                 </div>
                 <div className="w-full md:w-64">

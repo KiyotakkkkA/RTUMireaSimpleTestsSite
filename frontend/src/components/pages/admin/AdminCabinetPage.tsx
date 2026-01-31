@@ -19,7 +19,7 @@ export const AdminCabinetPage = () => {
 
     return (
         <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="text-2xl font-semibold text-slate-800">
@@ -38,12 +38,12 @@ export const AdminCabinetPage = () => {
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
-                <div className="lg:col-span-2 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="lg:col-span-2 rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                     <div className="text-sm font-semibold text-slate-800">
                         Информация об администраторе
                     </div>
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div className="rounded-lg shadow-md border p-4">
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-md">
                             <div className="text-xs uppercase tracking-wide text-slate-400">
                                 Имя
                             </div>
@@ -51,7 +51,7 @@ export const AdminCabinetPage = () => {
                                 {user?.name ?? "—"}
                             </div>
                         </div>
-                        <div className="rounded-lg shadow-md border p-4">
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 shadow-md">
                             <div className="text-xs uppercase tracking-wide text-slate-400">
                                 Email
                             </div>
@@ -62,7 +62,7 @@ export const AdminCabinetPage = () => {
                     </div>
                 </div>
 
-                <div className="relative rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="relative rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                     <div className="text-sm font-semibold text-slate-800 mb-2">
                         Контакты
                     </div>
@@ -89,7 +89,7 @@ export const AdminCabinetPage = () => {
                         onChange={(e) => setAdditionalEmail(e.target.value)}
                     />
                     <div className="absolute top-0 inset-0 z-10 flex items-center justify-center rounded-lg bg-slate-900/10">
-                        <div className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
+                        <div className="rounded-xl bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm">
                             В разработке
                         </div>
                     </div>

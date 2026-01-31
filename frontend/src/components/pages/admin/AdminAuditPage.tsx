@@ -107,7 +107,7 @@ export const AdminAuditPage = observer(() => {
 
     return (
         <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="text-2xl font-semibold text-slate-800">
@@ -120,7 +120,7 @@ export const AdminAuditPage = observer(() => {
                     </div>
                 </div>
             </div>
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
@@ -203,7 +203,7 @@ export const AdminAuditPage = observer(() => {
             </div>
 
             {isLoading && (
-                <div className="w-full rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     <div className="flex items-center justify-center gap-2">
                         <Spinner className="h-4 w-4" />
                         Загружаем журналы...
@@ -218,7 +218,7 @@ export const AdminAuditPage = observer(() => {
             )}
 
             {!isLoading && !error && records.length === 0 && (
-                <div className="w-full rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     Журнал пуст.
                 </div>
             )}

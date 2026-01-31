@@ -14,7 +14,7 @@ export const TestListElementCard = ({ test }: TestListElementCardProps) => {
             onClick={() =>
                 navigate(test.link, { state: { source: test.source } })
             }
-            className="group text-left bg-white/90 backdrop-blur shadow-sm hover:shadow-xl transition-all p-5 md:p-6 border border-slate-200/80 cursor-pointer rounded-lg hover:-translate-y-0.5"
+            className="group text-left bg-slate-50/90 backdrop-blur shadow-sm hover:shadow-xl transition-all p-5 md:p-6 border border-slate-200/80 cursor-pointer rounded-lg hover:-translate-y-0.5"
         >
             <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2">

@@ -45,7 +45,7 @@ export const FullAnswer = ({
         unreal: "Практически дословное совпадение.",
     };
 
-    const baseBorder = "border-gray-300 focus:border-indigo-500";
+    const baseBorder = "border-slate-300 focus:border-indigo-500";
     const checkedBorder =
         checkedState === "none"
             ? baseBorder
@@ -56,11 +56,11 @@ export const FullAnswer = ({
     return (
         <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-                <p className="text-sm text-gray-600">Введите полный ответ</p>
+                <p className="text-sm text-slate-600">Введите полный ответ</p>
                 <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-800">
                     Режим проверки: {modeLabels[fullAnswerCheckMode]}
                 </span>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-slate-500">
                     {modeHints[fullAnswerCheckMode]}
                 </span>
             </div>
@@ -70,7 +70,7 @@ export const FullAnswer = ({
                 disabled={disabled}
                 placeholder="Ваш ответ..."
                 className={
-                    `w-full min-h-[160px] resize-y px-4 py-3 bg-white` +
+                    `w-full min-h-[160px] resize-y px-4 py-3 bg-slate-50` +
                     `${checkedBorder}` +
                     (disabled
                         ? " opacity-80 cursor-not-allowed"

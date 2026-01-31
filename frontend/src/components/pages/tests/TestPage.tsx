@@ -4,7 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTestPassing } from "../../../hooks/tests/useTestPassing";
 import { TestService } from "../../../services/test";
 import { StorageService } from "../../../services/storage";
-import { QuestionNavigator } from "../../molecules/test";
+import { QuestionNavigator } from "../../molecules/tests";
 import { Question } from "../../organisms/tests";
 import { Spinner } from "../../atoms";
 
@@ -91,7 +91,7 @@ export const TestPage = () => {
     if (isLoading) {
         return (
             <div className="w-full max-w-6xl m-auto">
-                <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     <div className="flex items-center justify-center gap-2">
                         <Spinner className="h-4 w-4" />
                         Загружаем тест...
@@ -104,7 +104,7 @@ export const TestPage = () => {
     if (accessError) {
         return (
             <div className="w-full max-w-6xl m-auto">
-                <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-600">
                     {accessError}
                 </div>
             </div>
@@ -129,7 +129,7 @@ export const TestPage = () => {
                         resetTest();
                         navigate(`/tests/${testId}/start`, { replace: true });
                     }}
-                    className="px-4 py-2 text-gray-600 bg-white rounded-lg hover:bg-gray-100 transition-colors border border-gray-200"
+                    className="px-4 py-2 text-slate-600 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
                 >
                     Выход
                 </button>
@@ -151,7 +151,7 @@ export const TestPage = () => {
                 <div className="flex-1">
                     <div
                         className={
-                            `bg-white rounded-lg shadow-xl p-6 md:p-8 transition-shadow ` +
+                            `bg-slate-50 rounded-lg shadow-xl p-6 md:p-8 transition-shadow ` +
                             (checkGlow === "correct"
                                 ? "shadow-emerald-200/60 ring-2 ring-emerald-300"
                                 : checkGlow === "wrong"

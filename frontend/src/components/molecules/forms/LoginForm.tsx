@@ -58,7 +58,7 @@ export const LoginForm = observer(() => {
 
     return (
         <form
-            className="w-full max-w-md bg-white p-6 shadow-lg rounded-lg"
+            className="w-full max-w-md bg-slate-50 p-6 shadow-lg rounded-lg"
             onSubmit={handleSubmit}
         >
             <div className="mb-6">

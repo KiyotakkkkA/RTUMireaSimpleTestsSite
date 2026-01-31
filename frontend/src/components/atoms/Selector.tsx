@@ -59,7 +59,7 @@ export const Selector = ({
                 type="button"
                 disabled={disabled}
                 onClick={() => !disabled && setIsOpen((prev) => !prev)}
-                className={`flex w-full items-center justify-between gap-2 rounded-lg border bg-white px-4 py-2 text-left text-sm text-slate-700 focus:border-indigo-600 hover:border-indigo-400 ${behaviorClasses}`}
+                className={`flex border-slate-300/40 w-full items-center justify-between gap-2 rounded-lg border bg-slate-50 px-4 py-2 text-left text-sm text-slate-700 focus:border-indigo-600 hover:border-indigo-400 ${behaviorClasses}`}
             >
                 <span
                     className={
@@ -77,7 +77,7 @@ export const Selector = ({
             </button>
 
             <div
-                className={`absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg transition-all duration-200 ${
+                className={`absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-lg transition-all duration-200 ${
                     isOpen
                         ? "max-h-64 opacity-100"
                         : "pointer-events-none max-h-0 opacity-0"

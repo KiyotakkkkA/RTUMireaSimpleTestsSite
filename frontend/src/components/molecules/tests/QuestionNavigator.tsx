@@ -16,10 +16,10 @@ export const QuestionNavigator = ({
     const total = Math.max(1, totalQuestions);
 
     return (
-        <div className="bg-white rounded-lg shadow-xl p-4 md:p-5">
+        <div className="bg-slate-50 rounded-lg shadow-xl p-4 md:p-5">
             <div className="flex items-center justify-between mb-3">
-                <div className="font-bold text-gray-800">Вопросы</div>
-                <div className="text-sm text-gray-600">
+                <div className="font-bold text-slate-800">Вопросы</div>
+                <div className="text-sm text-slate-600">
                     {currentIndex + 1}/{total}
                 </div>
             </div>
@@ -34,10 +34,10 @@ export const QuestionNavigator = ({
                             "h-9 w-full rounded-lg text-sm font-semibold transition-all border flex items-center justify-center select-none";
 
                         const cls = isCurrent
-                            ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-white border-indigo-400 shadow"
+                            ? "bg-gradient-to-r from-indigo-500 to-indigo-600 text-slate-50 border-indigo-400 shadow"
                             : isAnswered
                               ? "bg-indigo-50 text-indigo-800 border-indigo-200 hover:bg-indigo-100"
-                              : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50";
+                              : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100";
 
                         return (
                             <button
@@ -54,7 +54,7 @@ export const QuestionNavigator = ({
                 </div>
             </div>
 
-            <div className="mt-3 flex items-center gap-3 text-xs text-gray-600">
+            <div className="mt-3 flex items-center gap-3 text-xs text-slate-600">
                 <div className="inline-flex items-center gap-2">
                     <span className="inline-block h-3 w-3 rounded bg-indigo-50 border border-indigo-200" />
                     <span>Отвечен</span>

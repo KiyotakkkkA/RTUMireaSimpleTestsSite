@@ -291,7 +291,7 @@ export const TestFromAIFillForm = ({
     return (
         <div className="space-y-5 pb-2">
             <div className="space-y-2">
-                <div className="border border-yellow-300 bg-yellow-50 p-2 rounded-md text-slate-600 text-sm">
+                <div className="border border-amber-300 bg-amber-50 p-2 rounded-md text-slate-600 text-sm">
                     За раз рекомендуется загружать не более 10-12 страниц текста
                     средней плотности, или не более 5-6 страниц текста высокой
                     плотности.
@@ -375,7 +375,7 @@ export const TestFromAIFillForm = ({
                             return (
                                 <div
                                     key={`ai-preview-${number}`}
-                                    className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+                                    className="rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm"
                                 >
                                     <div className="text-xs font-semibold text-slate-400">
                                         Вопрос {number}

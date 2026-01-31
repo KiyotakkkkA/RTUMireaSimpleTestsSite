@@ -12,11 +12,11 @@ import { LoginPage } from "./components/pages/LoginPage";
 import { RegisterPage } from "./components/pages/RegisterPage";
 import { OurTeamPage } from "./components/pages/general/OurTeamPage";
 
-import { TestsListPage } from "./components/pages/test/TestsListPage";
-import { TestStartPage } from "./components/pages/test/TestStartPage";
-import { TestPage } from "./components/pages/test/TestPage";
-import { TestResultsPage } from "./components/pages/test/TestResultsPage";
-import { TestEditingPage } from "./components/pages/test/TestEditingPage";
+import { TestsListPage } from "./components/pages/tests/TestsListPage";
+import { TestStartPage } from "./components/pages/tests/TestStartPage";
+import { TestPage } from "./components/pages/tests/TestPage";
+import { TestResultsPage } from "./components/pages/tests/TestResultsPage";
+import { TestEditingPage } from "./components/pages/tests/TestEditingPage";
 
 import { AdminLayout } from "./components/pages/admin/AdminLayout";
 import { AdminCabinetPage } from "./components/pages/admin/AdminCabinetPage";

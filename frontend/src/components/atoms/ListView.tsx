@@ -26,7 +26,7 @@ export const ListView = ({
     state,
 }: ListViewProps) => {
     return (
-        <div className={`border flex gap-2 ${className}`}>
+        <div className={`border border-slate-300/40 flex gap-2 ${className}`}>
             {Object.entries(options).map(([key, { icon, hint }]) => (
                 <div
                     key={key}

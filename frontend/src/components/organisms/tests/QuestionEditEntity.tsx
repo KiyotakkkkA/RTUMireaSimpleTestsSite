@@ -148,7 +148,7 @@ export const QuestionEditEntity = ({
     };
 
     return (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 shadow-sm">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -175,7 +175,7 @@ export const QuestionEditEntity = ({
                     Видимость вопроса
                 </div>
                 <div
-                    className={`${draft.disabled ? "bg-red-100" : "bg-green-100"} p-3 rounded-lg text-slate-600 text-sm flex justify-between items-center transition-colors`}
+                    className={`${draft.disabled ? "bg-rose-50" : "bg-emerald-50"} p-3 rounded-lg text-slate-600 text-sm flex justify-between items-center transition-colors`}
                 >
                     {draft.disabled ? (
                         <>
@@ -184,12 +184,12 @@ export const QuestionEditEntity = ({
                                 время прохождения теста.
                             </span>
                             <Button
-                                className="p-2 bg-red-500"
+                                className="p-2 bg-rose-500"
                                 onClick={() => update({ disabled: false })}
                             >
                                 <Icon
                                     icon="mdi:eye-off"
-                                    className="h-5 w-5 text-white"
+                                    className="h-5 w-5 text-slate-50"
                                 />
                             </Button>
                         </>
@@ -200,12 +200,12 @@ export const QuestionEditEntity = ({
                                 прохождения теста.
                             </span>
                             <Button
-                                className="p-2 bg-green-500"
+                                className="p-2 bg-emerald-500"
                                 onClick={() => update({ disabled: true })}
                             >
                                 <Icon
                                     icon="mdi:eye"
-                                    className="h-5 w-5 text-white"
+                                    className="h-5 w-5 text-slate-50"
                                 />
                             </Button>
                         </>

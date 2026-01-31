@@ -14,5 +14,6 @@ export { InputDate } from "./InputDate";
 export { InputMedia } from "./InputMedia";
 export { ProgressBar } from "./ProgressBar";
 export { ListView } from "./ListView";
+export { Dropbox } from "./Dropbox";
 
 export type { ListViewOptionsKeys } from "./ListView";

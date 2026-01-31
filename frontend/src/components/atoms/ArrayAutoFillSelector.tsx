@@ -85,7 +85,7 @@ export const ArrayAutoFillSelector = ({
     return (
         <div ref={rootRef} className={`relative ${className ?? ""}`} {...props}>
             <div
-                className={`flex min-h-[42px] w-full flex-wrap items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm text-slate-700 focus-within:border-indigo-600 hover:border-indigo-400 ${behaviorClasses}`}
+                className={`flex min-h-[42px] w-full flex-wrap items-center gap-2 rounded-lg border border-slate-300/40 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus-within:border-indigo-600 hover:border-indigo-400 ${behaviorClasses}`}
                 onClick={() => {
                     if (disabled) return;
                     setIsOpen(true);
@@ -143,12 +143,12 @@ export const ArrayAutoFillSelector = ({
                             ? ""
                             : (placeholder ?? "Введите для поиска")
                     }
-                    className="min-w-[120px] flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
+                    className="min-w-[120px] flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
                 />
             </div>
 
             <div
-                className={`absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg transition-all duration-200 ${
+                className={`absolute left-0 right-0 z-20 mt-2 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-lg transition-all duration-200 ${
                     isOpen
                         ? "max-h-64 opacity-100"
                         : "pointer-events-none max-h-0 opacity-0"

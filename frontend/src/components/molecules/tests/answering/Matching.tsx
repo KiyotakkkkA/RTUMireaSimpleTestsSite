@@ -59,29 +59,35 @@ export const Matching = ({
 
     return (
         <div className="space-y-4">
-            <p className="text-sm text-gray-600 mb-6">
+            <p className="text-sm text-slate-600 mb-6">
                 Установите соответствие между терминами и определениями
             </p>
             <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-700">Термины</h4>
+                    <h4 className="font-semibold text-slate-700">Термины</h4>
                     <div className="space-y-2">
                         {Object.entries(question.terms).map(([key, term]) => (
                             <div
                                 key={key}
-                                className="p-3 bg-blue-50 border border-blue-200 rounded"
+                                className="rounded border border-slate-200 bg-slate-50 p-3"
                             >
-                                <p className="font-medium text-blue-900">
-                                    {key}
-                                </p>
-                                <p className="text-sm text-blue-700">{term}</p>
+                                <div className="flex items-center gap-2">
+                                    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700">
+                                        {key}
+                                    </span>
+                                    <p className="font-medium text-slate-900">
+                                        {term}
+                                    </p>
+                                </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-700">Определения</h4>
+                    <h4 className="font-semibold text-slate-700">
+                        Определения
+                    </h4>
                     <div className="space-y-3">
                         {Object.entries(question.meanings).map(
                             ([index, meaning]) => {
@@ -98,21 +104,32 @@ export const Matching = ({
                                     Boolean(selectedTerm) &&
                                     !isRowCorrect;
 
+                                const rowClasses =
+                                    checkedState !== "none"
+                                        ? isRowCorrect
+                                            ? "bg-emerald-50 border-emerald-200"
+                                            : showWrong
+                                              ? "bg-rose-50 border-rose-200"
+                                              : "bg-slate-50 border-slate-200"
+                                        : "bg-indigo-50 border-slate-200";
+
+                                const textClasses =
+                                    checkedState !== "none"
+                                        ? isRowCorrect
+                                            ? "text-emerald-800"
+                                            : showWrong
+                                              ? "text-rose-800"
+                                              : "text-slate-700"
+                                        : "text-slate-700";
+
                                 return (
                                     <div
                                         key={index}
-                                        className={
-                                            `p-3 rounded border ` +
-                                            (checkedState !== "none"
-                                                ? isRowCorrect
-                                                    ? "bg-emerald-50 border-emerald-200"
-                                                    : showWrong
-                                                      ? "bg-rose-50 border-rose-200"
-                                                      : "bg-green-50 border-green-200"
-                                                : "bg-green-50 border-green-200")
-                                        }
+                                        className={`p-3 rounded border ${rowClasses}`}
                                     >
-                                        <p className="text-sm text-green-700 mb-2">
+                                        <p
+                                            className={`text-sm mb-2 ${textClasses}`}
+                                        >
                                             {meaning}
                                         </p>
                                         <Selector
@@ -132,7 +149,7 @@ export const Matching = ({
                                         />
 
                                         {revealCorrect && correctTerm ? (
-                                            <div className="mt-2 text-sm text-gray-700">
+                                            <div className="mt-2 text-sm text-slate-700">
                                                 Правильно:{" "}
                                                 <span className="font-semibold text-emerald-700">
                                                     {correctTerm}

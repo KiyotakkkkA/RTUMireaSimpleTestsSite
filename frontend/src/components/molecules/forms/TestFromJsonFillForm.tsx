@@ -262,7 +262,7 @@ export const TestFromJsonFillForm = ({
                             return (
                                 <div
                                     key={`json-preview-${number}`}
-                                    className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm"
+                                    className="rounded-xl border border-slate-200 bg-slate-50 p-3 shadow-sm"
                                 >
                                     <div className="text-xs font-semibold text-slate-400">
                                         Вопрос {number}

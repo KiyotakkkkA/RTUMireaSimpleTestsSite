@@ -5,7 +5,7 @@ import { Button } from "../../atoms";
 export const E404 = () => {
     return (
         <div className="w-full flex items-center justify-center">
-            <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+            <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center shadow-sm">
                 <div className="mx-auto mb-3 inline-flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-2xl">
                     <Icon icon="mdi:search" />
                 </div>

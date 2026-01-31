@@ -101,7 +101,7 @@ export const InputMedia = ({
             )}
             <label
                 htmlFor={inputId}
-                className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-indigo-300 bg-white/70 px-4 py-6 text-center text-sm text-indigo-600 transition hover:border-indigo-400 hover:bg-indigo-50 ${
+                className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-indigo-300 bg-slate-50/70 px-4 py-6 text-center text-sm text-indigo-600 transition hover:border-indigo-400 hover:bg-indigo-50 ${
                     disabled ? "cursor-not-allowed opacity-60" : ""
                 }`}
             >
@@ -133,7 +133,7 @@ export const InputMedia = ({
                         {existingFiles.map((file) => (
                             <div
                                 key={`existing-${file.id}`}
-                                className="relative overflow-hidden rounded-lg border border-slate-200 bg-white"
+                                className="relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50"
                             >
                                 <div className="aspect-video w-full bg-slate-100">
                                     {file.mime_type?.startsWith("image/") ? (
@@ -151,7 +151,7 @@ export const InputMedia = ({
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-500">
                                     <span className="truncate text-slate-700">
                                         {file.name}
                                     </span>
@@ -195,7 +195,7 @@ export const InputMedia = ({
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-600">
+                                <div className="flex items-center justify-between gap-2 px-3 py-2 text-xs text-slate-500">
                                     <span className="truncate text-slate-700">
                                         {file.name}
                                     </span>

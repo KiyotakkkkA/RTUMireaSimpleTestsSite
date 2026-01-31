@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 
 import { AdminUserCard } from "../../molecules/cards/admin";
 import { authStore } from "../../../stores/authStore";
-import { ROLE_RANKS } from "../../../data/admin";
+import { ROLE_RANKS, ROLES_NAMES } from "../../../data/admin";
 import {
     ArrayAutoFillSelector,
     Button,
@@ -66,7 +66,12 @@ export const AdminUsersPage = observer(() => {
     const roleOptions = useMemo(
         () => [
             { value: "", label: "Все роли" },
-            ...roles.map((role) => ({ value: role.name, label: role.name })),
+            ...roles.map((role) => ({
+                value: role.name,
+                label:
+                    ROLES_NAMES[role.name as keyof typeof ROLES_NAMES] ||
+                    role.name,
+            })),
         ],
         [roles],
     );
@@ -170,7 +175,7 @@ export const AdminUsersPage = observer(() => {
 
     return (
         <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="text-2xl font-semibold text-slate-800">
@@ -200,7 +205,7 @@ export const AdminUsersPage = observer(() => {
                 </div>
             </div>
 
-            <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
@@ -292,7 +297,7 @@ export const AdminUsersPage = observer(() => {
             </div>
 
             {isLoading && (
-                <div className="w-full rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     <div className="flex items-center justify-center gap-2">
                         <Spinner className="h-4 w-4" />
                         Загружаем пользователей...
@@ -307,7 +312,7 @@ export const AdminUsersPage = observer(() => {
             )}
 
             {!isLoading && !error && users.length === 0 && (
-                <div className="w-full rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
                     Пользователи не найдены.
                 </div>
             )}
@@ -415,7 +420,7 @@ export const AdminUsersPage = observer(() => {
                     submitLabel="Создать"
                     onSubmit={handleCreateUser}
                     isLoading={isAdding}
-                    className="w-full bg-white p-2"
+                    className="w-full bg-slate-50 p-2"
                     onSuccess={() => setIsAddModalOpen(false)}
                 />
             </Modal>
