@@ -1,7 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { AuthStorage } from "../services/authStorage";
-import { AuthService, LoginPayload, RegisterPayload } from "../services/auth";
+import {
+    AuthService,
+    LoginPayload,
+    RegisterPayload,
+    VerifyPayload,
+} from "../services/auth";
 
 import type { User } from "../types/User";
 
@@ -83,20 +88,43 @@ export class AuthStore {
         }
     }
 
-    async register(creds: RegisterPayload): Promise<boolean> {
+    async register(creds: RegisterPayload): Promise<string | false> {
         try {
             this.isLoading = true;
             this.error = null;
             const data = await AuthService.register(creds);
+            runInAction(() => {
+                this.user = data.user;
+                AuthStorage.setUser(data.user);
+            });
+            return data.verify_token;
+        } catch (error: any) {
+            runInAction(() => {
+                console.log(error);
+                this.error =
+                    error?.response?.data?.message || "Ошибка регистрации";
+            });
+            return false;
+        } finally {
+            runInAction(() => {
+                this.isLoading = false;
+            });
+        }
+    }
+
+    async verifyEmail(payload: VerifyPayload): Promise<boolean> {
+        try {
+            this.isLoading = true;
+            this.error = null;
+            const data = await AuthService.verify(payload);
             runInAction(() => {
                 this.setSession(data.user, data.token);
             });
             return true;
         } catch (error: any) {
             runInAction(() => {
-                console.log(error);
                 this.error =
-                    error?.response?.data?.message || "Ошибка регистрации";
+                    error?.response?.data?.message || "Ошибка подтверждения";
             });
             return false;
         } finally {

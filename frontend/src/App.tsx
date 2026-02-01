@@ -8,9 +8,11 @@ import {
 import { useEffect } from "react";
 
 import { Footer, Header } from "./components/layouts";
-import { LoginPage } from "./components/pages/LoginPage";
-import { RegisterPage } from "./components/pages/RegisterPage";
 import { OurTeamPage } from "./components/pages/general/OurTeamPage";
+
+import { LoginPage } from "./components/pages/auth/LoginPage";
+import { RegisterPage } from "./components/pages/auth/RegisterPage";
+import { VerifyPage } from "./components/pages/auth/VerifyPage";
 
 import { TestsListPage } from "./components/pages/tests/TestsListPage";
 import { TestStartPage } from "./components/pages/tests/TestStartPage";
@@ -65,7 +67,7 @@ function App() {
                         <Route path="/team" element={<OurTeamPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
-
+                        <Route path="/verify" element={<VerifyPage />} />
                         <Route
                             path="/tests/:testId/start"
                             element={<TestStartPage />}
@@ -88,6 +90,7 @@ function App() {
                                 </RouteGuard>
                             }
                         />
+
                         <Route
                             path="/admin"
                             element={
@@ -110,8 +113,10 @@ function App() {
                                 element={<AdminStatisticsPage />}
                             />
                         </Route>
+
                         <Route path="/errors/403" element={<E403 />} />
                         <Route path="/errors/404" element={<E404 />} />
+
                         <Route path="*" element={<E404 />} />
                     </Routes>
                 </main>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthRegisterRequest;
+use App\Http\Requests\AuthVerifyRequest;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -26,9 +27,22 @@ class AuthController extends Controller
         return response([
             'message' => 'Пользователь успешно зарегистрирован',
             'user' => $result['user'],
+            'verify_token' => $result['verify_token'],
+        ], 201);
+    }
+
+    public function verify(AuthVerifyRequest $request): Response
+    {
+        $validated = $request->validated();
+
+        $result = $this->authService->verifyEmail($validated);
+
+        return response([
+            'message' => 'Email подтвержден',
+            'user' => $result['user'],
             'token' => $result['token'],
             'token_type' => $result['token_type'],
-        ], 201);
+        ], 200);
     }
 
     public function login(AuthLoginRequest $request): Response

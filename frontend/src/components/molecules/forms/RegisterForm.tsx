@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { observer } from "mobx-react-lite";
 
-import type React from "react";
 import { Button, InputSmall, Spinner } from "../../atoms";
 import { useToasts } from "../../../hooks/useToasts";
 import { authStore } from "../../../stores/authStore";
+
+import type React from "react";
 
 const registerSchema = z
     .object({
@@ -119,15 +120,14 @@ export const RegisterForm = observer(
                 return;
             }
 
-            const ok = await authStore.register({
+            const response = await authStore.register({
                 name,
                 email,
                 password,
                 password_confirmation: confirmPassword,
             });
-            if (ok) {
-                toast.success("Регистрация успешна");
-                navigate("/", { replace: true });
+            if (response) {
+                navigate(`/verify?token=${response}`, { replace: true });
                 return;
             }
             const message = authStore.error ?? "Не удалось зарегистрироваться";
@@ -227,6 +227,12 @@ export const RegisterForm = observer(
                             onChange={(e) => setConfirmPassword(e.target.value)}
                         />
                     </div>
+                    <Link
+                        to="/login"
+                        className="mt-1 block text-sm text-indigo-600 hover:underline self-end"
+                    >
+                        Уже есть аккаунт?
+                    </Link>
                 </div>
                 {extraContent}
                 {formError && (

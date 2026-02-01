@@ -7,6 +7,11 @@ export type AuthResponse = {
     token_type: string;
 };
 
+export type RegisterResponse = {
+    user: User;
+    verify_token: string;
+};
+
 export type AuthMeResponse = {
     user: User;
 };
@@ -24,17 +29,27 @@ export type RegisterPayload = {
     password_confirmation: string;
 };
 
+export type VerifyPayload = {
+    verify_token: string;
+    code: string;
+};
+
 export const AuthService = {
     login: async (payload: LoginPayload): Promise<AuthResponse> => {
         const { data } = await api.post<AuthResponse>("/auth/login", payload);
         return data;
     },
 
-    register: async (payload: RegisterPayload): Promise<AuthResponse> => {
-        const { data } = await api.post<AuthResponse>(
+    register: async (payload: RegisterPayload): Promise<RegisterResponse> => {
+        const { data } = await api.post<RegisterResponse>(
             "/auth/register",
             payload,
         );
+        return data;
+    },
+
+    verify: async (payload: VerifyPayload): Promise<AuthResponse> => {
+        const { data } = await api.post<AuthResponse>("/auth/verify", payload);
         return data;
     },
 

@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { observer } from "mobx-react-lite";
 
@@ -104,14 +104,22 @@ export const LoginForm = observer(() => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
-                <div className="flex items-center">
-                    <InputCheckbox
-                        checked={rememberMe}
-                        onChange={() => setRememberMe(!rememberMe)}
-                    />
-                    <label className="ml-2 text-sm text-slate-500">
-                        Запомнить меня
-                    </label>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                        <InputCheckbox
+                            checked={rememberMe}
+                            onChange={() => setRememberMe(!rememberMe)}
+                        />
+                        <label className="ml-2 text-sm text-slate-500">
+                            Запомнить меня
+                        </label>
+                    </div>
+                    <Link
+                        to="/forgot-password"
+                        className="mt-1 block text-sm text-indigo-600 hover:underline"
+                    >
+                        Забыли пароль?
+                    </Link>
                 </div>
             </div>
             {formError && (
