@@ -3,11 +3,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { Button } from "../../atoms";
 import { authStore } from "../../../stores/authStore";
+import { useToasts } from "../../../hooks/useToasts";
 
 import type React from "react";
 
 export const VerifyPage = () => {
     const navigate = useNavigate();
+    const { toast } = useToasts();
+
     const [searchParams] = useSearchParams();
     const [code, setCode] = useState<string[]>(Array(6).fill(""));
     const [token, setToken] = useState<string>("");
@@ -68,6 +71,7 @@ export const VerifyPage = () => {
             code: joinedCode,
         });
         if (ok) {
+            toast.success("Регистрация успешно завершена");
             navigate("/", { replace: true });
         }
     };

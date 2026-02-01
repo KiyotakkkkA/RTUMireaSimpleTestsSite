@@ -25,7 +25,7 @@ class AuthController extends Controller
         $result = $this->authService->register($validated);
 
         return response([
-            'message' => 'Пользователь успешно зарегистрирован',
+            'message' => 'Сессия регистрации создана.',
             'user' => $result['user'],
             'verify_token' => $result['verify_token'],
         ], 201);
