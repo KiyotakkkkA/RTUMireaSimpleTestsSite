@@ -18,7 +18,7 @@ import { authStore } from "../../../stores/authStore";
 
 import type { Test } from "../../../types/tests/Test";
 
-export const TestStartPage: React.FC = () => {
+export const TestStartPage = () => {
     const [isOpenSlided, setIsOpenSlided] = useState(false);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isOpenDeleteModal, setIsOpenDeleteModal] = useState(false);

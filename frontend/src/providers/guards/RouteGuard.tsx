@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-import { authStore } from "../stores/authStore";
+import { authStore } from "../../stores/authStore";
 
 import type { JSX } from "react";
 
