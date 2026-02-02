@@ -35,6 +35,7 @@ export const TestStartPage = () => {
     const testId = useParams<{ testId: string }>().testId;
     const source =
         (location.state as { source?: "local" | "db" } | null)?.source ?? "db";
+    const accessLink = new URLSearchParams(location.search).get("access_link");
 
     useEffect(() => {
         let mounted = true;
@@ -44,7 +45,10 @@ export const TestStartPage = () => {
             try {
                 setIsLoading(true);
                 setAccessError(null);
-                const response = await TestService.getPublicTestById(testId);
+                const response = await TestService.getPublicTestById(
+                    testId,
+                    accessLink,
+                );
                 if (!mounted) return;
                 setDbTest({
                     uuid: response.test.id,
@@ -69,7 +73,7 @@ export const TestStartPage = () => {
         return () => {
             mounted = false;
         };
-    }, [testId, source]);
+    }, [testId, source, accessLink]);
 
     const test = dbTest;
 
@@ -106,7 +110,8 @@ export const TestStartPage = () => {
         if (!session) return;
         if (session.testId !== testId) return;
         if (session.mode && session.mode !== "normal") return;
-        navigate(`/tests/${testId}`, { replace: true });
+        const linkQuery = accessLink ? `?access_link=${accessLink}` : "";
+        navigate(`/tests/${testId}${linkQuery}`, { replace: true });
     }, [navigate, session, testId]);
 
     if (isLoading) {
@@ -288,7 +293,10 @@ export const TestStartPage = () => {
                 <Button
                     onClick={() => {
                         startTest({ mode: "normal", source });
-                        navigate(`/tests/${test.uuid}`);
+                        const linkQuery = accessLink
+                            ? `?access_link=${accessLink}`
+                            : "";
+                        navigate(`/tests/${test.uuid}${linkQuery}`);
                     }}
                     primary
                     className="w-full py-3.5 text-xl font-medium tracking-tight"

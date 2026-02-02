@@ -97,7 +97,7 @@ export const AdminTestAccessCard = ({
     const accessLink = useMemo(() => {
         if (!test.access_link) return null;
         if (typeof window === "undefined") return test.access_link;
-        return `${window.location.origin}/tests/${test.id}?access_link=${test.access_link}`;
+        return `${window.location.origin}/tests/${test.id}/start?access_link=${test.access_link}`;
     }, [test.access_link, test.id]);
 
     const handleCopy = async () => {
