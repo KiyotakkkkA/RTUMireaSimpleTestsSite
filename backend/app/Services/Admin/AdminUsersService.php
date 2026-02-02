@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Filters\Admin\AdminUsersFilter;
 use App\Models\User;
 use App\Models\Permission;
 use App\Services\Admin\AdminAuditService;
@@ -26,41 +27,12 @@ class AdminUsersService
 
     public function listUsers(array $filters = []): array
     {
-        $search = $filters['search'] ?? null;
-        $role = $filters['role'] ?? null;
-        $permissions = $filters['permissions'] ?? [];
         $page = $filters['page'] ?? 1;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = User::query()->with(['roles.permissions', 'permissions']);
 
-        if ($search) {
-            $query->where(function ($builder) use ($search) {
-                $builder
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        if ($role) {
-            $query->whereHas('roles', function ($builder) use ($role) {
-                $builder->where('name', $role);
-            });
-        }
-
-        if (!empty($permissions)) {
-            foreach ($permissions as $permission) {
-                $query->where(function ($builder) use ($permission) {
-                    $builder
-                        ->whereHas('permissions', function ($permQuery) use ($permission) {
-                            $permQuery->where('name', $permission);
-                        })
-                        ->orWhereHas('roles.permissions', function ($rolePermQuery) use ($permission) {
-                            $rolePermQuery->where('name', $permission);
-                        });
-                });
-            }
-        }
+        (new AdminUsersFilter($filters))->apply($query);
 
         $paginator = $query->orderBy('id')->paginate($perPage, ['*'], 'page', $page);
 

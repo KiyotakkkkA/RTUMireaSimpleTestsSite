@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Filters\Admin\AdminAuditFilter;
+use App\Models\Audit;
 use App\Models\Test\Test;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -192,5 +194,37 @@ class ReportService
         ];
 
         return $payload;
+    }
+
+    public function makeAuditToPDF(array $filters)
+    {
+        $query = Audit::query()->with('user')->orderByDesc('id');
+        (new AdminAuditFilter($filters))->apply($query);
+
+        $records = $query->get()->map(function (Audit $audit) {
+            return [
+                'id' => $audit->id,
+                'action_type' => $audit->action_type,
+                'comment' => $audit->comment,
+                'created_at' => $audit->created_at,
+                'actor' => $audit->user ? [
+                    'id' => $audit->user->id,
+                    'name' => $audit->user->name,
+                    'email' => $audit->user->email,
+                ] : null,
+                'old_object_state' => $audit->old_object_state,
+                'new_object_state' => $audit->new_object_state,
+            ];
+        })->values()->all();
+
+        $pdf = Pdf::loadView('reports.audit_pdf', [
+            'records' => $records,
+            'generatedAt' => now()->format('d.m.Y H:i'),
+            'filters' => $filters,
+        ])
+            ->setOption('defaultFont', 'DejaVu Sans')
+            ->setPaper('a4', 'portrait');
+
+        return $pdf;
     }
 }

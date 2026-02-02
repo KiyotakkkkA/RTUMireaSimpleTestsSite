@@ -70,6 +70,8 @@ Route::middleware('auth:sanctum')->prefix('download')->group(function () {
     Route::get('/test/{testId}/pdf', [ReportsController::class, 'makeTestToPDF'])->middleware('permission:make reports')->name('download.test.pdf');
     Route::get('/test/{testId}/json', [ReportsController::class, 'makeTestToJSON'])->middleware('permission:make reports')->name('download.test.json');
 
+    Route::get('/admin/audit/pdf', [ReportsController::class, 'makeAuditToPDF'])->middleware('permission:make reports')->name('download.admin.audit.pdf');
+
 });
 
 // Роуты для редактирования тестов

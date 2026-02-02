@@ -2,9 +2,8 @@
 
 namespace App\Services\Admin;
 
+use App\Filters\Admin\TestStatisticsFilter;
 use App\Models\Test\TestStatistic;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 
 class AdminStatisticsService
 {
@@ -34,30 +33,14 @@ class AdminStatisticsService
 
     private function buildStatistics(array $filters, string $type, bool $applyMinPercentage): array
     {
-        $applyFilters = function (Builder $query) use ($filters, $applyMinPercentage): Builder {
-            if (!empty($filters['date_from'])) {
-                $from = Carbon::parse($filters['date_from'])->startOfDay();
-                $query->where('created_at', '>=', $from);
-            }
+        $filter = new TestStatisticsFilter($filters, $applyMinPercentage);
 
-            if (!empty($filters['date_to'])) {
-                $to = Carbon::parse($filters['date_to'])->endOfDay();
-                $query->where('created_at', '<=', $to);
-            }
-
-            if ($applyMinPercentage && isset($filters['min_percentage']) && $filters['min_percentage'] !== '') {
-                $query->where('percentage', '>=', $filters['min_percentage']);
-            }
-
-            return $query;
-        };
-
-        $summaryQuery = $applyFilters(TestStatistic::query()->where('type', $type));
+        $summaryQuery = $filter->apply(TestStatistic::query()->where('type', $type));
         $totalCompletions = (int) $summaryQuery->count();
         $averagePercentage = (float) ($summaryQuery->avg('percentage') ?? 0);
         $uniqueTests = (int) $summaryQuery->distinct('test_id')->count('test_id');
 
-        $totalsQuery = $applyFilters(TestStatistic::query()->where('type', $type));
+        $totalsQuery = $filter->apply(TestStatistic::query()->where('type', $type));
         $dailyTotals = $totalsQuery
             ->selectRaw('DATE(created_at) as date')
             ->selectRaw('COUNT(*) as total')
@@ -66,7 +49,7 @@ class AdminStatisticsService
             ->orderBy('date')
             ->get();
 
-        $breakdownQuery = $applyFilters(TestStatistic::query()->where('type', $type))
+        $breakdownQuery = $filter->apply(TestStatistic::query()->where('type', $type))
             ->with(['test' => fn ($query) => $query
                 ->select('id', 'title')
                 ->withTrashed()

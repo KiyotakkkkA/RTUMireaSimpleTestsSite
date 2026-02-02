@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuditIndexRequest;
 use App\Models\Test\Test;
 use App\Services\ReportService;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,5 +42,16 @@ class ReportsController extends Controller
             ],
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
+    }
+
+    public function makeAuditToPDF(AuditIndexRequest $request): Response
+    {
+        $validated = $request->validated();
+
+        $payload = $this->reportService->makeAuditToPDF($validated);
+
+        $timestamp = now()->format('Ymd-His');
+
+        return $payload->download("audit-{$timestamp}.pdf");
     }
 }

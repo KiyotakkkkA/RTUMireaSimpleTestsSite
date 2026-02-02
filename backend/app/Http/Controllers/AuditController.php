@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Admin\AdminAuditFilter;
 use App\Http\Requests\AuditIndexRequest;
 use App\Models\Audit;
-use Carbon\Carbon;
 use Illuminate\Http\Response;
 
 class AuditController extends Controller
@@ -17,19 +17,7 @@ class AuditController extends Controller
             ->with('user')
             ->orderByDesc('id');
 
-        if (!empty($validated['action_type'])) {
-            $query->where('action_type', $validated['action_type']);
-        }
-
-        if (!empty($validated['date_from'])) {
-            $from = Carbon::parse($validated['date_from'])->startOfDay();
-            $query->where('created_at', '>=', $from);
-        }
-
-        if (!empty($validated['date_to'])) {
-            $to = Carbon::parse($validated['date_to'])->endOfDay();
-            $query->where('created_at', '<=', $to);
-        }
+        (new AdminAuditFilter($validated))->apply($query);
 
         $perPage = (int) ($validated['per_page'] ?? 10);
         $page = (int) ($validated['page'] ?? 1);

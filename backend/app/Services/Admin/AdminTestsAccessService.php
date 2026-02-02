@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Filters\Admin\AdminTestsAccessUsersFilter;
 use App\Models\Test\Test;
 use App\Models\User;
 use App\Repositories\TestsRepository;
@@ -101,18 +102,11 @@ class AdminTestsAccessService
 
     public function listUsers(array $filters = []): array
     {
-        $search = $filters['search'] ?? null;
         $limit = (int) ($filters['limit'] ?? 50);
 
         $query = User::query()->select(['id', 'name', 'email']);
 
-        if ($search) {
-            $query->where(function ($builder) use ($search) {
-                $builder
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
+        (new AdminTestsAccessUsersFilter($filters))->apply($query);
 
         $users = $query->orderBy('name')->limit($limit)->get();
 
