@@ -132,7 +132,12 @@ export const TestPage = () => {
                     onClick={() => {
                         setCheckGlow("none");
                         resetTest();
-                        navigate(`/tests/${testId}/start`, { replace: true });
+                        navigate(
+                            !accessLink
+                                ? `/tests/${testId}/start`
+                                : `/tests/${testId}/start?access_link=${accessLink}`,
+                            { replace: true },
+                        );
                     }}
                     className="px-4 py-2 text-slate-600 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors border border-slate-200"
                 >

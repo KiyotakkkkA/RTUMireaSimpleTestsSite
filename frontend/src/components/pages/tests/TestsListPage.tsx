@@ -52,6 +52,18 @@ export const TestsListPage = () => {
         <div className="w-full">
             <div className="mx-auto flex w-full max-w-3xl flex-col space-y-4">
                 <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
+                    {!authStore.isAuthorized && (
+                        <div className="flex gap-2 items-center rounded-lg bg-rose-100/50 p-2 mb-2">
+                            <Icon
+                                icon="mdi:alert-circle-outline"
+                                className="w-7 h-7 inline-block mr-2 text-rose-700"
+                            />
+                            <div>
+                                Вы не авторизованы! Некоторые тесты могут быть
+                                недоступны
+                            </div>
+                        </div>
+                    )}
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                         <div className="w-full sm:max-w-xs">
                             <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
