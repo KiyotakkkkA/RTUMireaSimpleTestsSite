@@ -112,7 +112,7 @@ export const TestStartPage = () => {
         if (session.mode && session.mode !== "normal") return;
         const linkQuery = accessLink ? `?access_link=${accessLink}` : "";
         navigate(`/tests/${testId}${linkQuery}`, { replace: true });
-    }, [navigate, session, testId]);
+    }, [navigate, session, testId, accessLink]);
 
     if (isLoading) {
         return (

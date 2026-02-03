@@ -101,6 +101,10 @@ class AdminUsersService
             abort(403, 'Недостаточно прав для назначения роли admin');
         }
 
+        if ($roleName === 'teacher' && !$actor->can('assign teacher role')) {
+            abort(403, 'Недостаточно прав для назначения роли teacher');
+        }
+
         if ($roleName === 'editor' && !$actor->can('assign editor role')) {
             abort(403, 'Недостаточно прав для назначения роли editor');
         }

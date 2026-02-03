@@ -7,6 +7,7 @@ export const ROLE_RANKS: Record<string, number> = {
 
 export const ROLES_NAMES = {
     root: "Суперпользователь",
+    teacher: "Преподаватель",
     admin: "Администратор",
     editor: "Редактор",
     user: "Пользователь",
@@ -37,6 +38,7 @@ export const PERMISSION_GROUPS = {
         title: "Доступ к разделам сервиса",
         permissions: [
             "view admin panel",
+            "view teacher panel",
             "view audit logs",
             "view statistics",
             "make reports",

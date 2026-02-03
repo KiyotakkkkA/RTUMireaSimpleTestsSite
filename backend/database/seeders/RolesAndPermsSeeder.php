@@ -44,6 +44,10 @@ class RolesAndPermsSeeder extends Seeder
                 'description' => 'назначение роли редактора',
             ],
             [
+                'name' => 'assign teacher role',
+                'description' => 'назначение роли преподавателя',
+            ],
+            [
                 'name' => 'assign admin role',
                 'description' => 'назначение роли администратора',
             ],
@@ -54,6 +58,10 @@ class RolesAndPermsSeeder extends Seeder
             [
                 'name' => 'view admin panel',
                 'description' => 'просмотр админ-панели',
+            ],
+            [
+                'name' => 'view teacher panel',
+                'description' => 'просмотр панели преподавателя',
             ],
             [
                 'name' => 'view audit logs',
@@ -92,6 +100,12 @@ class RolesAndPermsSeeder extends Seeder
                 'remove users',
                 'assign editor role',
                 'view admin panel',
+            ],
+            'teacher' => [
+                'create tests',
+                'edit tests',
+                'delete tests',
+                'view teacher panel'
             ],
             'editor' => [
                 'create tests',

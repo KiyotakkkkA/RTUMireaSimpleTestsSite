@@ -23,6 +23,11 @@ const RightPart = observer(() => {
                         Панель управления
                     </Button>
                 )}
+                {authStore.hasPermission("view teacher panel") && (
+                    <Button to="/teacher" secondary className="px-3 py-2">
+                        Панель преподавателя
+                    </Button>
+                )}
                 <ThemeToggle />
                 <div className="h-6 w-px bg-slate-300/40" />
                 <Button
@@ -90,6 +95,16 @@ const MobileNav = observer(({ onClose }: { onClose: () => void }) => {
                             onClick={onClose}
                         >
                             Панель управления
+                        </Button>
+                    )}
+                    {authStore.hasPermission("view teacher panel") && (
+                        <Button
+                            secondary
+                            to="/teacher"
+                            className="py-2 px-3 text-center"
+                            onClick={onClose}
+                        >
+                            Панель преподавателя
                         </Button>
                     )}
                     <Button
