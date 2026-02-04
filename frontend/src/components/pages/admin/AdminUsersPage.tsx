@@ -5,15 +5,9 @@ import { Icon } from "@iconify/react";
 import { AdminUserCard } from "../../molecules/cards/admin";
 import { authStore } from "../../../stores/authStore";
 import { ROLE_RANKS, ROLES_NAMES } from "../../../data/admin";
-import {
-    ArrayAutoFillSelector,
-    Button,
-    InputSmall,
-    Modal,
-    Selector,
-    Spinner,
-} from "../../atoms";
+import { Button, Modal, Spinner } from "../../atoms";
 import { RegisterForm } from "../../molecules/forms/auth";
+import { AdminUsersFiltersPanel } from "../../molecules/filters/admin/AdminUsersFiltersPanel";
 import {
     useAdminUsers,
     useAdminUsersCreate,
@@ -172,192 +166,133 @@ export const AdminUsersPage = observer(() => {
     };
 
     return (
-        <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className="text-2xl font-semibold text-slate-800">
-                            Пользователи
-                        </div>
-                        <div className="text-sm text-slate-500">
-                            Управляйте ролями и правами пользователей.
+        <>
+            <div className="flex flex-col gap-4 lg:flex-row">
+                <div className="order-2 flex-1 space-y-4 lg:order-1">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
+                        <div className="flex flex-col gap-3 md:items-start sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <div className="text-2xl font-semibold text-slate-800">
+                                    Пользователи
+                                </div>
+                                <div className="text-sm text-slate-500">
+                                    Управляйте ролями и правами пользователей.
+                                </div>
+                            </div>
+                            {canAddUsers && (
+                                <div className="mt-4">
+                                    <Button
+                                        primary
+                                        className="px-4 py-2 text-sm flex gap-2 items-center"
+                                        onClick={() => setIsAddModalOpen(true)}
+                                    >
+                                        <Icon
+                                            icon="mdi:account-plus-outline"
+                                            className="w-5 h-5 mr-2"
+                                        />
+                                        Добавить
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        {canAddUsers && (
-                            <div className="mt-4">
-                                <Button
-                                    primary
-                                    className="px-4 py-2 text-sm flex gap-2 items-center"
-                                    onClick={() => setIsAddModalOpen(true)}
-                                >
-                                    <Icon
-                                        icon="mdi:account-plus-outline"
-                                        className="w-5 h-5 mr-2"
+
+                    {isLoading && (
+                        <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                            <div className="flex items-center justify-center gap-2">
+                                <Spinner className="h-4 w-4" />
+                                Загружаем пользователей...
+                            </div>
+                        </div>
+                    )}
+
+                    {!isLoading && error && (
+                        <div className="w-full rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+                            {error}
+                        </div>
+                    )}
+
+                    {!isLoading && !error && users.length === 0 && (
+                        <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                            Пользователи не найдены.
+                        </div>
+                    )}
+
+                    {!isLoading && !error && users.length > 0 && (
+                        <div className="grid gap-4">
+                            {users.map((user) => {
+                                const isSelf = authStore.user?.id === user.id;
+                                const targetRank = Math.max(
+                                    -1,
+                                    ...(user.roles ?? []).map(
+                                        (role) => ROLE_RANKS[role] ?? -1,
+                                    ),
+                                );
+                                const maxRoleRank = Math.max(actorRank, -1);
+                                const canDelete = Boolean(
+                                    !isSelf &&
+                                    canRemoveUsers &&
+                                    targetRank <= actorRank &&
+                                    (!user.roles.includes("editor") ||
+                                        canAssignEditor) &&
+                                    (!user.roles.includes("admin") ||
+                                        canAssignAdmin) &&
+                                    (!user.roles.includes("root") ||
+                                        authStore.user?.roles.includes("root")),
+                                );
+
+                                return (
+                                    <AdminUserCard
+                                        key={user.id}
+                                        user={user}
+                                        roles={roles}
+                                        permissions={permissions}
+                                        rolePermissionsMap={rolePermissionsMap}
+                                        maxRoleRank={maxRoleRank}
+                                        isSelf={isSelf}
+                                        isRankHigher={actorRank > targetRank}
+                                        canDelete={canDelete}
+                                        isDeleting={Boolean(
+                                            deletingIds[user.id],
+                                        )}
+                                        onRequestDelete={handleRequestDelete}
+                                        onSaveRoles={handleSaveRoles}
+                                        onSavePermissions={
+                                            handleSavePermissions
+                                        }
+                                        canAssignPermissions={
+                                            canAssignPermissions
+                                        }
                                     />
-                                    Добавить
-                                </Button>
-                            </div>
-                        )}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+                <div className="order-1 w-full shrink-0 lg:order-2 lg:max-w-sm">
+                    <AdminUsersFiltersPanel
+                        searchValue={searchValue}
+                        onSearchChange={setSearchValue}
+                        roleValue={filters.role ?? ""}
+                        roleOptions={roleOptions}
+                        onRoleChange={(value) => updateFilters({ role: value })}
+                        permissionOptions={permissionOptions}
+                        permissionValue={filters.permissions ?? []}
+                        onPermissionChange={(value) =>
+                            updateFilters({ permissions: value })
+                        }
+                        pagination={pagination}
+                        isLoading={isLoading}
+                        onPrevPage={() =>
+                            updateFilters({ page: pagination.page - 1 })
+                        }
+                        onNextPage={() =>
+                            updateFilters({ page: pagination.page + 1 })
+                        }
+                        onReset={handleResetFilters}
+                    />
                 </div>
             </div>
-
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                    <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <div>
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Поиск
-                            </div>
-                            <InputSmall
-                                value={searchValue}
-                                onChange={(event) =>
-                                    setSearchValue(event.target.value)
-                                }
-                                placeholder="Имя или email"
-                                className="p-2"
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Роль
-                            </div>
-                            <Selector
-                                value={filters.role ?? ""}
-                                options={roleOptions}
-                                onChange={(value) =>
-                                    updateFilters({ role: value })
-                                }
-                            />
-                        </div>
-                        <div>
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Права
-                            </div>
-                            <ArrayAutoFillSelector
-                                options={permissionOptions}
-                                value={filters.permissions ?? []}
-                                onChange={(value) =>
-                                    updateFilters({ permissions: value })
-                                }
-                                placeholder="Выберите права"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-                        <Button
-                            secondary
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            disabled={pagination.page <= 1 || isLoading}
-                            onClick={() =>
-                                updateFilters({ page: pagination.page - 1 })
-                            }
-                        >
-                            Назад
-                        </Button>
-                        <div className="text-center text-sm text-slate-500 sm:text-left">
-                            Страница{" "}
-                            <span className="font-semibold text-slate-700">
-                                {pagination.page}
-                            </span>{" "}
-                            из{" "}
-                            <span className="font-semibold text-slate-700">
-                                {pagination.last_page}
-                            </span>
-                        </div>
-                        <Button
-                            primary
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            disabled={
-                                pagination.page >= pagination.last_page ||
-                                isLoading
-                            }
-                            onClick={() =>
-                                updateFilters({ page: pagination.page + 1 })
-                            }
-                        >
-                            Вперёд
-                        </Button>
-                    </div>
-                    <div className="flex gap-2 items-center">
-                        <Button
-                            dangerInverted
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            onClick={handleResetFilters}
-                        >
-                            Сбросить фильтры
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            {isLoading && (
-                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                    <div className="flex items-center justify-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Загружаем пользователей...
-                    </div>
-                </div>
-            )}
-
-            {!isLoading && error && (
-                <div className="w-full rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-                    {error}
-                </div>
-            )}
-
-            {!isLoading && !error && users.length === 0 && (
-                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                    Пользователи не найдены.
-                </div>
-            )}
-
-            {!isLoading && !error && users.length > 0 && (
-                <div className="grid gap-4">
-                    {users.map((user) => {
-                        const isSelf = authStore.user?.id === user.id;
-                        const targetRank = Math.max(
-                            -1,
-                            ...(user.roles ?? []).map(
-                                (role) => ROLE_RANKS[role] ?? -1,
-                            ),
-                        );
-                        const maxRoleRank = Math.max(actorRank, -1);
-                        const canDelete = Boolean(
-                            !isSelf &&
-                            canRemoveUsers &&
-                            targetRank <= actorRank &&
-                            (!user.roles.includes("editor") ||
-                                canAssignEditor) &&
-                            (!user.roles.includes("admin") || canAssignAdmin) &&
-                            (!user.roles.includes("root") ||
-                                authStore.user?.roles.includes("root")),
-                        );
-
-                        return (
-                            <AdminUserCard
-                                key={user.id}
-                                user={user}
-                                roles={roles}
-                                permissions={permissions}
-                                rolePermissionsMap={rolePermissionsMap}
-                                maxRoleRank={maxRoleRank}
-                                isSelf={isSelf}
-                                isRankHigher={actorRank > targetRank}
-                                canDelete={canDelete}
-                                isDeleting={Boolean(deletingIds[user.id])}
-                                onRequestDelete={handleRequestDelete}
-                                onSaveRoles={handleSaveRoles}
-                                onSavePermissions={handleSavePermissions}
-                                canAssignPermissions={canAssignPermissions}
-                            />
-                        );
-                    })}
-                </div>
-            )}
             <Modal
                 open={Boolean(deleteTarget)}
                 onClose={() => setDeleteTarget(null)}
@@ -378,8 +313,7 @@ export const AdminUsersPage = observer(() => {
                     </p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                         <Button
-                            secondary
-                            className="flex-1 p-2"
+                            className="flex-1 px-4 py-2 text-sm"
                             onClick={() => setDeleteTarget(null)}
                         >
                             Отмена
@@ -422,6 +356,6 @@ export const AdminUsersPage = observer(() => {
                     onSuccess={() => setIsAddModalOpen(false)}
                 />
             </Modal>
-        </div>
+        </>
     );
 });

@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
-import { Button, InputSmall, Modal, Selector, Spinner } from "../../atoms";
+import { Button, InputSmall, Modal, Spinner } from "../../atoms";
 import { TestListElementCard } from "../../molecules/cards";
+import { TestsListFiltersPanel } from "../../molecules/filters/tests/TestsListFiltersPanel";
 import { authStore } from "../../../stores/authStore";
 import { useTestCreate } from "../../../hooks/tests/manage";
 import { useToasts } from "../../../hooks/useToasts";
@@ -49,9 +50,42 @@ export const TestsListPage = () => {
     );
 
     return (
-        <div className="w-full">
-            <div className="mx-auto flex w-full max-w-3xl flex-col space-y-4">
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
+        <>
+            <div className="ml-auto flex w-full max-w-[110rem] flex-col gap-4 lg:flex-row">
+                <div className="order-2 flex-1 space-y-4 lg:order-1">
+                    {authStore.hasPermission("create tests") && (
+                        <div className="flex rounded-lg border border-slate-200 p-3 bg-slate-50">
+                            <Button
+                                onClick={() => setIsModalOpen(true)}
+                                className="flex-1 border-dashed border-2 border-indigo-600 p-5 items-center justify-center flex flex-col text-indigo-600 hover:bg-indigo-50"
+                            >
+                                <Icon
+                                    icon="mdi:add-circle-outline"
+                                    className="w-10 h-10 text-indigo-600"
+                                />
+                            </Button>
+                        </div>
+                    )}
+                    {isLoadingTests && (
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                            <div className="flex items-center justify-center gap-2">
+                                <Spinner className="h-4 w-4" />
+                                Загружаем тесты...
+                            </div>
+                        </div>
+                    )}
+                    {!isLoadingTests && testsError && (
+                        <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+                            {testsError}
+                        </div>
+                    )}
+                    {!isLoadingTests &&
+                        !testsError &&
+                        listItems.length === 0 && (
+                            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                                Тесты не найдены.
+                            </div>
+                        )}
                     {!authStore.isAuthorized && (
                         <div className="flex gap-2 items-center rounded-lg bg-rose-100/50 p-2 mb-2">
                             <Icon
@@ -64,99 +98,27 @@ export const TestsListPage = () => {
                             </div>
                         </div>
                     )}
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                        <div className="w-full sm:max-w-xs">
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Сортировка
-                            </div>
-                            <Selector
-                                value={sort}
-                                options={sortOptions}
-                                onChange={(value) =>
-                                    setSort(value as TestListSort)
-                                }
+                    {!isLoadingTests &&
+                        listItems.map((test) => (
+                            <TestListElementCard
+                                key={`${test.source}-${test.id}`}
+                                test={test}
                             />
-                        </div>
-                    </div>
-                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-                            <Button
-                                secondary
-                                className="w-full px-4 py-2 text-sm sm:w-auto"
-                                disabled={page <= 1 || isLoadingTests}
-                                onClick={() => setPage(page - 1)}
-                            >
-                                Назад
-                            </Button>
-                            <div className="text-center text-sm text-slate-500 sm:text-left">
-                                Страница{" "}
-                                <span className="font-semibold text-slate-700">
-                                    {page}
-                                </span>{" "}
-                                из{" "}
-                                <span className="font-semibold text-slate-700">
-                                    {pagination.last_page}
-                                </span>
-                            </div>
-                            <Button
-                                primary
-                                className="w-full px-4 py-2 text-sm sm:w-auto"
-                                disabled={
-                                    page >= pagination.last_page ||
-                                    isLoadingTests
-                                }
-                                onClick={() => setPage(page + 1)}
-                            >
-                                Вперёд
-                            </Button>
-                        </div>
-                        <Button
-                            dangerInverted
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            onClick={resetFilters}
-                        >
-                            Сбросить фильтры
-                        </Button>
-                    </div>
+                        ))}
                 </div>
-                {authStore.hasPermission("create tests") && (
-                    <div className="flex rounded-lg border border-slate-200 p-3 bg-slate-50">
-                        <Button
-                            onClick={() => setIsModalOpen(true)}
-                            className="flex-1 border-dashed border-2 border-indigo-600 p-5 items-center justify-center flex flex-col text-indigo-600 hover:bg-indigo-50"
-                        >
-                            <Icon
-                                icon="mdi:add-circle-outline"
-                                className="w-10 h-10 text-indigo-600"
-                            />
-                        </Button>
-                    </div>
-                )}
-                {isLoadingTests && (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                        <div className="flex items-center justify-center gap-2">
-                            <Spinner className="h-4 w-4" />
-                            Загружаем тесты...
-                        </div>
-                    </div>
-                )}
-                {!isLoadingTests && testsError && (
-                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-                        {testsError}
-                    </div>
-                )}
-                {!isLoadingTests && !testsError && listItems.length === 0 && (
-                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                        Тесты не найдены.
-                    </div>
-                )}
-                {!isLoadingTests &&
-                    listItems.map((test) => (
-                        <TestListElementCard
-                            key={`${test.source}-${test.id}`}
-                            test={test}
-                        />
-                    ))}
+                <div className="order-1 w-full shrink-0 lg:order-2 lg:max-w-sm">
+                    <TestsListFiltersPanel
+                        sortValue={sort}
+                        sortOptions={sortOptions}
+                        onSortChange={(value) => setSort(value as TestListSort)}
+                        page={page}
+                        lastPage={pagination.last_page}
+                        isLoading={isLoadingTests}
+                        onPrevPage={() => setPage(page - 1)}
+                        onNextPage={() => setPage(page + 1)}
+                        onReset={resetFilters}
+                    />
+                </div>
             </div>
             <Modal
                 open={isModalOpen}
@@ -214,6 +176,6 @@ export const TestsListPage = () => {
                     </div>
                 </div>
             </Modal>
-        </div>
+        </>
     );
 };

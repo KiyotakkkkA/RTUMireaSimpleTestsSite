@@ -18,7 +18,7 @@ export const AdminCabinetPage = () => {
     const [additionalEmail, setAdditionalEmail] = useState("");
 
     return (
-        <div className="w-full space-y-6">
+        <div className="max-w-5xl mx-auto space-y-4">
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Icon } from "@iconify/react";
 
-type SelectorOption = {
+export type SelectorOption = {
     value: string;
     label: string;
 };

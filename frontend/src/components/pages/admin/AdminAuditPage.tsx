@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Icon } from "@iconify/react";
 
-import { Button, InputDate, Selector, Spinner } from "../../atoms";
+import { Spinner } from "../../atoms";
 import { useAdminAudit, useAdminAuditManage } from "../../../hooks/admin/audit";
 import { AdminService } from "../../../services/admin";
+import { AdminAuditFiltersPanel } from "../../molecules/filters/admin/AdminAuditFiltersPanel";
 import {
     AdminAuditPermissionsChangeCard,
     AdminAuditRolesChangeCard,
@@ -131,142 +131,81 @@ export const AdminAuditPage = observer(() => {
     };
 
     return (
-        <div className="w-full space-y-6">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className="text-2xl font-semibold text-slate-800">
-                            Журнал аудита
-                        </div>
-                        <div className="text-sm text-slate-500">
-                            Просмотр большинства событий, произошедших в
-                            системе.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                    <div className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="order-2 flex-1 space-y-4 lg:order-1">
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 shadow-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                                Тип события
+                            <div className="text-2xl font-semibold text-slate-800">
+                                Журнал аудита
                             </div>
-                            <Selector
-                                value={filters.action_type ?? ""}
-                                options={actionOptions}
-                                onChange={(value) =>
-                                    updateFilters({
-                                        action_type:
-                                            value as AdminAuditActionType,
-                                    })
-                                }
-                            />
+                            <div className="text-sm text-slate-500">
+                                Просмотр большинства событий, произошедших в
+                                системе.
+                            </div>
                         </div>
-                        <InputDate
-                            label="С"
-                            value={filters.date_from ?? ""}
-                            onChange={(event) =>
-                                updateFilters({ date_from: event.target.value })
-                            }
-                        />
-                        <InputDate
-                            label="По"
-                            value={filters.date_to ?? ""}
-                            onChange={(event) =>
-                                updateFilters({ date_to: event.target.value })
-                            }
-                        />
                     </div>
                 </div>
-                <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-                        <Button
-                            secondary
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            disabled={pagination.page <= 1 || isLoading}
-                            onClick={handlePrevPage}
-                        >
-                            Назад
-                        </Button>
-                        <div className="text-center text-sm text-slate-500 sm:text-left">
-                            Страница{" "}
-                            <span className="font-semibold text-slate-700">
-                                {pagination.page}
-                            </span>{" "}
-                            из{" "}
-                            <span className="font-semibold text-slate-700">
-                                {pagination.last_page}
-                            </span>
+
+                {isLoading && (
+                    <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                        <div className="flex items-center justify-center gap-2">
+                            <Spinner className="h-4 w-4" />
+                            Загружаем журналы...
                         </div>
-                        <Button
-                            primary
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            disabled={
-                                pagination.page >= pagination.last_page ||
-                                isLoading
-                            }
-                            onClick={handleNextPage}
-                        >
-                            Вперёд
-                        </Button>
                     </div>
-                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-                        <Button
-                            secondary
-                            className="p-2"
-                            onClick={handleDownload}
-                            disabled={isDownloading}
-                        >
-                            {isDownloading ? (
-                                <Spinner className="h-4 w-4" />
-                            ) : (
-                                <Icon icon="mdi:download" className="h-5 w-5" />
-                            )}
-                        </Button>
-                        <Button
-                            dangerInverted
-                            className="w-full px-4 py-2 text-sm sm:w-auto"
-                            onClick={() =>
-                                updateFilters({
-                                    action_type: "",
-                                    date_from: "",
-                                    date_to: "",
-                                })
-                            }
-                        >
-                            Сбросить фильтры
-                        </Button>
+                )}
+
+                {!isLoading && error && (
+                    <div className="w-full rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
+                        {error}
                     </div>
-                </div>
+                )}
+
+                {!isLoading && !error && records.length === 0 && (
+                    <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                        Журнал пуст.
+                    </div>
+                )}
+
+                {!isLoading && !error && records.length > 0 && (
+                    <div className="grid gap-4">
+                        {records.map((record) => renderCard(record))}
+                    </div>
+                )}
             </div>
-
-            {isLoading && (
-                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                    <div className="flex items-center justify-center gap-2">
-                        <Spinner className="h-4 w-4" />
-                        Загружаем журналы...
-                    </div>
-                </div>
-            )}
-
-            {!isLoading && error && (
-                <div className="w-full rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-                    {error}
-                </div>
-            )}
-
-            {!isLoading && !error && records.length === 0 && (
-                <div className="w-full rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                    Журнал пуст.
-                </div>
-            )}
-
-            {!isLoading && !error && records.length > 0 && (
-                <div className="grid gap-4">
-                    {records.map((record) => renderCard(record))}
-                </div>
-            )}
+            <div className="order-1 w-full shrink-0 lg:order-2 lg:max-w-sm">
+                <AdminAuditFiltersPanel
+                    actionValue={filters.action_type ?? ""}
+                    actionOptions={actionOptions}
+                    onActionChange={(value) =>
+                        updateFilters({
+                            action_type: value as AdminAuditActionType,
+                        })
+                    }
+                    dateFrom={filters.date_from ?? ""}
+                    dateTo={filters.date_to ?? ""}
+                    onDateFromChange={(value) =>
+                        updateFilters({ date_from: value })
+                    }
+                    onDateToChange={(value) =>
+                        updateFilters({ date_to: value })
+                    }
+                    pagination={pagination}
+                    isLoading={isLoading}
+                    isDownloading={isDownloading}
+                    onPrevPage={handlePrevPage}
+                    onNextPage={handleNextPage}
+                    onDownload={handleDownload}
+                    onReset={() =>
+                        updateFilters({
+                            action_type: "",
+                            date_from: "",
+                            date_to: "",
+                        })
+                    }
+                />
+            </div>
         </div>
     );
 });
