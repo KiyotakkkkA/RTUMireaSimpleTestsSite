@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filters\Admin;
+namespace App\Filters\Tests;
 
 use App\Filters\QueryFilter;
 use Carbon\Carbon;

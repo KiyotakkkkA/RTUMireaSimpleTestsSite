@@ -2,26 +2,24 @@
 
 namespace App\Services\Admin;
 
-use App\Filters\Admin\AdminTestsAccessUsersFilter;
 use App\Models\Test\Test;
 use App\Models\User;
 use App\Repositories\TestsRepository;
-use App\Services\TestsAccessService;
-use Illuminate\Support\Str;
+use App\Repositories\UsersRepository;
 
 class AdminTestsAccessService
 {
     protected TestsRepository $testsRepository;
-    protected TestsAccessService $testsAccessService;
+    protected UsersRepository $usersRepository;
     protected AdminAuditService $auditService;
 
     public function __construct(
         TestsRepository $testsRepository,
-        TestsAccessService $testsAccessService,
+        UsersRepository $usersRepository,
         AdminAuditService $auditService
     ) {
         $this->testsRepository = $testsRepository;
-        $this->testsAccessService = $testsAccessService;
+        $this->usersRepository = $usersRepository;
         $this->auditService = $auditService;
     }
 
@@ -32,13 +30,7 @@ class AdminTestsAccessService
         $perPage = (int) ($filters['per_page'] ?? 10);
         $page = (int) ($filters['page'] ?? 1);
 
-        $query = Test::query()->with(['accessUsers:id,name,email']);
-
-        if (!$actor->can('tests master access')) {
-            $query->where('creator_id', $actor->id);
-        }
-
-        $tests = $this->testsRepository->listTests($sortBy, $sortDir, $perPage, $page, $query);
+        $tests = $this->testsRepository->listAccessTests($actor, $sortBy, $sortDir, $perPage, $page);
 
         return [
             'data' => $tests->map(fn (Test $test) => $this->mapTestAccessItem($test))->values()->all(),
@@ -53,28 +45,20 @@ class AdminTestsAccessService
 
     public function updateAccess(User $actor, Test $test, array $payload): array
     {
-        $test->load('accessUsers');
+        $test = $this->testsRepository->loadAccessUsers($test);
 
         $oldAccessStatus = $this->resolveStatus($test->access_status);
         $oldAccessUsers = $this->mapAccessUsers($test->accessUsers);
 
         if (array_key_exists('access_status', $payload)) {
-            $test->access_status = $payload['access_status'];
-            if ($payload['access_status'] === 'link') {
-                if (!$test->access_link) {
-                    $test->access_link = Str::random(32);
-                }
-            } else {
-                $test->access_link = null;
-            }
-            $test->save();
+            $this->testsRepository->updateTestAccessStatus($test, $payload['access_status']);
         }
 
         if (array_key_exists('user_ids', $payload)) {
-            $this->testsAccessService->syncAccessUsers($test, $payload['user_ids'] ?? []);
+            $this->testsRepository->syncTestAccessUsers($test, $payload['user_ids'] ?? []);
         }
 
-        $test->load('accessUsers');
+        $test = $this->testsRepository->loadAccessUsers($test);
 
         $newAccessStatus = $this->resolveStatus($test->access_status);
         $newAccessUsers = $this->mapAccessUsers($test->accessUsers);
@@ -104,11 +88,7 @@ class AdminTestsAccessService
     {
         $limit = (int) ($filters['limit'] ?? 50);
 
-        $query = User::query()->select(['id', 'name', 'email']);
-
-        (new AdminTestsAccessUsersFilter($filters))->apply($query);
-
-        $users = $query->orderBy('name')->limit($limit)->get();
+        $users = $this->usersRepository->listAccessUsers($filters, $limit);
 
         return [
             'data' => $users->map(fn (User $user) => [

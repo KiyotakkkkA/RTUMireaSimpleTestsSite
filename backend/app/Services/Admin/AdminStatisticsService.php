@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Filters\Admin\TestStatisticsFilter;
+use App\Filters\Tests\TestStatisticsFilter;
 use App\Models\Test\TestStatistic;
 
 class AdminStatisticsService

@@ -19,6 +19,10 @@ import { AdminAuditPage } from "./components/pages/admin/AdminAuditPage";
 import { AdminStatisticsPage } from "./components/pages/admin/AdminStatisticsPage";
 import { AdminTestsAccessPage } from "./components/pages/admin/AdminTestsAccessPage";
 
+import { TeacherLayout } from "./components/pages/teacher/TeacherLayout";
+import { TeacherCabinetPage } from "./components/pages/teacher/TeacherCabinetPage";
+import { TeacherUsersPage } from "./components/pages/teacher/TeacherUsersPage";
+
 import { E403 } from "./components/pages/errors/E403";
 import { E404 } from "./components/pages/errors/E404";
 
@@ -70,6 +74,21 @@ const RouterScheme: Record<string, RouteNode> = {
                     },
                 ],
             },
+        },
+    },
+
+    teacher: {
+        path: "/teacher",
+        component: TeacherLayout,
+        middleware: [
+            {
+                name: RouteGuard,
+                props: { requiredPermissions: ["view teacher panel"] },
+            },
+        ],
+        children: {
+            cabinet: { path: "", index: true, component: TeacherCabinetPage },
+            users: { path: "users", component: TeacherUsersPage },
         },
     },
 

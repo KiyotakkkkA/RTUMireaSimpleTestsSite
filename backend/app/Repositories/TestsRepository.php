@@ -3,9 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\Test\Test;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class TestsRepository
 {
@@ -38,6 +40,54 @@ class TestsRepository
         }
 
         return $query->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function listAccessTests(
+        User $actor,
+        string $sortBy = 'title',
+        string $sortDir = 'asc',
+        int $perPage = 10,
+        int $page = 1
+    )
+    {
+        $query = Test::query()->with(['accessUsers:id,name,email']);
+
+        if (!$actor->can('tests master access')) {
+            $query->where('creator_id', $actor->id);
+        }
+
+        return $this->listTests($sortBy, $sortDir, $perPage, $page, $query);
+    }
+
+    public function loadAccessUsers(Test $test): Test
+    {
+        return $test->load('accessUsers');
+    }
+
+    public function updateTestAccessStatus(Test $test, ?string $accessStatus): Test
+    {
+        $test->access_status = $accessStatus;
+
+        if ($accessStatus === 'link') {
+            if (!$test->access_link) {
+                $test->access_link = Str::random(32);
+            }
+        } else {
+            $test->access_link = null;
+        }
+
+        $test->save();
+
+        return $test;
+    }
+
+    public function syncTestAccessUsers(Test $test, array $userIds): Test
+    {
+        $ids = array_values(array_unique(array_map('intval', $userIds)));
+        $test->accessUsers()->sync($ids);
+        $test->load('accessUsers');
+
+        return $test;
     }
 
     public function updateTest(string $testId, array $payload): array

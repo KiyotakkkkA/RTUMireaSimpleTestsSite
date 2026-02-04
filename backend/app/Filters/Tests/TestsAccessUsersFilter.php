@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filters\Admin;
+namespace App\Filters\Tests;
 
 use App\Filters\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
 
-class AdminTestsAccessUsersFilter extends QueryFilter
+class TestsAccessUsersFilter extends QueryFilter
 {
     public function search(Builder $query, string $search): void
     {
