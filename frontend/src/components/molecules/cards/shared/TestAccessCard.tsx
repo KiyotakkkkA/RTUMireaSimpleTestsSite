@@ -10,17 +10,17 @@ import {
 
 import type { ArrayAutoFillOption } from "../../../atoms/ArrayAutoFillSelector";
 import type {
-    AdminTestAccessItem,
-    AdminTestsAccessStatus,
-} from "../../../../types/admin/AdminTestsAccess";
+    TestAccessItem,
+    TestsAccessStatus,
+} from "../../../../types/shared/TestsAccess";
 
-type AdminTestAccessCardProps = {
-    test: AdminTestAccessItem;
+type TestAccessCardProps = {
+    test: TestAccessItem;
     userOptions: ArrayAutoFillOption[];
     isUpdating?: boolean;
     onStatusChange: (
         testId: string,
-        status: AdminTestsAccessStatus,
+        status: TestsAccessStatus,
     ) => Promise<void>;
     onUsersSave: (testId: string, userIds: number[]) => Promise<void>;
 };
@@ -33,7 +33,7 @@ const statusOptions = [
 ];
 
 const statusMeta: Record<
-    AdminTestsAccessStatus,
+    TestsAccessStatus,
     { label: string; icon: string; className: string }
 > = {
     all: {
@@ -58,13 +58,13 @@ const statusMeta: Record<
     },
 };
 
-export const AdminTestAccessCard = ({
+export const TestAccessCard = ({
     test,
     userOptions,
     isUpdating,
     onStatusChange,
     onUsersSave,
-}: AdminTestAccessCardProps) => {
+}: TestAccessCardProps) => {
     const initialUserIds = useMemo(
         () => test.access_users.map((user) => String(user.id)),
         [test.access_users],
@@ -152,10 +152,7 @@ export const AdminTestAccessCard = ({
                         value={test.access_status}
                         options={statusOptions}
                         onChange={(value) =>
-                            onStatusChange(
-                                test.id,
-                                value as AdminTestsAccessStatus,
-                            )
+                            onStatusChange(test.id, value as TestsAccessStatus)
                         }
                         disabled={Boolean(isUpdating)}
                     />

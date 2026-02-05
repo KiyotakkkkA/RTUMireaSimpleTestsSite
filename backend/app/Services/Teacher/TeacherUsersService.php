@@ -22,7 +22,7 @@ class TeacherUsersService
 
     public function listGroups(User $actor, array $filters = []): array
     {
-        $paginator = $this->groupsRepository->listByCreator($actor, $filters);
+        $paginator = $this->groupsRepository->listGroups($filters);
 
         $groups = $paginator->getCollection()
             ->map(fn (Group $group) => $this->mapGroup($group))
@@ -37,6 +37,17 @@ class TeacherUsersService
                 'total' => $paginator->total(),
                 'last_page' => $paginator->lastPage(),
             ],
+        ];
+    }
+
+    public function listGroupsForAccess(User $actor): array
+    {
+        $groups = $this->groupsRepository->listByCreatorAll($actor);
+
+        return [
+            'data' => $groups->map(fn (Group $group) => $this->mapGroup($group))
+                ->values()
+                ->all(),
         ];
     }
 
@@ -99,10 +110,6 @@ class TeacherUsersService
 
     public function createUser(User $actor, array $payload): array
     {
-        if (!$actor->can('add users') && !$actor->hasRole('teacher')) {
-            abort(403, 'Недостаточно прав для регистрации пользователей');
-        }
-
         $user = User::create([
             'registered_by' => $actor->id,
             'name' => $payload['name'],

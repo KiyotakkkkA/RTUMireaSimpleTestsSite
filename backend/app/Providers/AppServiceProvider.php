@@ -6,7 +6,7 @@ use App\Models\Group;
 use App\Models\Test\Test;
 use App\Models\User;
 use App\Policies\AdminUsersPolicy;
-use App\Policies\GroupPolicy;
+use App\Policies\TeacherGroupPolicy;
 use App\Policies\TestPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -28,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Test::class, TestPolicy::class);
         Gate::policy(User::class, AdminUsersPolicy::class);
-        Gate::policy(Group::class, GroupPolicy::class);
+        Gate::policy(Group::class, TeacherGroupPolicy::class);
     }
 }

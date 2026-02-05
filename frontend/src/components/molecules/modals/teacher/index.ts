@@ -1,0 +1,1 @@
+export { TeacherGroupModal } from "./TeacherGroupModal";

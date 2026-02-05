@@ -3,8 +3,8 @@ import { observer } from "mobx-react-lite";
 
 import { Button } from "../../atoms";
 import { TestsStatisticsGeneral } from "../../organisms/admin";
-import { DataInformalBlock } from "../../molecules/general";
-import { AdminStatisticsFiltersPanel } from "../../molecules/filters/admin/AdminStatisticsFiltersPanel";
+import { DataInformalBlock } from "../../molecules/shared";
+import { AdminStatisticsFiltersPanel } from "../../molecules/filters/admin";
 import {
     useAdminStatisticsAPI,
     useAdminStatisticsManage,

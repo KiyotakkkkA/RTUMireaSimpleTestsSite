@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
 
 import { DataInformalBlock } from "../../molecules/shared";
-import { TestAccessCard } from "../../molecules/cards/shared";
+import { TeacherTestAccessCard } from "../../molecules/cards/teacher";
 import { TestsAccessFiltersPanel } from "../../molecules/filters/shared";
 import {
     useAdminTestsAccessAPI,
@@ -13,7 +13,7 @@ import { useToasts } from "../../../hooks/useToasts";
 import type { ArrayAutoFillOption } from "../../atoms/ArrayAutoFillSelector";
 import type { TestsAccessStatus } from "../../../types/shared/TestsAccess";
 
-export const AdminTestsAccessPage = observer(() => {
+export const TeacherTestsAccessPage = observer(() => {
     const { toast } = useToasts();
     const { filters, appliedFilters, updateFilters } =
         useAdminTestsAccessManage();
@@ -27,6 +27,7 @@ export const AdminTestsAccessPage = observer(() => {
         users,
         usersLoading,
         usersError,
+        groups,
         updateTestAccessStatus,
         statusUpdating,
         updateTestAccessUsers,
@@ -58,6 +59,16 @@ export const AdminTestsAccessPage = observer(() => {
                 description: user.email,
             })),
         [users],
+    );
+
+    const groupOptions = useMemo<ArrayAutoFillOption[]>(
+        () =>
+            groups.map((group) => ({
+                value: String(group.id),
+                label: group.name,
+                description: `${group.participants_count} участников`,
+            })),
+        [groups],
     );
 
     useEffect(() => {
@@ -131,10 +142,12 @@ export const AdminTestsAccessPage = observer(() => {
                 {!isLoading && !error && tests.length > 0 && (
                     <div className="space-y-4">
                         {tests.map((test) => (
-                            <TestAccessCard
+                            <TeacherTestAccessCard
                                 key={test.id}
                                 test={test}
                                 userOptions={userOptions}
+                                groupOptions={groupOptions}
+                                groups={groups}
                                 isUpdating={Boolean(isUpdating[test.id])}
                                 onStatusChange={handleStatusChange}
                                 onUsersSave={handleUsersSave}

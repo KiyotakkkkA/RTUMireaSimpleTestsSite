@@ -1,0 +1,1 @@
+export { TeacherGroupsFiltersPanel } from "./TeacherGroupsFiltersPanel";

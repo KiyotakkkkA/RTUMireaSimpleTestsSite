@@ -14,6 +14,10 @@ class UsersRepository
 
         (new TestsAccessUsersFilter($filters))->apply($query);
 
+        if (!auth('sanctum')->user()->can('users master access')) {
+            $query->where('id', auth('sanctum')->id());
+        }
+
         return $query->orderBy('name')->limit($limit)->get();
     }
 

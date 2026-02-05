@@ -6,7 +6,7 @@ import {
     useAdminAuditManage,
 } from "../../../hooks/admin/audit";
 import { AdminService } from "../../../services/admin";
-import { AdminAuditFiltersPanel } from "../../molecules/filters/admin/AdminAuditFiltersPanel";
+import { AdminAuditFiltersPanel } from "../../molecules/filters/admin/";
 import {
     AdminAuditPermissionsChangeCard,
     AdminAuditRolesChangeCard,
@@ -17,7 +17,7 @@ import {
     AdminAuditTestDeletedCard,
     AdminAuditTestAccessUpdatedCard,
 } from "../../molecules/cards/admin";
-import { DataInformalBlock } from "../../molecules/general";
+import { DataInformalBlock } from "../../molecules/shared";
 
 import type {
     AdminAuditActionType,

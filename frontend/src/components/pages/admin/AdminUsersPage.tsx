@@ -7,13 +7,13 @@ import { authStore } from "../../../stores/authStore";
 import { ROLE_RANKS, ROLES_NAMES } from "../../../data/admin";
 import { Button, Modal } from "../../atoms";
 import { RegisterForm } from "../../molecules/forms/auth";
-import { AdminUsersFiltersPanel } from "../../molecules/filters/admin/AdminUsersFiltersPanel";
+import { AdminUsersFiltersPanel } from "../../molecules/filters/admin";
 import {
     useAdminUsersAPI,
     useAdminUsersManage,
 } from "../../../hooks/admin/users";
 import { useToasts } from "../../../hooks/useToasts";
-import { DataInformalBlock } from "../../molecules/general";
+import { DataInformalBlock } from "../../molecules/shared";
 
 export const AdminUsersPage = observer(() => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -308,6 +308,7 @@ export const AdminUsersPage = observer(() => {
                     </p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                         <Button
+                            secondary
                             className="flex-1 px-4 py-2 text-sm"
                             onClick={() => setDeleteTarget(null)}
                         >

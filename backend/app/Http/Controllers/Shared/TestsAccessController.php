@@ -1,29 +1,35 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Shared;
 
 use App\Http\Requests\Admin\AdminTestsAccessIndexRequest;
 use App\Http\Requests\Admin\AdminTestsAccessUpdateRequest;
 use App\Http\Requests\Admin\AdminTestsAccessUsersRequest;
 use App\Models\Test\Test;
-use App\Services\Admin\AdminTestsAccessService;
+use App\Services\Teacher\TeacherUsersService;
+use App\Services\Shared\TestsAccessService;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
-class AdminTestsAccessController extends Controller
+class TestsAccessController extends Controller
 {
-    protected AdminTestsAccessService $adminTestsAccessService;
+    protected TestsAccessService $testsAccessService;
+    protected TeacherUsersService $teacherUsersService;
 
-    public function __construct(AdminTestsAccessService $adminTestsAccessService)
+    public function __construct(
+        TestsAccessService $testsAccessService,
+        TeacherUsersService $teacherUsersService,
+    )
     {
-        $this->adminTestsAccessService = $adminTestsAccessService;
+        $this->testsAccessService = $testsAccessService;
+        $this->teacherUsersService = $teacherUsersService;
     }
 
     public function index(AdminTestsAccessIndexRequest $request): Response
     {
         $validated = $request->validated();
 
-        $data = $this->adminTestsAccessService->listTests(
+        $data = $this->testsAccessService->listTests(
             $request->user(),
             $validated
         );
@@ -44,7 +50,7 @@ class AdminTestsAccessController extends Controller
 
         $validated = $request->validated();
 
-        $updated = $this->adminTestsAccessService->updateAccess(
+        $updated = $this->testsAccessService->updateAccess(
             $request->user(),
             $test,
             $validated
@@ -59,7 +65,14 @@ class AdminTestsAccessController extends Controller
     {
         $validated = $request->validated();
 
-        $data = $this->adminTestsAccessService->listUsers($validated);
+        $data = $this->testsAccessService->listUsers($validated);
+
+        return response($data, 200);
+    }
+
+    public function groups(): Response
+    {
+        $data = $this->teacherUsersService->listGroupsForAccess(request()->user());
 
         return response($data, 200);
     }

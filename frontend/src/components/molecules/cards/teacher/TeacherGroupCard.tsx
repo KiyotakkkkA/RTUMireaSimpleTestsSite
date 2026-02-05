@@ -64,7 +64,7 @@ export const TeacherGroupCard = ({
                         className="p-2 text-sm"
                         onClick={onStartRegister}
                     >
-                        Зарегистрировать
+                        Добавить в группу
                     </Button>
                 </div>
             </div>

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
-import { AdminService } from "../../../services/admin";
+import { SharedService } from "../../../services/shared";
 
 import type {
-    AdminTestsAccessFilters,
-    AdminTestsAccessPagination,
-    AdminTestsAccessStatus,
-} from "../../../types/admin/AdminTestsAccess";
+    TestsAccessFilters,
+    TestsAccessPagination,
+    TestsAccessStatus,
+} from "../../../types/shared/TestsAccess";
 
-const DEFAULT_PAGINATION: AdminTestsAccessPagination = {
+const DEFAULT_PAGINATION: TestsAccessPagination = {
     page: 1,
     per_page: 10,
     total: 0,
@@ -20,24 +20,30 @@ const getErrorMessage = (error: any, fallback: string) =>
     error?.response?.data?.message || error?.message || fallback;
 
 export const useAdminTestsAccessAPI = (
-    filters: AdminTestsAccessFilters,
+    filters: TestsAccessFilters,
     userSearch?: string,
 ) => {
     const queryClient = useQueryClient();
 
     const testsQuery = useQuery(
-        ["admin", "tests-access", filters],
-        () => AdminService.getTestsAccessList(filters),
+        ["shared", "tests-access", filters],
+        () => SharedService.getTestsAccessList(filters),
         { keepPreviousData: true },
     );
 
     const usersQuery = useQuery(
-        ["admin", "tests-access", "users", userSearch ?? ""],
+        ["shared", "tests-access", "users", userSearch ?? ""],
         () =>
-            AdminService.getTestsAccessUsers({
+            SharedService.getTestsAccessUsers({
                 search: userSearch || undefined,
                 limit: 100,
             }),
+        { keepPreviousData: true },
+    );
+
+    const groupsQuery = useQuery(
+        ["shared", "tests-access", "groups"],
+        () => SharedService.getTestsAccessGroups(),
         { keepPreviousData: true },
     );
 
@@ -45,13 +51,8 @@ export const useAdminTestsAccessAPI = (
         Record<string, boolean>
     >({});
     const updateStatusMutation = useMutation(
-        ({
-            testId,
-            status,
-        }: {
-            testId: string;
-            status: AdminTestsAccessStatus;
-        }) => AdminService.updateTestAccess(testId, { access_status: status }),
+        ({ testId, status }: { testId: string; status: TestsAccessStatus }) =>
+            SharedService.updateTestAccess(testId, { access_status: status }),
         {
             onMutate: ({ testId }) => {
                 setStatusUpdating((prev) => ({ ...prev, [testId]: true }));
@@ -64,7 +65,7 @@ export const useAdminTestsAccessAPI = (
                 });
             },
             onSuccess: () => {
-                queryClient.invalidateQueries(["admin", "tests-access"]);
+                queryClient.invalidateQueries(["shared", "tests-access"]);
             },
         },
     );
@@ -74,7 +75,7 @@ export const useAdminTestsAccessAPI = (
     );
     const updateUsersMutation = useMutation(
         ({ testId, userIds }: { testId: string; userIds: number[] }) =>
-            AdminService.updateTestAccess(testId, { user_ids: userIds }),
+            SharedService.updateTestAccess(testId, { user_ids: userIds }),
         {
             onMutate: ({ testId }) => {
                 setUsersUpdating((prev) => ({ ...prev, [testId]: true }));
@@ -87,7 +88,7 @@ export const useAdminTestsAccessAPI = (
                 });
             },
             onSuccess: () => {
-                queryClient.invalidateQueries(["admin", "tests-access"]);
+                queryClient.invalidateQueries(["shared", "tests-access"]);
             },
         },
     );
@@ -114,10 +115,17 @@ export const useAdminTestsAccessAPI = (
               )
             : null,
         usersRefetch: usersQuery.refetch,
-        updateTestAccessStatus: (
-            testId: string,
-            status: AdminTestsAccessStatus,
-        ) =>
+        groups: groupsQuery.data?.data ?? [],
+        groupsLoading: groupsQuery.isLoading,
+        groupsFetching: groupsQuery.isFetching,
+        groupsError: groupsQuery.error
+            ? getErrorMessage(
+                  groupsQuery.error,
+                  "Не удалось загрузить группы",
+              )
+            : null,
+        groupsRefetch: groupsQuery.refetch,
+        updateTestAccessStatus: (testId: string, status: TestsAccessStatus) =>
             updateStatusMutation
                 .mutateAsync({ testId, status })
                 .then((resp) => resp.test),

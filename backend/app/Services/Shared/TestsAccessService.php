@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services\Shared;
 
 use App\Models\Test\Test;
 use App\Models\User;
+use App\Services\Admin\AdminAuditService;
 use App\Repositories\TestsRepository;
 use App\Repositories\UsersRepository;
 
-class AdminTestsAccessService
+class TestsAccessService
 {
     protected TestsRepository $testsRepository;
     protected UsersRepository $usersRepository;
@@ -44,7 +45,7 @@ class AdminTestsAccessService
     }
 
     public function updateAccess(User $actor, Test $test, array $payload): array
-    {
+    {   
         $test = $this->testsRepository->loadAccessUsers($test);
 
         $oldAccessStatus = $this->resolveStatus($test->access_status);

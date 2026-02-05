@@ -4,7 +4,7 @@ import { Button, InputSmall, Selector, Spinner } from "../../../atoms";
 
 import type { SelectorOption } from "../../../atoms/Selector";
 
-interface AdminTestsAccessFiltersPanelProps {
+interface TestsAccessFiltersPanelProps {
     sortValue: string;
     sortOptions: SelectorOption[];
     onSortChange: (value: string) => void;
@@ -19,7 +19,7 @@ interface AdminTestsAccessFiltersPanelProps {
     onReset: () => void;
 }
 
-export const AdminTestsAccessFiltersPanel = ({
+export const TestsAccessFiltersPanel = ({
     sortValue,
     sortOptions,
     onSortChange,
@@ -32,7 +32,7 @@ export const AdminTestsAccessFiltersPanel = ({
     onPrevPage,
     onNextPage,
     onReset,
-}: AdminTestsAccessFiltersPanelProps) => (
+}: TestsAccessFiltersPanelProps) => (
     <div className="sm:w-full lg:w-fit rounded-lg border border-slate-200 bg-slate-50 p-5 shadow-sm">
         <div className="grid gap-4">
             <div>

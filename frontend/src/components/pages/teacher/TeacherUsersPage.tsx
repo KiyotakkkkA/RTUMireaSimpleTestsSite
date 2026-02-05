@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Icon } from "@iconify/react";
 
 import { Button, Modal } from "../../atoms";
-import { DataInformalBlock } from "../../molecules/general";
+import { DataInformalBlock } from "../../molecules/shared";
 
 import { TeacherGroupCard } from "../../molecules/cards/teacher";
 import { TeacherGroupModal } from "../../molecules/modals/teacher/TeacherGroupModal";

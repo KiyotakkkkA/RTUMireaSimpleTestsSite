@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminTestsAccessController;
+use App\Http\Controllers\Shared\TestsAccessController;
 use App\Http\Controllers\Admin\AdminUsersController;
 use App\Http\Controllers\AI\AIController;
 use App\Http\Controllers\AuthController;
@@ -33,7 +33,25 @@ Route::prefix('ai')->group(function () {
     Route::post('/grade-full-answer', [AIController::class, 'gradeFullAnswer'])->name('ai.grade_full_answer');
 });
 
-// Админские роуты
+// Общие роуты для панели администратора и преподавателя
+Route::middleware(['auth:sanctum', 'permission:view admin panel|view teacher panel'])->prefix('shared')->group(function () {
+    Route::group(['prefix' => 'tests'], function () {
+        Route::get('/access', [TestsAccessController::class, 'index'])
+            ->middleware('permission:edit tests access')
+            ->name('admin.tests.access');
+        Route::get('/access/users', [TestsAccessController::class, 'users'])
+            ->middleware('permission:edit tests access')
+            ->name('admin.tests.access.users');
+        Route::get('/access/groups', [TestsAccessController::class, 'groups'])
+            ->middleware('permission:edit tests access')
+            ->name('admin.tests.access.groups');
+        Route::patch('/{testId}/access', [TestsAccessController::class, 'update'])
+            ->middleware('permission:edit tests access')
+            ->name('admin.tests.access.update');
+    });
+});
+
+// Роуты для панели администратора
 Route::middleware(['auth:sanctum', 'permission:view admin panel'])->prefix('admin')->group(function () {
     Route::get('/roles', [AdminUsersController::class, 'roles'])->name('admin.roles');
     Route::get('/permissions', [AdminUsersController::class, 'permissions'])->name('admin.permissions');
@@ -42,26 +60,14 @@ Route::middleware(['auth:sanctum', 'permission:view admin panel'])->prefix('admi
 
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', [AdminUsersController::class, 'index'])->name('admin.users');
-        Route::post('/', [AdminUsersController::class, 'store'])->name('admin.users.store');
+        Route::post('/', [AdminUsersController::class, 'store'])->middleware('permission:add users')->name('admin.users.store');
         Route::patch('/{user}/roles', [AdminUsersController::class, 'updateRoles'])->name('admin.users.roles');
-        Route::patch('/{user}/permissions', [AdminUsersController::class, 'updatePermissions'])->name('admin.users.permissions');
-        Route::delete('/{user}', [AdminUsersController::class, 'destroy'])->name('admin.users.delete');
+        Route::patch('/{user}/permissions', [AdminUsersController::class, 'updatePermissions'])->middleware('assign permissions')->name('admin.users.permissions');
+        Route::delete('/{user}', [AdminUsersController::class, 'destroy'])->middleware('permission:remove users')->name('admin.users.delete');
     });
 
     Route::group(['prefix' => 'statistics'], function () {
         Route::get('/', [AdminUsersController::class, 'statistics'])->name('admin.statistics')->middleware('permission:view statistics');
-    });
-
-    Route::group(['prefix' => 'tests'], function () {
-        Route::get('/access', [AdminTestsAccessController::class, 'index'])
-            ->middleware('permission:edit tests access')
-            ->name('admin.tests.access');
-        Route::get('/access/users', [AdminTestsAccessController::class, 'users'])
-            ->middleware('permission:edit tests access')
-            ->name('admin.tests.access.users');
-        Route::patch('/{testId}/access', [AdminTestsAccessController::class, 'update'])
-            ->middleware('permission:edit tests access')
-            ->name('admin.tests.access.update');
     });
 });
 
@@ -69,13 +75,15 @@ Route::middleware(['auth:sanctum', 'permission:view admin panel'])->prefix('admi
 Route::middleware(['auth:sanctum', 'permission:view teacher panel'])->prefix('teacher')->group(function () {
     Route::group(['prefix' => 'groups'], function () {
         Route::get('/', [TeacherUsersController::class, 'index'])->name('teacher.groups.index');
-        Route::post('/', [TeacherUsersController::class, 'store'])->name('teacher.groups.store');
-        Route::patch('/{group}/name', [TeacherUsersController::class, 'updateName'])->name('teacher.groups.update_name');
-        Route::post('/{group}/participants', [TeacherUsersController::class, 'addParticipants'])->name('teacher.groups.add_participants');
-        Route::delete('/{group}/participants/{user}', [TeacherUsersController::class, 'removeParticipant'])->name('teacher.groups.remove_participant');
-        Route::delete('/{group}', [TeacherUsersController::class, 'destroy'])->name('teacher.groups.destroy');
+        Route::post('/', [TeacherUsersController::class, 'store'])->middleware('permission:add users')->name('teacher.groups.store');
+        
+        Route::patch('/{group}/name', [TeacherUsersController::class, 'updateName'])->middleware('permission:add users')->name('teacher.groups.update_name');
+        Route::post('/{group}/participants', [TeacherUsersController::class, 'addParticipants'])->middleware('permission:add users')->name('teacher.groups.add_participants');
+        Route::delete('/{group}/participants/{user}', [TeacherUsersController::class, 'removeParticipant'])->middleware('permission:add users')->name('teacher.groups.remove_participant');
+        Route::delete('/{group}', [TeacherUsersController::class, 'destroy'])->middleware('permission:remove users')->name('teacher.groups.destroy');
+
         Route::get('/users', [TeacherUsersController::class, 'users'])->name('teacher.groups.users');
-        Route::post('/users', [TeacherUsersController::class, 'registerUser'])->name('teacher.groups.users.register');
+        Route::post('/users', [TeacherUsersController::class, 'registerUser'])->middleware('permission:add users')->name('teacher.groups.users.register');
     });
 });
 

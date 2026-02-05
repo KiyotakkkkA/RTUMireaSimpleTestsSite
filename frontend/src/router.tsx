@@ -22,6 +22,7 @@ import { AdminTestsAccessPage } from "./components/pages/admin/AdminTestsAccessP
 import { TeacherLayout } from "./components/pages/teacher/TeacherLayout";
 import { TeacherCabinetPage } from "./components/pages/teacher/TeacherCabinetPage";
 import { TeacherUsersPage } from "./components/pages/teacher/TeacherUsersPage";
+import { TeacherTestsAccessPage } from "./components/pages/teacher/TeacherTestsAccessPage";
 
 import { E403 } from "./components/pages/errors/E403";
 import { E404 } from "./components/pages/errors/E404";
@@ -89,6 +90,10 @@ const RouterScheme: Record<string, RouteNode> = {
         children: {
             cabinet: { path: "", index: true, component: TeacherCabinetPage },
             users: { path: "users", component: TeacherUsersPage },
+            testsAccess: {
+                path: "tests-access",
+                component: TeacherTestsAccessPage,
+            },
         },
     },
 

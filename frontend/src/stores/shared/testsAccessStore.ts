@@ -1,12 +1,12 @@
 import { makeAutoObservable } from "mobx";
 
-import type { AdminTestsAccessFilters } from "../../types/admin/AdminTestsAccess";
+import type { TestsAccessFilters } from "../../types/shared/TestsAccess";
 
 const isShallowEqual = (a: Record<string, any>, b: Record<string, any>) =>
     Object.keys(a).every((key) => a[key] === b[key]);
 
-export class AdminTestsAccessStore {
-    filters: AdminTestsAccessFilters = {
+export class TestsAccessStore {
+    filters: TestsAccessFilters = {
         sort_by: "title",
         sort_dir: "asc",
         page: 1,
@@ -17,7 +17,7 @@ export class AdminTestsAccessStore {
         makeAutoObservable(this, {}, { autoBind: true });
     }
 
-    get appliedFilters(): AdminTestsAccessFilters {
+    get appliedFilters(): TestsAccessFilters {
         return {
             sort_by: this.filters.sort_by ?? "title",
             sort_dir: this.filters.sort_dir ?? "asc",
@@ -26,7 +26,7 @@ export class AdminTestsAccessStore {
         };
     }
 
-    updateFilters(next: Partial<AdminTestsAccessFilters>): void {
+    updateFilters(next: Partial<TestsAccessFilters>): void {
         const updated = { ...this.filters, ...next };
         const shouldResetPage = Object.keys(next).some(
             (key) => key !== "page" && key !== "per_page",
@@ -43,4 +43,4 @@ export class AdminTestsAccessStore {
     }
 }
 
-export const adminTestsAccessStore = new AdminTestsAccessStore();
+export const testsAccessStore = new TestsAccessStore();

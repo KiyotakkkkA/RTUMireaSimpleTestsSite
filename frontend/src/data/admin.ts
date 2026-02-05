@@ -24,6 +24,14 @@ export const PERMISSION_GROUPS = {
             "tests master access",
         ],
     },
+    access: {
+        title: "Управление доступом",
+        permissions: [
+            "tests master access",
+            "groups master access",
+            "users master access",
+        ],
+    },
     users: {
         title: "Управление пользователями",
         permissions: [
@@ -32,10 +40,11 @@ export const PERMISSION_GROUPS = {
             "assign editor role",
             "assign admin role",
             "assign permissions",
+            "groups master access",
         ],
     },
-    access: {
-        title: "Доступ к разделам сервиса",
+    pages: {
+        title: "Разделы сервиса",
         permissions: [
             "view admin panel",
             "view teacher panel",

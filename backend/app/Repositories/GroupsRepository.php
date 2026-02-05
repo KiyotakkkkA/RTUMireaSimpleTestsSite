@@ -6,22 +6,35 @@ use App\Filters\Teacher\TeacherGroupsFilter;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class GroupsRepository
 {
-    public function listByCreator(User $creator, array $filters = []): LengthAwarePaginator
+    public function listGroups(array $filters = []): LengthAwarePaginator
     {
         $page = $filters['page'] ?? 1;
         $perPage = $filters['per_page'] ?? 10;
 
         $query = Group::query()
-            ->with(['participants'])
-            ->where('created_by', $creator->id);
+            ->with(['participants']);
+
+        if (!auth('sanctum')->user()->can('groups master access')) {
+            $query->where('created_by', auth('sanctum')->id());
+        }
 
         (new TeacherGroupsFilter($filters))->apply($query);
 
         return $query->orderByDesc('created_at')
             ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    public function listByCreatorAll(User $creator): Collection
+    {
+        return Group::query()
+            ->with(['participants'])
+            ->where('created_by', $creator->id)
+            ->orderByDesc('created_at')
+            ->get();
     }
 
     public function createGroup(User $creator, string $name, array $userIds): Group

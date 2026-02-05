@@ -6,5 +6,4 @@ export { AdminAuditTestCreatedCard } from "./AdminAuditTestCreatedCard";
 export { AdminAuditTestUpdatedCard } from "./AdminAuditTestUpdatedCard";
 export { AdminAuditTestDeletedCard } from "./AdminAuditTestDeletedCard";
 export { AdminAuditTestAccessUpdatedCard } from "./AdminAuditTestAccessUpdatedCard";
-export { AdminTestAccessCard } from "./AdminTestAccessCard";
 export { AdminUserCard } from "./AdminUserCard";

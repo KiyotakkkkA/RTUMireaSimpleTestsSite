@@ -73,7 +73,15 @@ class RolesAndPermsSeeder extends Seeder
             ],
             [
                 'name' => 'tests master access',
-                'description' => 'доступ к чужим тестам',
+                'description' => 'взаимодействие с тестами без ограничений',
+            ],
+            [
+                'name' => 'groups master access',
+                'description' => 'взаимодействие с группами без ограничений',
+            ],
+            [
+                'name' => 'users master access',
+                'description' => 'взаимодействие с пользователями без ограничений',
             ],
             [
                 'name' => 'make reports',
@@ -106,6 +114,8 @@ class RolesAndPermsSeeder extends Seeder
                 'edit tests',
                 'delete tests',
                 'edit tests access',
+                'add users',
+                'remove users',
                 'view teacher panel'
             ],
             'editor' => [

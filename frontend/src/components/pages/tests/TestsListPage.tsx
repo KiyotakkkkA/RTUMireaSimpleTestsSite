@@ -9,6 +9,7 @@ import { authStore } from "../../../stores/authStore";
 import { useTestCreate } from "../../../hooks/tests/manage";
 import { useToasts } from "../../../hooks/useToasts";
 import { useTestsList, useTestsListManage } from "../../../hooks/tests/list";
+import { DataInformalBlock } from "../../molecules/shared";
 
 import type { TestListItem, TestListSort } from "../../../types/tests/TestList";
 
@@ -65,26 +66,7 @@ export const TestsListPage = () => {
                             </Button>
                         </div>
                     )}
-                    {isLoadingTests && (
-                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                            <div className="flex items-center justify-center gap-2">
-                                <Spinner className="h-4 w-4" />
-                                Загружаем тесты...
-                            </div>
-                        </div>
-                    )}
-                    {!isLoadingTests && testsError && (
-                        <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 text-sm text-rose-700">
-                            {testsError}
-                        </div>
-                    )}
-                    {!isLoadingTests &&
-                        !testsError &&
-                        listItems.length === 0 && (
-                            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
-                                Тесты не найдены.
-                            </div>
-                        )}
+
                     {!authStore.isAuthorized && (
                         <div className="flex gap-2 items-center rounded-lg bg-rose-100/50 p-2 mb-2">
                             <Icon
@@ -97,6 +79,22 @@ export const TestsListPage = () => {
                             </div>
                         </div>
                     )}
+
+                    <DataInformalBlock
+                        isLoading={isLoadingTests}
+                        isError={!!testsError}
+                        isEmpty={
+                            listItems.length === 0 &&
+                            !isLoadingTests &&
+                            !testsError
+                        }
+                        loadingMessage="Загрузка тестов..."
+                        errorMessage={
+                            testsError || "Не удалось загрузить тесты."
+                        }
+                        emptyMessage="Тестов не найдено."
+                    />
+
                     {!isLoadingTests &&
                         listItems.map((test) => (
                             <TestListElementCard
