@@ -42,7 +42,7 @@ class TeacherUsersService
 
     public function listGroupsForAccess(User $actor): array
     {
-        $groups = $this->groupsRepository->listByCreatorAll($actor);
+        $groups = $this->groupsRepository->listGroupsAll();
 
         return [
             'data' => $groups->map(fn (Group $group) => $this->mapGroup($group))

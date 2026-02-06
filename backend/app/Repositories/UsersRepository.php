@@ -4,19 +4,20 @@ namespace App\Repositories;
 
 use App\Filters\Tests\TestsAccessUsersFilter;
 use App\Models\User;
+use App\Traits\Filterable;
 use Illuminate\Support\Collection;
 
 class UsersRepository
 {
+    use Filterable;
+
     public function listAccessUsers(array $filters = [], int $limit = 50): Collection
     {
         $query = User::query()->select(['id', 'name', 'email']);
 
         (new TestsAccessUsersFilter($filters))->apply($query);
 
-        if (!auth('sanctum')->user()->can('users master access')) {
-            $query->where('id', auth('sanctum')->id());
-        }
+        $this->queryFilterDependingOnPerms($query, 'id', 'users master access');
 
         return $query->orderBy('name')->limit($limit)->get();
     }

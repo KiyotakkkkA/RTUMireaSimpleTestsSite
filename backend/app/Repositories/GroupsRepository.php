@@ -5,11 +5,15 @@ namespace App\Repositories;
 use App\Filters\Teacher\TeacherGroupsFilter;
 use App\Models\Group;
 use App\Models\User;
+use App\Traits\Filterable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class GroupsRepository
 {
+    use Filterable;
+
     public function listGroups(array $filters = []): LengthAwarePaginator
     {
         $page = $filters['page'] ?? 1;
@@ -18,9 +22,7 @@ class GroupsRepository
         $query = Group::query()
             ->with(['participants']);
 
-        if (!auth('sanctum')->user()->can('groups master access')) {
-            $query->where('created_by', auth('sanctum')->id());
-        }
+        $this->queryFilterDependingOnPerms($query, 'created_by', 'groups master access');
 
         (new TeacherGroupsFilter($filters))->apply($query);
 
@@ -28,12 +30,13 @@ class GroupsRepository
             ->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function listByCreatorAll(User $creator): Collection
+    public function listGroupsAll(): Collection
     {
-        return Group::query()
-            ->with(['participants'])
-            ->where('created_by', $creator->id)
-            ->orderByDesc('created_at')
+        $query = Group::query()->with(['participants']);
+
+        $this->queryFilterDependingOnPerms($query, 'created_by', 'groups master access');
+
+        return $query->orderByDesc('created_at')
             ->get();
     }
 

@@ -74,9 +74,8 @@ export const TeacherTestAccessCard = ({
         () => test.access_users.map((user) => String(user.id)),
         [test.access_users],
     );
-    const [manualUserIds, setManualUserIds] = useState<string[]>(
-        initialUserIds,
-    );
+    const [manualUserIds, setManualUserIds] =
+        useState<string[]>(initialUserIds);
     const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
     const [excludedGroupUsers, setExcludedGroupUsers] = useState<
         Record<string, string[]>
@@ -216,7 +215,7 @@ export const TeacherTestAccessCard = ({
                         {test.title}
                     </div>
                     <div className="mt-1 text-sm text-slate-500">
-                        Вопросов: {" "}
+                        Вопросов:{" "}
                         {test.total_questions - (test.total_disabled ?? 0)}
                     </div>
                     <div className="mt-3">
@@ -308,7 +307,8 @@ export const TeacherTestAccessCard = ({
                                                     {group.name}
                                                 </div>
                                                 <div className="text-xs text-slate-500">
-                                                    Участников: {group.participants_count}
+                                                    Участников:{" "}
+                                                    {group.participants_count}
                                                 </div>
                                             </div>
                                             <Button
@@ -331,10 +331,14 @@ export const TeacherTestAccessCard = ({
                                                         >
                                                             <div>
                                                                 <div className="text-sm font-medium text-slate-700">
-                                                                    {participant.name}
+                                                                    {
+                                                                        participant.name
+                                                                    }
                                                                 </div>
                                                                 <div className="text-xs text-slate-400">
-                                                                    {participant.email}
+                                                                    {
+                                                                        participant.email
+                                                                    }
                                                                 </div>
                                                             </div>
                                                             <Button
@@ -358,7 +362,8 @@ export const TeacherTestAccessCard = ({
                                             </div>
                                         ) : (
                                             <div className="mt-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-400">
-                                                Все участники исключены из группы.
+                                                Все участники исключены из
+                                                группы.
                                             </div>
                                         )}
                                     </div>

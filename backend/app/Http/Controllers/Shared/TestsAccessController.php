@@ -72,7 +72,7 @@ class TestsAccessController extends Controller
 
     public function groups(): Response
     {
-        $data = $this->teacherUsersService->listGroupsForAccess(request()->user());
+        $data = $this->teacherUsersService->listGroupsForAccess(auth('sanctum')->user());
 
         return response($data, 200);
     }

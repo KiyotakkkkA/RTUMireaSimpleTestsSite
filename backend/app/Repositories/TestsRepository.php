@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Test\Test;
 use App\Models\User;
+use App\Traits\Filterable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +12,8 @@ use Illuminate\Support\Str;
 
 class TestsRepository
 {
+    use Filterable;
+    
     public function createBlankTest(array $data)
     {
         return Test::create([
@@ -52,9 +55,7 @@ class TestsRepository
     {
         $query = Test::query()->with(['accessUsers:id,name,email']);
 
-        if (!$actor->can('tests master access')) {
-            $query->where('creator_id', $actor->id);
-        }
+        $this->queryFilterDependingOnPerms($query, 'creator_id', 'tests master access');
 
         return $this->listTests($sortBy, $sortDir, $perPage, $page, $query);
     }

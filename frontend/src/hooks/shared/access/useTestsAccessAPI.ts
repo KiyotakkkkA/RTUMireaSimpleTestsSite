@@ -119,10 +119,7 @@ export const useAdminTestsAccessAPI = (
         groupsLoading: groupsQuery.isLoading,
         groupsFetching: groupsQuery.isFetching,
         groupsError: groupsQuery.error
-            ? getErrorMessage(
-                  groupsQuery.error,
-                  "Не удалось загрузить группы",
-              )
+            ? getErrorMessage(groupsQuery.error, "Не удалось загрузить группы")
             : null,
         groupsRefetch: groupsQuery.refetch,
         updateTestAccessStatus: (testId: string, status: TestsAccessStatus) =>
