@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Shared\TestsStatisticsRequest;
+use App\Http\Requests\Shared\TestsStatisticsDayRequest;
 use App\Http\Requests\Admin\AdminStoreUserRequest;
 use App\Http\Requests\Admin\AdminUpdatePermissionsRequest;
 use App\Http\Requests\Admin\AdminUpdateRolesRequest;
@@ -103,6 +104,18 @@ class AdminUsersController extends Controller
         $validated = $request->validated();
 
         $data = $this->testsStatisticsService->getGeneralStatistics($validated);
+
+        return response($data, 200);
+    }
+
+    public function statisticsByDay(TestsStatisticsDayRequest $request): Response
+    {
+        $validated = $request->validated();
+
+        $data = $this->testsStatisticsService->getDayStatistics(
+            $validated['date'],
+            $validated,
+        );
 
         return response($data, 200);
     }

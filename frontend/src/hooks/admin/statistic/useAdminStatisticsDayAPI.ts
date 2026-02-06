@@ -2,27 +2,33 @@ import { useQuery } from "react-query";
 
 import { SharedService } from "../../../services/shared";
 
-import type { StatisticsFilters } from "../../../types/shared/TestsStatistics";
+import type {
+    StatisticsDayFilters,
+    StatisticsDayResponse,
+} from "../../../types/shared/TestsStatistics";
 
 const getErrorMessage = (error: any, fallback: string) =>
     error?.response?.data?.message || error?.message || fallback;
 
-const normalizeFilters = (filters: StatisticsFilters): StatisticsFilters => ({
-    date_from: filters.date_from || undefined,
-    date_to: filters.date_to || undefined,
+const normalizeFilters = (
+    filters: StatisticsDayFilters,
+): StatisticsDayFilters => ({
+    date: filters.date,
+    time_from: filters.time_from || undefined,
+    time_to: filters.time_to || undefined,
     min_percentage:
         filters.min_percentage === "" ? undefined : filters.min_percentage,
 });
 
-export const useAdminStatisticsAPI = (
-    filters: StatisticsFilters,
+export const useAdminStatisticsDayAPI = (
+    filters: StatisticsDayFilters,
     options?: { enabled?: boolean },
 ) => {
     const appliedFilters = normalizeFilters(filters);
 
-    const query = useQuery(
-        ["admin", "statistics", appliedFilters],
-        () => SharedService.getStatistics(appliedFilters),
+    const query = useQuery<StatisticsDayResponse>(
+        ["admin", "statistics", "day", appliedFilters],
+        () => SharedService.getStatisticsByDay(appliedFilters),
         { keepPreviousData: true, enabled: options?.enabled },
     );
 

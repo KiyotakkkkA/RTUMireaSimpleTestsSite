@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuditIndexRequest;
+use App\Http\Requests\Shared\TestsStatisticsDayRequest;
+use App\Http\Requests\Shared\TestsStatisticsRequest;
 use App\Models\Test\Test;
 use App\Services\ReportService;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportsController extends Controller
 {
@@ -53,5 +56,22 @@ class ReportsController extends Controller
         $timestamp = now()->format('Ymd-His');
 
         return $payload->download("audit-{$timestamp}.pdf");
+    }
+
+    public function makeStatisticsToExcel(TestsStatisticsRequest $request): StreamedResponse
+    {
+        $validated = $request->validated();
+
+        return $this->reportService->makeStatisticsToExcel($validated);
+    }
+
+    public function makeStatisticsDayToExcel(TestsStatisticsDayRequest $request): StreamedResponse
+    {
+        $validated = $request->validated();
+
+        return $this->reportService->makeStatisticsDayToExcel(
+            $validated['date'],
+            $validated,
+        );
     }
 }

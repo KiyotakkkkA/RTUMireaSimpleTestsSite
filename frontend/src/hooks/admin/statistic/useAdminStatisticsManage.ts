@@ -2,10 +2,10 @@ import { useCallback, useEffect } from "react";
 
 import { adminStatisticsStore } from "../../../stores/admin/adminStatisticsStore";
 
-import type { AdminStatisticsFilters } from "../../../types/admin/AdminStatistics";
+import type { StatisticsFilters } from "../../../types/shared/TestsStatistics";
 
 export const useAdminStatisticsManage = (
-    initialFilters?: AdminStatisticsFilters,
+    initialFilters?: StatisticsFilters,
 ) => {
     useEffect(() => {
         if (initialFilters) {
@@ -13,12 +13,9 @@ export const useAdminStatisticsManage = (
         }
     }, [initialFilters]);
 
-    const updateFilters = useCallback(
-        (next: Partial<AdminStatisticsFilters>) => {
-            adminStatisticsStore.updateStatisticsFilters(next);
-        },
-        [],
-    );
+    const updateFilters = useCallback((next: Partial<StatisticsFilters>) => {
+        adminStatisticsStore.updateStatisticsFilters(next);
+    }, []);
 
     return {
         filters: adminStatisticsStore.statisticsFilters,

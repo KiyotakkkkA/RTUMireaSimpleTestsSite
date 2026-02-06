@@ -2,21 +2,23 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import type {
-    AdminStatisticsDay,
-    AdminStatisticsSummary,
-} from "../../../types/admin/AdminStatistics";
+    StatisticsDay,
+    StatisticsSummary,
+} from "../../../types/shared/TestsStatistics";
 import { Button } from "../../atoms";
 
 type StatisticsBlocks = "totalStats" | "averagePercentage" | "uniqueTests";
 
 export type TestsStatisticsGeneralProps = {
-    series: AdminStatisticsDay[];
-    summary: AdminStatisticsSummary;
+    series: StatisticsDay[];
+    summary: StatisticsSummary;
     blocks?: Record<StatisticsBlocks, boolean>;
     title?: string;
     subtitle?: string;
     totalLabel?: string;
     tooltipTotalLabel?: string;
+    detailsPath?: string;
+    detailsLabel?: string;
 };
 
 const formatShortDate = (value: string) =>
@@ -39,6 +41,8 @@ export const TestsStatisticsGeneral = ({
     subtitle = "Динамика прохождений и популярные тесты по дням.",
     totalLabel = "Всего прохождений",
     tooltipTotalLabel = "Всего прохождений",
+    detailsPath = "/admin/statistics",
+    detailsLabel = "Подробнее по дню",
     blocks = {
         totalStats: true,
         averagePercentage: true,
@@ -162,12 +166,11 @@ export const TestsStatisticsGeneral = ({
                                             className="w-full p-2 mt-2"
                                             onClick={() => {
                                                 navigate(
-                                                    "/admin/statistics?tag=date&value=" +
-                                                        day.date,
+                                                    `${detailsPath}?tag=date&value=${day.date}`,
                                                 );
                                             }}
                                         >
-                                            Подробнее по дню
+                                            {detailsLabel}
                                         </Button>
                                     </div>
                                     <div

@@ -49,6 +49,11 @@ Route::middleware(['auth:sanctum', 'permission:view admin panel|view teacher pan
             ->middleware('permission:edit tests access')
             ->name('admin.tests.access.update');
     });
+
+    Route::group(['prefix' => 'statistics'], function () {
+        Route::get('/', [AdminUsersController::class, 'statistics'])->name('admin.statistics')->middleware('permission:view statistics');
+        Route::get('/day', [AdminUsersController::class, 'statisticsByDay'])->name('admin.statistics.day')->middleware('permission:view statistics');
+    });
 });
 
 // Роуты для панели администратора
@@ -64,10 +69,6 @@ Route::middleware(['auth:sanctum', 'permission:view admin panel'])->prefix('admi
         Route::patch('/{user}/roles', [AdminUsersController::class, 'updateRoles'])->name('admin.users.roles');
         Route::patch('/{user}/permissions', [AdminUsersController::class, 'updatePermissions'])->middleware('assign permissions')->name('admin.users.permissions');
         Route::delete('/{user}', [AdminUsersController::class, 'destroy'])->middleware('permission:remove users')->name('admin.users.delete');
-    });
-
-    Route::group(['prefix' => 'statistics'], function () {
-        Route::get('/', [AdminUsersController::class, 'statistics'])->name('admin.statistics')->middleware('permission:view statistics');
     });
 });
 
@@ -94,6 +95,9 @@ Route::middleware('auth:sanctum')->prefix('download')->group(function () {
     Route::get('/test/{testId}/json', [ReportsController::class, 'makeTestToJSON'])->middleware('permission:make reports')->name('download.test.json');
 
     Route::get('/admin/audit/pdf', [ReportsController::class, 'makeAuditToPDF'])->middleware('permission:make reports')->name('download.admin.audit.pdf');
+
+    Route::get('/shared/statistics/excel', [ReportsController::class, 'makeStatisticsToExcel'])->middleware('permission:make reports')->name('download.shared.statistics.excel');
+    Route::get('/shared/statistics/day/excel', [ReportsController::class, 'makeStatisticsDayToExcel'])->middleware('permission:make reports')->name('download.shared.statistics.day.excel');
 
 });
 

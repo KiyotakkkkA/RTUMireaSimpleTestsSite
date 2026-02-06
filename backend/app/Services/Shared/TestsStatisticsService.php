@@ -31,6 +31,18 @@ class TestsStatisticsService
         ];
     }
 
+    public function getDayStatistics(string $date, array $filters): array
+    {
+        $finished = $this->buildDayStatistics($date, $filters, 'finished', true);
+        $started = $this->buildDayStatistics($date, $filters, 'started', false);
+
+        return [
+            'date' => $date,
+            'finished' => $finished,
+            'started' => $started,
+        ];
+    }
+
     private function buildStatistics(array $filters, string $type, bool $applyMinPercentage): array
     {
         $filter = new TestStatisticsFilter($filters, $applyMinPercentage);
@@ -85,6 +97,62 @@ class TestsStatisticsService
                 'unique_tests' => $uniqueTests,
             ],
             'series' => $series,
+        ];
+    }
+
+    private function buildDayStatistics(
+        string $date,
+        array $filters,
+        string $type,
+        bool $applyMinPercentage,
+    ): array {
+        $query = TestStatistic::query()
+            ->where('type', $type)
+            ->whereDate('created_at', $date);
+
+        if ($applyMinPercentage && array_key_exists('min_percentage', $filters)) {
+            $query->where('percentage', '>=', $filters['min_percentage']);
+        }
+
+        if (!empty($filters['time_from'])) {
+            $query->whereTime('created_at', '>=', $filters['time_from']);
+        }
+
+        if (!empty($filters['time_to'])) {
+            $query->whereTime('created_at', '<=', $filters['time_to']);
+        }
+
+        $summaryQuery = clone $query;
+        $totalCompletions = (int) $summaryQuery->count();
+        $averagePercentage = (float) ($summaryQuery->avg('percentage') ?? 0);
+        $uniqueTests = (int) $summaryQuery->distinct('test_id')->count('test_id');
+
+        $testsQuery = clone $query;
+        $tests = $testsQuery
+            ->select('test_id')
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw('AVG(percentage) as avg_percentage')
+            ->selectRaw('SEC_TO_TIME(AVG(TIME_TO_SEC(time_taken))) as avg_time')
+            ->with(['test' => fn ($q) => $q->select('id', 'title')->withTrashed()])
+            ->groupBy('test_id')
+            ->orderByDesc('total')
+            ->get();
+
+        $tests = $tests->map(fn ($row) => [
+            'id' => $row->test_id,
+            'title' => $row->test?->title ?? '—',
+            'total' => (int) $row->total,
+            'avg_percentage' => (float) round($row->avg_percentage ?? 0, 2),
+            'avg_time' => $row->avg_time ? (string) $row->avg_time : null,
+        ])->values()->all();
+
+        return [
+            'summary' => [
+                'total_completions' => $totalCompletions,
+                'average_percentage' => round($averagePercentage, 2),
+                'unique_tests' => $uniqueTests,
+            ],
+            'tests' => $tests,
         ];
     }
 }

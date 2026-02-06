@@ -1,12 +1,12 @@
 import { makeAutoObservable } from "mobx";
 
-import type { AdminStatisticsFilters } from "../../types/admin/AdminStatistics";
+import type { StatisticsFilters } from "../../types/shared/TestsStatistics";
 
 const isShallowEqual = (a: Record<string, any>, b: Record<string, any>) =>
     Object.keys(a).every((key) => a[key] === b[key]);
 
 export class AdminStatisticsStore {
-    statisticsFilters: AdminStatisticsFilters = {
+    statisticsFilters: StatisticsFilters = {
         date_from: "",
         date_to: "",
         min_percentage: "",
@@ -16,7 +16,7 @@ export class AdminStatisticsStore {
         makeAutoObservable(this, {}, { autoBind: true });
     }
 
-    get statisticsAppliedFilters(): AdminStatisticsFilters {
+    get statisticsAppliedFilters(): StatisticsFilters {
         return {
             date_from: this.statisticsFilters.date_from || undefined,
             date_to: this.statisticsFilters.date_to || undefined,
@@ -27,7 +27,7 @@ export class AdminStatisticsStore {
         };
     }
 
-    updateStatisticsFilters(next: Partial<AdminStatisticsFilters>): void {
+    updateStatisticsFilters(next: Partial<StatisticsFilters>): void {
         const updated = { ...this.statisticsFilters, ...next };
         if (
             isShallowEqual(

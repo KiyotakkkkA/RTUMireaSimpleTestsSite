@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react";
 
 import { Button, InputDate, Selector } from "../../../atoms";
+import { authStore } from "../../../../stores/authStore";
 
 import type { SelectorOption } from "../../../atoms/Selector";
 import type { AdminAuditActionType } from "../../../../types/admin/AdminAudit";
@@ -65,16 +66,16 @@ export const AdminAuditFiltersPanel = ({
         </div>
 
         <div className="mt-5 flex flex-col gap-3">
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-2 sm:flex sm:flex-row">
                 <Button
                     secondary
-                    className="px-4 py-2 text-sm"
+                    className="w-full px-4 py-2 text-sm sm:w-auto"
                     disabled={pagination.page <= 1 || isLoading}
                     onClick={onPrevPage}
                 >
                     <Icon icon="mdi:arrow-left" className="h-5 w-5" />
                 </Button>
-                <div className="text-center text-sm text-slate-500 sm:text-left">
+                <div className="text-center text-sm text-slate-500 sm:text-left sm:flex-1">
                     Страница{" "}
                     <span className="font-semibold text-slate-700">
                         {pagination.page}
@@ -86,7 +87,7 @@ export const AdminAuditFiltersPanel = ({
                 </div>
                 <Button
                     primary
-                    className="px-4 py-2 text-sm"
+                    className="w-full px-4 py-2 text-sm sm:w-auto"
                     disabled={
                         pagination.page >= pagination.last_page || isLoading
                     }
@@ -95,20 +96,21 @@ export const AdminAuditFiltersPanel = ({
                     <Icon icon="mdi:arrow-right" className="h-5 w-5" />
                 </Button>
             </div>
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center">
-                <Button
-                    secondary
-                    className="p-2"
-                    isLoading={isDownloading}
-                    loadingText="Готовим файл..."
-                    onClick={onDownload}
-                    disabled={isDownloading}
-                >
-                    <Icon icon="mdi:download" className="h-5 w-5" />
-                </Button>
+            <div className="grid w-full gap-2 sm:flex sm:flex-row sm:items-center">
+                {authStore.hasPermission("make reports") && (
+                    <Button
+                        secondary
+                        className="w-full p-2 sm:w-auto"
+                        isLoading={isDownloading}
+                        onClick={onDownload}
+                        disabled={isDownloading}
+                    >
+                        <Icon icon="mdi:file-pdf" className="h-5 w-5" />
+                    </Button>
+                )}
                 <Button
                     dangerInverted
-                    className="flex-1 px-4 py-2 text-sm"
+                    className="w-full px-4 py-2 text-sm sm:flex-1"
                     onClick={onReset}
                 >
                     Сбросить фильтры

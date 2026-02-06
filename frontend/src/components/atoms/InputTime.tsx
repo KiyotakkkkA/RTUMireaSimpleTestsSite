@@ -2,17 +2,17 @@ import { useId } from "react";
 
 import type React from "react";
 
-export interface InputDateProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputTimeProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
 }
 
-export const InputDate = ({
+export const InputTime = ({
     label,
     className,
     id,
     disabled,
     ...props
-}: InputDateProps) => {
+}: InputTimeProps) => {
     const autoId = useId();
     const inputId = id ?? autoId;
     const behaviorClasses =
@@ -30,7 +30,7 @@ export const InputDate = ({
             )}
             <input
                 id={inputId}
-                type="date"
+                type="time"
                 disabled={disabled}
                 className={`w-full rounded-lg border border-slate-300/40 bg-slate-50 px-4 py-2 text-sm text-slate-800 focus:border-indigo-600 hover:border-indigo-400 dark:[color-scheme:dark] ${behaviorClasses} ${className ?? ""}`}
                 {...props}

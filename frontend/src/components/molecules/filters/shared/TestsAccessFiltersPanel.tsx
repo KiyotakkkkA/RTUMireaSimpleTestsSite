@@ -70,16 +70,16 @@ export const TestsAccessFiltersPanel = ({
         </div>
 
         <div className="mt-5 flex flex-col gap-3">
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="grid w-full grid-cols-[auto_1fr_auto] items-center gap-2 sm:flex sm:flex-row">
                 <Button
                     secondary
-                    className="px-4 py-2 text-sm"
+                    className="w-full px-4 py-2 text-sm sm:w-auto"
                     disabled={pagination.page <= 1 || isLoading}
                     onClick={onPrevPage}
                 >
                     <Icon icon="mdi:arrow-left" className="h-5 w-5" />
                 </Button>
-                <div className="text-center text-sm text-slate-500 sm:text-left">
+                <div className="text-center text-sm text-slate-500 sm:text-left sm:flex-1">
                     Страница{" "}
                     <span className="font-semibold text-slate-700">
                         {pagination.page}
@@ -91,7 +91,7 @@ export const TestsAccessFiltersPanel = ({
                 </div>
                 <Button
                     primary
-                    className="px-4 py-2 text-sm"
+                    className="w-full px-4 py-2 text-sm sm:w-auto"
                     disabled={
                         pagination.page >= pagination.last_page || isLoading
                     }
@@ -102,7 +102,7 @@ export const TestsAccessFiltersPanel = ({
             </div>
             <Button
                 dangerInverted
-                className="px-4 py-2 text-sm"
+                className="w-full px-4 py-2 text-sm sm:w-auto"
                 onClick={onReset}
             >
                 Сбросить фильтры
