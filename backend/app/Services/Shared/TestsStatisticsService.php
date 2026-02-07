@@ -2,7 +2,8 @@
 
 namespace App\Services\Shared;
 
-use App\Filters\Tests\TestStatisticsFilter;
+use App\Filters\Tests\TestsStatisticsFilter;
+use App\Filters\Tests\TestsStatisticsDayFilter;
 use App\Models\Test\TestStatistic;
 
 class TestsStatisticsService
@@ -45,7 +46,7 @@ class TestsStatisticsService
 
     private function buildStatistics(array $filters, string $type, bool $applyMinPercentage): array
     {
-        $filter = new TestStatisticsFilter($filters, $applyMinPercentage);
+        $filter = new TestsStatisticsFilter($filters, $applyMinPercentage);
 
         $summaryQuery = $filter->apply(TestStatistic::query()->where('type', $type));
         $totalCompletions = (int) $summaryQuery->count();
@@ -107,22 +108,11 @@ class TestsStatisticsService
         bool $applyMinPercentage,
     ): array {
         $query = TestStatistic::query()
-            ->where('type', $type)
             ->whereDate('created_at', $date);
 
-        if ($applyMinPercentage && array_key_exists('min_percentage', $filters)) {
-            $query->where('percentage', '>=', $filters['min_percentage']);
-        }
+        $filter = new TestsStatisticsDayFilter($filters, $applyMinPercentage);
 
-        if (!empty($filters['time_from'])) {
-            $query->whereTime('created_at', '>=', $filters['time_from']);
-        }
-
-        if (!empty($filters['time_to'])) {
-            $query->whereTime('created_at', '<=', $filters['time_to']);
-        }
-
-        $summaryQuery = clone $query;
+        $summaryQuery = $filter->apply($query->where('type', $type));
         $totalCompletions = (int) $summaryQuery->count();
         $averagePercentage = (float) ($summaryQuery->avg('percentage') ?? 0);
         $uniqueTests = (int) $summaryQuery->distinct('test_id')->count('test_id');

@@ -6,7 +6,7 @@ use App\Filters\QueryFilter;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
-class TestStatisticsFilter extends QueryFilter
+class TestsStatisticsFilter extends QueryFilter
 {
     private bool $applyMinPercentage;
 
