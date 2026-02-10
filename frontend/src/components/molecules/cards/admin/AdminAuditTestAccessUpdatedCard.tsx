@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react";
 import { Button } from "../../../atoms";
 
 import type { AdminAuditRecord } from "../../../../types/admin/AdminAudit";
+import { unknown } from "zod";
 
 export type AdminAuditTestAccessUpdatedCardProps = {
     record: AdminAuditRecord;
@@ -18,27 +19,26 @@ const statusMeta: Record<string, { icon: string; className: string }> = {
         icon: "mdi:account-check",
         className: "bg-indigo-50 text-indigo-700 ring-indigo-200",
     },
-    protected: {
-        icon: "mdi:lock-check",
-        className: "bg-amber-50 text-amber-700 ring-amber-200",
+    custom: {
+        icon: "mdi:account-cog",
+        className: "bg-yellow-50 text-yellow-700 ring-yellow-200",
     },
-    link: {
-        icon: "mdi:link-variant",
-        className: "bg-sky-50 text-sky-700 ring-sky-200",
+    unknown: {
+        icon: "mdi:help",
+        className: "bg-slate-50 text-slate-500 ring-slate-200",
     },
 };
 
 const statusLabel = (value?: string) => {
     switch (value) {
         case "auth":
-            return "Только авторизованные";
-        case "protected":
-            return "Выборочно";
-        case "link":
-            return "По ссылке";
+            return "Только авторизованные пользователи";
+        case "custom":
+            return "Настраиваемое ограничение";
         case "all":
+            return "Все пользователи";
         default:
-            return "Доступен всем";
+            return "Неизвестно";
     }
 };
 
@@ -54,10 +54,10 @@ export const AdminAuditTestAccessUpdatedCard = ({
     const oldUsers = useMemo(() => oldAccess?.users ?? [], [oldAccess?.users]);
     const newUsers = useMemo(() => newAccess?.users ?? [], [newAccess?.users]);
 
-    const oldStatusKey = oldAccess?.status ?? "all";
-    const newStatusKey = newAccess?.status ?? "all";
-    const oldStatusDetails = statusMeta[oldStatusKey] ?? statusMeta.all;
-    const newStatusDetails = statusMeta[newStatusKey] ?? statusMeta.all;
+    const oldStatusKey = oldAccess?.status ?? "unknown";
+    const newStatusKey = newAccess?.status ?? "unknown";
+    const oldStatusDetails = statusMeta[oldStatusKey] ?? statusMeta.unknown;
+    const newStatusDetails = statusMeta[newStatusKey] ?? statusMeta.unknown;
 
     return (
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 md:p-5 shadow-sm">

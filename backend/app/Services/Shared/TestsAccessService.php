@@ -59,6 +59,18 @@ class TestsAccessService
             $this->testsRepository->syncTestAccessUsers($test, $payload['user_ids'] ?? []);
         }
 
+        if (array_key_exists('link_only', $payload)) {
+            $this->testsRepository->updateTestAccessLink($test, (bool) $payload['link_only']);
+        }
+
+        if (array_key_exists('access_from', $payload) || array_key_exists('access_to', $payload)) {
+            $this->testsRepository->updateTestAccessWindow(
+                $test,
+                $payload['access_from'] ?? null,
+                $payload['access_to'] ?? null
+            );
+        }
+
         $test = $this->testsRepository->loadAccessUsers($test);
 
         $newAccessStatus = $this->resolveStatus($test->access_status);
@@ -109,6 +121,8 @@ class TestsAccessService
             'total_disabled' => $test->total_disabled,
             'access_status' => $this->resolveStatus($test->access_status),
             'access_link' => $test->access_link,
+            'access_from' => optional($test->access_from)->format('Y-m-d H:i'),
+            'access_to' => optional($test->access_to)->format('Y-m-d H:i'),
             'access_users' => $this->mapAccessUsers($test->accessUsers),
         ];
     }

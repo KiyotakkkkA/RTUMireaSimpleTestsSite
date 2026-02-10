@@ -26,7 +26,7 @@ class TestsAccessService
                 ->orWhere('access_status', TestAccessStatus::AUTH->value)
                 ->orWhere(function (Builder $nested) use ($user) {
                     $nested
-                        ->where('access_status', TestAccessStatus::PROTECTED->value)
+                        ->where('access_status', TestAccessStatus::CUSTOM->value)
                         ->where(function (Builder $inner) use ($user) {
                             $inner
                                 ->where('creator_id', $user->id)

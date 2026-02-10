@@ -21,7 +21,6 @@ export const PERMISSION_GROUPS = {
             "edit tests",
             "delete tests",
             "edit tests access",
-            "tests master access",
         ],
     },
     access: {

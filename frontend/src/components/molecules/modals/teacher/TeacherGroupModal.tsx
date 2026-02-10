@@ -110,7 +110,7 @@ export const TeacherGroupModal = ({
                         </div>
                     </div>
                     {selectedUsersPreview.length > 0 && (
-                        <div className="rounded-lg border border-slate-200 bg-white p-3">
+                        <div className="rounded-lg border border-slate-200 bg-slate-100 p-3">
                             <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">
                                 Состав группы
                             </div>

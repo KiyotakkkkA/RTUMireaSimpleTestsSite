@@ -97,17 +97,30 @@ class TestPolicy
             return true;
         }
 
-        // Доступ по ссылке для любого авторизованного пользователя
-        if ($test->access_status === TestAccessStatus::LINK) {
-            $accessLink = request()->query('access_link');
-            if (!$accessLink || !$test->access_link) {
+        if ($test->access_status === TestAccessStatus::CUSTOM) {
+            // Провека ссылки, если она установлена
+            if ($test->access_link) {
+                $accessLink = request()->query('access_link');
+                if (!$accessLink) {
+                    return false;
+                }
+
+                return hash_equals($test->access_link, $accessLink);
+            }
+
+            // Проверка временных рамок, если они установлены
+            $now = now();
+            if ($test->access_from && $now->lt($test->access_from)) {
+                return false;
+            }
+            if ($test->access_to && $now->gt($test->access_to)) {
                 return false;
             }
 
-            return hash_equals($test->access_link, $accessLink);
+            // Проверка доступа по пользователям
+            return $test->accessUsers()->where('users.id', $user->id)->exists();
         }
 
-        // А иначе проверяем, есть ли у пользователя доступ к этому тесту
-        return $test->accessUsers()->where('users.id', $user->id)->exists();
+        return false;
     }
 }

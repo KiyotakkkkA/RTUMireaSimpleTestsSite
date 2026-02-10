@@ -6,7 +6,7 @@ import { SharedService } from "../../../services/shared";
 import type {
     TestsAccessFilters,
     TestsAccessPagination,
-    TestsAccessStatus,
+    TestsAccessUpdatePayload,
 } from "../../../types/shared/TestsAccess";
 
 const DEFAULT_PAGINATION: TestsAccessPagination = {
@@ -47,41 +47,23 @@ export const useAdminTestsAccessAPI = (
         { keepPreviousData: true },
     );
 
-    const [statusUpdating, setStatusUpdating] = useState<
+    const [accessUpdating, setAccessUpdating] = useState<
         Record<string, boolean>
     >({});
-    const updateStatusMutation = useMutation(
-        ({ testId, status }: { testId: string; status: TestsAccessStatus }) =>
-            SharedService.updateTestAccess(testId, { access_status: status }),
+    const updateAccessMutation = useMutation(
+        ({
+            testId,
+            payload,
+        }: {
+            testId: string;
+            payload: TestsAccessUpdatePayload;
+        }) => SharedService.updateTestAccess(testId, payload),
         {
             onMutate: ({ testId }) => {
-                setStatusUpdating((prev) => ({ ...prev, [testId]: true }));
+                setAccessUpdating((prev) => ({ ...prev, [testId]: true }));
             },
             onSettled: (_data, _error, variables) => {
-                setStatusUpdating((prev) => {
-                    const next = { ...prev };
-                    delete next[variables.testId];
-                    return next;
-                });
-            },
-            onSuccess: () => {
-                queryClient.invalidateQueries(["shared", "tests-access"]);
-            },
-        },
-    );
-
-    const [usersUpdating, setUsersUpdating] = useState<Record<string, boolean>>(
-        {},
-    );
-    const updateUsersMutation = useMutation(
-        ({ testId, userIds }: { testId: string; userIds: number[] }) =>
-            SharedService.updateTestAccess(testId, { user_ids: userIds }),
-        {
-            onMutate: ({ testId }) => {
-                setUsersUpdating((prev) => ({ ...prev, [testId]: true }));
-            },
-            onSettled: (_data, _error, variables) => {
-                setUsersUpdating((prev) => {
+                setAccessUpdating((prev) => {
                     const next = { ...prev };
                     delete next[variables.testId];
                     return next;
@@ -122,15 +104,10 @@ export const useAdminTestsAccessAPI = (
             ? getErrorMessage(groupsQuery.error, "Не удалось загрузить группы")
             : null,
         groupsRefetch: groupsQuery.refetch,
-        updateTestAccessStatus: (testId: string, status: TestsAccessStatus) =>
-            updateStatusMutation
-                .mutateAsync({ testId, status })
+        updateTestAccess: (testId: string, payload: TestsAccessUpdatePayload) =>
+            updateAccessMutation
+                .mutateAsync({ testId, payload })
                 .then((resp) => resp.test),
-        statusUpdating,
-        updateTestAccessUsers: (testId: string, userIds: number[]) =>
-            updateUsersMutation
-                .mutateAsync({ testId, userIds })
-                .then((resp) => resp.test),
-        usersUpdating,
+        accessUpdating,
     };
 };

@@ -21,6 +21,8 @@ class Test extends Model
         'title',
         'access_status',
         'access_link',
+        'access_from',
+        'access_to',
         'total_questions',
         'total_disabled',
     ];
@@ -32,6 +34,8 @@ class Test extends Model
 
     protected $casts = [
         'access_status' => TestAccessStatus::class,
+        'access_from' => 'datetime:Y-m-d H:i',
+        'access_to' => 'datetime:Y-m-d H:i',
     ];
 
     public function getIsCurrentUserCreatorAttribute(): bool

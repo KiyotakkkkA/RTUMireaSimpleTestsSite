@@ -4,6 +4,9 @@ import { Icon } from "@iconify/react";
 import {
     ArrayAutoFillSelector,
     Button,
+    InputCheckbox,
+    InputDate,
+    InputTime,
     Selector,
     Spinner,
 } from "../../../atoms";
@@ -13,6 +16,7 @@ import type {
     TestAccessGroup,
     TestAccessItem,
     TestsAccessStatus,
+    TestsAccessUpdatePayload,
 } from "../../../../types/shared/TestsAccess";
 
 type TeacherTestAccessCardProps = {
@@ -21,18 +25,18 @@ type TeacherTestAccessCardProps = {
     groupOptions: ArrayAutoFillOption[];
     groups: TestAccessGroup[];
     isUpdating?: boolean;
-    onStatusChange: (
+    onAccessSave: (
         testId: string,
-        status: TestsAccessStatus,
+        payload: TestsAccessUpdatePayload,
     ) => Promise<void>;
-    onUsersSave: (testId: string, userIds: number[]) => Promise<void>;
 };
 
-const statusOptions = [
+type AccessVisibilityValue = "all" | "auth" | "custom";
+
+const statusOptions: { value: AccessVisibilityValue; label: string }[] = [
     { value: "all", label: "Доступен всем" },
     { value: "auth", label: "Только авторизованные" },
-    { value: "protected", label: "Выборочно" },
-    { value: "link", label: "По ссылке" },
+    { value: "custom", label: "Настраиваемое" },
 ];
 
 const statusMeta: Record<
@@ -49,15 +53,10 @@ const statusMeta: Record<
         icon: "mdi:account-check",
         className: "bg-indigo-50 text-indigo-700 ring-indigo-200",
     },
-    protected: {
-        label: "Выборочно",
-        icon: "mdi:lock-check",
+    custom: {
+        label: "Настраиваемое",
+        icon: "mdi:tune-variant",
         className: "bg-amber-50 text-amber-700 ring-amber-200",
-    },
-    link: {
-        label: "По ссылке",
-        icon: "mdi:link-variant",
-        className: "bg-sky-50 text-sky-700 ring-sky-200",
     },
 };
 
@@ -67,9 +66,20 @@ export const TeacherTestAccessCard = ({
     groupOptions,
     groups,
     isUpdating,
-    onStatusChange,
-    onUsersSave,
+    onAccessSave,
 }: TeacherTestAccessCardProps) => {
+    const splitDateTime = (value?: string | null) => {
+        if (!value) return { date: "", time: "" };
+        const [datePart, timePart] = value.split(" ");
+        return {
+            date: datePart ?? "",
+            time: (timePart ?? "").slice(0, 5),
+        };
+    };
+
+    const buildDateTime = (date: string, time: string) =>
+        date && time ? `${date} ${time}` : null;
+
     const initialUserIds = useMemo(
         () => test.access_users.map((user) => String(user.id)),
         [test.access_users],
@@ -82,12 +92,22 @@ export const TeacherTestAccessCard = ({
     >({});
     const [isSavingUsers, setIsSavingUsers] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [linkOnly, setLinkOnly] = useState(Boolean(test.access_link));
+    const [{ date: fromDate, time: fromTime }, setFromState] = useState(() =>
+        splitDateTime(test.access_from),
+    );
+    const [{ date: toDate, time: toTime }, setToState] = useState(() =>
+        splitDateTime(test.access_to),
+    );
 
     useEffect(() => {
         setManualUserIds(initialUserIds);
         setSelectedGroupIds([]);
         setExcludedGroupUsers({});
-    }, [initialUserIds]);
+        setLinkOnly(Boolean(test.access_link));
+        setFromState(splitDateTime(test.access_from));
+        setToState(splitDateTime(test.access_to));
+    }, [initialUserIds, test.access_link, test.access_from, test.access_to]);
 
     const groupsMap = useMemo(() => {
         const map = new Map<string, TestAccessGroup>();
@@ -127,9 +147,16 @@ export const TeacherTestAccessCard = ({
 
     const handleUsersSave = async () => {
         const ids = selectedUserIds.map((value) => Number(value));
+        const payload: TestsAccessUpdatePayload = {
+            access_status: "custom",
+            user_ids: linkOnly ? [] : ids,
+            link_only: linkOnly,
+            access_from: buildDateTime(fromDate, fromTime),
+            access_to: buildDateTime(toDate, toTime),
+        };
         setIsSavingUsers(true);
         try {
-            await onUsersSave(test.id, ids);
+            await onAccessSave(test.id, payload);
         } finally {
             setIsSavingUsers(false);
         }
@@ -198,6 +225,22 @@ export const TeacherTestAccessCard = ({
     };
 
     const statusDetails = statusMeta[test.access_status];
+    const visibilityValue: AccessVisibilityValue =
+        test.access_status === "custom"
+            ? "custom"
+            : (test.access_status as AccessVisibilityValue);
+
+    const initialLinkOnly = Boolean(test.access_link);
+    const initialFrom = splitDateTime(test.access_from);
+    const initialTo = splitDateTime(test.access_to);
+    const hasWindowChanges =
+        fromDate !== initialFrom.date ||
+        fromTime !== initialFrom.time ||
+        toDate !== initialTo.date ||
+        toTime !== initialTo.time;
+    const hasLinkChange = linkOnly !== initialLinkOnly;
+    const hasCustomChanges =
+        hasUsersChanges || hasLinkChange || hasWindowChanges;
 
     if (isUpdating) {
         return (
@@ -235,17 +278,108 @@ export const TeacherTestAccessCard = ({
                         Видимость
                     </div>
                     <Selector
-                        value={test.access_status}
+                        value={visibilityValue}
                         options={statusOptions}
-                        onChange={(value) =>
-                            onStatusChange(test.id, value as TestsAccessStatus)
-                        }
+                        onChange={(value) => {
+                            const nextValue = value as AccessVisibilityValue;
+                            const payload: TestsAccessUpdatePayload = {
+                                access_status:
+                                    nextValue === "custom"
+                                        ? "custom"
+                                        : nextValue,
+                                link_only: nextValue === "custom" && linkOnly,
+                                access_from: buildDateTime(fromDate, fromTime),
+                                access_to: buildDateTime(toDate, toTime),
+                            };
+                            if (nextValue === "custom") {
+                                payload.user_ids = linkOnly
+                                    ? []
+                                    : selectedUserIds.map((id) => Number(id));
+                            }
+                            onAccessSave(test.id, payload);
+                        }}
                         disabled={Boolean(isUpdating)}
                     />
                 </div>
             </div>
 
-            {test.access_status === "link" && (
+            {visibilityValue === "custom" && (
+                <div className="mt-5 space-y-4">
+                    <div className="rounded-lg border border-slate-200 bg-slate-100 p-4">
+                        <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                            Доступ по времени
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="grid gap-2">
+                                <InputDate
+                                    label="С"
+                                    value={fromDate}
+                                    onChange={(event) =>
+                                        setFromState((prev) => ({
+                                            ...prev,
+                                            date: event.target.value,
+                                        }))
+                                    }
+                                    disabled={Boolean(isUpdating)}
+                                />
+                                <InputTime
+                                    label="Время"
+                                    value={fromTime}
+                                    onChange={(event) =>
+                                        setFromState((prev) => ({
+                                            ...prev,
+                                            time: event.target.value,
+                                        }))
+                                    }
+                                    disabled={Boolean(isUpdating)}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <InputDate
+                                    label="По"
+                                    value={toDate}
+                                    onChange={(event) =>
+                                        setToState((prev) => ({
+                                            ...prev,
+                                            date: event.target.value,
+                                        }))
+                                    }
+                                    disabled={Boolean(isUpdating)}
+                                />
+                                <InputTime
+                                    label="Время"
+                                    value={toTime}
+                                    onChange={(event) =>
+                                        setToState((prev) => ({
+                                            ...prev,
+                                            time: event.target.value,
+                                        }))
+                                    }
+                                    disabled={Boolean(isUpdating)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-100 px-4 py-3">
+                        <div>
+                            <div className="text-sm font-semibold text-slate-800">
+                                Только по ссылке
+                            </div>
+                            <div className="text-xs text-slate-500">
+                                Доступ к тесту только по специальной ссылке.
+                            </div>
+                        </div>
+                        <InputCheckbox
+                            checked={linkOnly}
+                            onChange={setLinkOnly}
+                            title="Только по ссылке"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {visibilityValue === "custom" && linkOnly && (
                 <div className="mt-4">
                     <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
                         Ссылка
@@ -265,10 +399,42 @@ export const TeacherTestAccessCard = ({
                             </Button>
                         )}
                     </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                        <Button
+                            primary
+                            className="px-4 py-2 text-sm"
+                            isLoading={isSavingUsers}
+                            loadingText="Сохраняем..."
+                            disabled={
+                                !hasCustomChanges ||
+                                isSavingUsers ||
+                                Boolean(isUpdating)
+                            }
+                            onClick={handleUsersSave}
+                        >
+                            Сохранить доступ
+                        </Button>
+                        {hasCustomChanges && !isSavingUsers && (
+                            <Button
+                                secondary
+                                className="px-4 py-2 text-sm"
+                                onClick={() => {
+                                    setManualUserIds(initialUserIds);
+                                    setSelectedGroupIds([]);
+                                    setExcludedGroupUsers({});
+                                    setLinkOnly(initialLinkOnly);
+                                    setFromState(initialFrom);
+                                    setToState(initialTo);
+                                }}
+                            >
+                                Сбросить
+                            </Button>
+                        )}
+                    </div>
                 </div>
             )}
 
-            {test.access_status === "protected" && (
+            {visibilityValue === "custom" && !linkOnly && (
                 <div className="mt-5 space-y-4">
                     <div>
                         <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
@@ -279,7 +445,7 @@ export const TeacherTestAccessCard = ({
                             value={selectedGroupIds}
                             onChange={handleGroupChange}
                             placeholder="Выберите группы"
-                            disabled={Boolean(isUpdating)}
+                            disabled={Boolean(isUpdating) || linkOnly}
                         />
                     </div>
 
@@ -299,7 +465,7 @@ export const TeacherTestAccessCard = ({
                                 return (
                                     <div
                                         key={group.id}
-                                        className="rounded-lg border border-slate-200 bg-white p-4"
+                                        className="rounded-lg border border-slate-200 bg-slate-100 p-4"
                                     >
                                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                             <div>
@@ -381,7 +547,7 @@ export const TeacherTestAccessCard = ({
                             value={manualUserIds}
                             onChange={setManualUserIds}
                             placeholder="Выберите пользователей"
-                            disabled={Boolean(isUpdating)}
+                            disabled={Boolean(isUpdating) || linkOnly}
                         />
                     </div>
 
@@ -392,7 +558,7 @@ export const TeacherTestAccessCard = ({
                             isLoading={isSavingUsers}
                             loadingText="Сохраняем..."
                             disabled={
-                                !hasUsersChanges ||
+                                !hasCustomChanges ||
                                 isSavingUsers ||
                                 Boolean(isUpdating)
                             }
@@ -400,7 +566,7 @@ export const TeacherTestAccessCard = ({
                         >
                             Сохранить доступ
                         </Button>
-                        {hasUsersChanges && !isSavingUsers && (
+                        {hasCustomChanges && !isSavingUsers && (
                             <Button
                                 secondary
                                 className="px-4 py-2 text-sm"
@@ -408,6 +574,9 @@ export const TeacherTestAccessCard = ({
                                     setManualUserIds(initialUserIds);
                                     setSelectedGroupIds([]);
                                     setExcludedGroupUsers({});
+                                    setLinkOnly(initialLinkOnly);
+                                    setFromState(initialFrom);
+                                    setToState(initialTo);
                                 }}
                             >
                                 Сбросить

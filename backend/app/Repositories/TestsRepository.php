@@ -68,8 +68,14 @@ class TestsRepository
     public function updateTestAccessStatus(Test $test, ?string $accessStatus): Test
     {
         $test->access_status = $accessStatus;
+        $test->save();
 
-        if ($accessStatus === 'link') {
+        return $test;
+    }
+
+    public function updateTestAccessLink(Test $test, bool $linkOnly): Test
+    {
+        if ($linkOnly) {
             if (!$test->access_link) {
                 $test->access_link = Str::random(32);
             }
@@ -87,6 +93,18 @@ class TestsRepository
         $ids = array_values(array_unique(array_map('intval', $userIds)));
         $test->accessUsers()->sync($ids);
         $test->load('accessUsers');
+
+        return $test;
+    }
+
+    public function updateTestAccessWindow(
+        Test $test,
+        ?string $accessFrom,
+        ?string $accessTo
+    ): Test {
+        $test->access_from = $accessFrom ?: null;
+        $test->access_to = $accessTo ?: null;
+        $test->save();
 
         return $test;
     }

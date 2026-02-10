@@ -1,4 +1,4 @@
-export type TestsAccessStatus = "all" | "auth" | "protected" | "link";
+export type TestsAccessStatus = "all" | "auth" | "custom";
 
 export type TestAccessUser = {
     id: number;
@@ -20,6 +20,8 @@ export type TestAccessItem = {
     total_disabled?: number;
     access_status: TestsAccessStatus;
     access_link?: string | null;
+    access_from?: string | null;
+    access_to?: string | null;
     access_users: TestAccessUser[];
 };
 
@@ -38,6 +40,9 @@ export type TestsAccessResponse = {
 export type TestsAccessUpdatePayload = {
     access_status?: TestsAccessStatus;
     user_ids?: number[];
+    link_only?: boolean;
+    access_from?: string | null;
+    access_to?: string | null;
 };
 
 export type TestsAccessUsersResponse = {

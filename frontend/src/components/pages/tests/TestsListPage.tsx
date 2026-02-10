@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 
-import { Button, InputSmall, Modal, Spinner } from "../../atoms";
+import { Button, InputSmall, Modal } from "../../atoms";
 import { TestListElementCard } from "../../molecules/cards";
 import { TestsListFiltersPanel } from "../../molecules/filters/tests/TestsListFiltersPanel";
 import { authStore } from "../../../stores/authStore";
@@ -51,7 +51,7 @@ export const TestsListPage = () => {
 
     return (
         <>
-            <div className="ml-auto flex w-full max-w-[110rem] flex-col gap-4 lg:flex-row">
+            <div className="mx-auto flex w-full max-w-[110rem] flex-col gap-4 lg:flex-row">
                 <div className="order-2 flex-1 space-y-4 lg:order-1">
                     {authStore.hasPermission("create tests") && (
                         <div className="flex rounded-lg border border-slate-200 p-3 bg-slate-50">

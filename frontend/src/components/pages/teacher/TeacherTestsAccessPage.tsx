@@ -11,7 +11,7 @@ import {
 import { useToasts } from "../../../hooks/useToasts";
 
 import type { ArrayAutoFillOption } from "../../atoms/ArrayAutoFillSelector";
-import type { TestsAccessStatus } from "../../../types/shared/TestsAccess";
+import type { TestsAccessUpdatePayload } from "../../../types/shared/TestsAccess";
 
 export const TeacherTestsAccessPage = observer(() => {
     const { toast } = useToasts();
@@ -28,15 +28,10 @@ export const TeacherTestsAccessPage = observer(() => {
         usersLoading,
         usersError,
         groups,
-        updateTestAccessStatus,
-        statusUpdating,
-        updateTestAccessUsers,
-        usersUpdating,
+        updateTestAccess,
+        accessUpdating,
     } = useAdminTestsAccessAPI(appliedFilters, debouncedSearch || undefined);
-    const isUpdating = useMemo(
-        () => ({ ...statusUpdating, ...usersUpdating }),
-        [statusUpdating, usersUpdating],
-    );
+    const isUpdating = useMemo(() => ({ ...accessUpdating }), [accessUpdating]);
 
     const sortOptions = useMemo(
         () => [
@@ -78,12 +73,12 @@ export const TeacherTestsAccessPage = observer(() => {
         return () => window.clearTimeout(handle);
     }, [userSearch]);
 
-    const handleStatusChange = async (
+    const handleAccessSave = async (
         testId: string,
-        status: TestsAccessStatus,
+        payload: TestsAccessUpdatePayload,
     ) => {
         try {
-            await updateTestAccessStatus(testId, status);
+            await updateTestAccess(testId, payload);
             toast.success("Доступ обновлён");
         } catch (e: any) {
             toast.danger(
@@ -100,17 +95,6 @@ export const TeacherTestsAccessPage = observer(() => {
         });
         setUserSearch("");
         setDebouncedSearch("");
-    };
-
-    const handleUsersSave = async (testId: string, userIds: number[]) => {
-        try {
-            await updateTestAccessUsers(testId, userIds);
-            toast.success("Доступ пользователям сохранён");
-        } catch (e: any) {
-            toast.danger(
-                e?.response?.data?.message || "Не удалось обновить доступ",
-            );
-        }
     };
 
     return (
@@ -149,8 +133,7 @@ export const TeacherTestsAccessPage = observer(() => {
                                 groupOptions={groupOptions}
                                 groups={groups}
                                 isUpdating={Boolean(isUpdating[test.id])}
-                                onStatusChange={handleStatusChange}
-                                onUsersSave={handleUsersSave}
+                                onAccessSave={handleAccessSave}
                             />
                         ))}
                     </div>
