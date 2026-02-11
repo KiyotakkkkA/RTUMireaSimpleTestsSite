@@ -209,7 +209,7 @@ class TestsService
     private function mapJsonQuestionToPayload(array $question): array
     {
         $type = $question['type'] ?? 'single';
-        $title = $question['question'] ?? $question['title'] ?? '';
+        $title = $question['question'] ?? '';
 
         if (!$title) {
             throw new ApiException('Вопрос без текста не может быть импортирован.', 422);
