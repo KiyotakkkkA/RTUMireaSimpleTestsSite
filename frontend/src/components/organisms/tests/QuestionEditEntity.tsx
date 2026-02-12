@@ -175,7 +175,7 @@ export const QuestionEditEntity = ({
                     Видимость вопроса
                 </div>
                 <div
-                    className={`${draft.disabled ? "bg-rose-50" : "bg-emerald-50"} p-3 rounded-lg text-slate-600 text-sm flex justify-between items-center transition-colors`}
+                    className={`${draft.disabled ? "bg-rose-50" : "bg-emerald-50"} p-3 rounded-lg text-slate-900 text-sm flex justify-between items-center transition-colors`}
                 >
                     {draft.disabled ? (
                         <>

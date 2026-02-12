@@ -22,7 +22,7 @@ class TestsAutoFillRequest extends FormRequest
             'questions' => 'required|array|min:1',
             'replace' => 'nullable|boolean',
             'questions.*.type' => ['required', 'string', Rule::in(['single', 'multiple', 'matching', 'full_answer'])],
-            'questions.*.title' => 'nullable|string',
+            'questions.*.question' => 'nullable|string',
             'questions.*.options' => 'nullable|array',
             'questions.*.correctAnswers' => 'nullable|array',
             'questions.*.terms' => 'nullable|array',
